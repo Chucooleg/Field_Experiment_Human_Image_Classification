@@ -21,8 +21,9 @@ Task Images Links only | https://drive.google.com/open?id=16zrsPUk7tn9I4bqbxYZV-
 
 Description | Link
 ---- | ----
+Ryan Delago Proposal | reference/
 Riley Recommendation 1 | https://dl.acm.org/citation.cfm?id=1809422
 Riley Recommendation 2 | https://link.springer.com/article/10.1007%2Fs10683-011-9273-9?LI=true
 Other 1 | https://arxiv.org/pdf/1001.0627.pdf
 Other 2 | https://arxiv.org/pdf/1001.0627.pdf
-Other 3 | A_Study_on_Mechanical_Turk/links/0fcfd50e5afe007d78000000.pdf
+Other 3 | https://www.researchgate.net/profile/Daniel_Veit/publication/216184483_More_than_fun_and_money_Worker_Motivation_in_Crowdsourcing--A_Study_on_Mechanical_Turk/links/0fcfd50e5afe007d78000000.pdf
