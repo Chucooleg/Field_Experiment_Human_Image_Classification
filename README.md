@@ -1,6 +1,14 @@
 # Field_Experiment_Human_Image_Classification
 W241 Final Project
 
+
+## Experiment Schedule
+
+Date | Time | Description | Payrate | No. tasks | Qualtric data | MTurk data | Status
+---- | ---- | ---- | ---- | ---- | ---- | ---- | ----
+10282017 | UTC 12pm | Pilot | 0.10 | 50 | /qualtric_data/20171028_results_pilot_0.10.csv | /MTurkdata/Batch_2987746_batch_results (1).csv | awaiting analysis
+
+
 ## General Links
 
 Description | Link
@@ -27,3 +35,4 @@ Riley Recommendation 2 | https://link.springer.com/article/10.1007%2Fs10683-011-
 Other 1 | https://arxiv.org/pdf/1001.0627.pdf
 Other 2 | https://arxiv.org/pdf/1001.0627.pdf
 Other 3 | https://www.researchgate.net/profile/Daniel_Veit/publication/216184483_More_than_fun_and_money_Worker_Motivation_in_Crowdsourcing--A_Study_on_Mechanical_Turk/links/0fcfd50e5afe007d78000000.pdf
+
