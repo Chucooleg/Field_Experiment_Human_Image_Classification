@@ -6,8 +6,8 @@ W241 Final Project
 
 Date | Time | Description | Payrate | No. tasks | Qualtric data | MTurk data | Status
 ---- | ---- | ---- | ---- | ---- | ---- | ---- | ----
-10282017 | UTC 12pm | Pilot | 0.10 | 50 | /qualtric_data/20171028_results_pilot_0.10.csv | /MTurkdata/Batch_2987746_batch_results (1).csv | awaiting analysis
-
+10282017 | UTC 12pm | Pilot | 0.10 | 50 | /qualtric_data/20171028_results_pilot_0.10.csv | /MTurkdata/20171028_mturk_results_pilot_0.10.csv | awaiting analysis
+10292017 | UTC 12pm | Pilot | 0.25 | 50 | /qualtric_data/20171029_results_pilot_0.25.csv | /MTurkdata/20171028_mturk_results_pilot_0.25.csv | awaiting analysis
 
 ## Important CSV files
 
