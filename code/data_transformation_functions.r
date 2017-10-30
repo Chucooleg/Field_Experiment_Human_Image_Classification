@@ -71,27 +71,36 @@ allQ = c("TQ1", "TQ2", "TQ3", "TQ4", "TQ5", "TQ6",
 # read in current task data as dt
 # check accuracies of current task data 
 # construct temp_accuracies_dt
-# [worder_id, date of task, task description, complete 1/0 ,accuracy, payment_threshold, pay 1/0]
+# [worder_id, date of task, task description, complete 1/0 ,accuracy, payment_accuracy_threshold, pay 1/0]
 # append temp_accuracies_dt to existing_dt
 # overwrite exiting_dt to existing_cv
 # return temp_accuracies_dt, existing_dt
 
 
 # get dataframe of worker ids and their task status
-construct_frame_worderIDs_task_status = function(current_task_data, allQ, payment_accuracy_threshold, task_name) {
+construct_frame_worderIDs_task_status = function(current_task_data, submitted_MTurk_ids, allQ, payment_accuracy_threshold, task_name, treatment_payrate) {
+  
   # for those who completed the task
   dt_completer_status = evaluate_worker_perf(current_task_data, allQ)[,c("worker_id",
                                                                "accuracy",
                                                                "screener")]
-  dt_completer_status[, complete_task := 1][, payment_threshold:=payment_threshold]
-  dt_completer_status[, pay_or_not := as.numeric(accuracy >= payment_threshold & screener == 1 & complete_task == 1)]
+  dt_completer_status[, complete_task := 1][, payment_accuracy_threshold:=payment_accuracy_threshold]
+  
   # for those who did not complete the task
   not_completer_id = current_task_data[Finished == "FALSE", ]$worker_id
   dt_not_completer_status = data.table(worker_id = not_completer_id)
-  dt_not_completer_status[, accuracy := NA][, screener := NA][, complete_task := 0][,payment_threshold:=payment_threshold][,pay_or_not :=0]
+  dt_not_completer_status[, accuracy := NA][, screener := NA][, complete_task := 0][,payment_accuracy_threshold:=payment_accuracy_threshold]
+  
+  # for everyone with identifiable worker id
   dt_status = rbind(dt_completer_status, dt_not_completer_status)
+  dt_status[, worker_id_found_on_MTurk := as.numeric(worker_id %in% submitted_MTurk_ids)]
   dt_status[, task_name := task_name]
   dt_status[, task_date := substr(current_task_data[1]$StartDate, 1, 10)]
+  dt_status[, treatment_payrate := treatment_payrate]  
+  dt_status[, pay_or_not := as.numeric(accuracy >= payment_accuracy_threshold & 
+                                                   screener == 1 & 
+                                                   complete_task == 1 &
+                                                   worker_id_found_on_MTurk == 1 )]
   dt_status
 }
 # TEST function
@@ -102,20 +111,27 @@ construct_frame_worderIDs_task_status = function(current_task_data, allQ, paymen
 
 # DO NOT RUN THIS FUNCTION
 # construct empty dataframe to append worker ids and task status
-# path3 = "../MTurk_worderIDs/MTurk_worderIDsworker_task_status.csv"
+
 DONT_USE_construct_frame_workerIDs_task_empty = function(custom_path) {
-  tmp_frame = data.table(key= c("worker_id, StartDate, task_description, complete, 
-                                screener, accuracy, payment_threshold, pay_or_not"))
+  tmp_frame = data.frame("worker_id" = NA,
+                         "accuracy" = NA,
+                         "screener" = NA,
+                         "complete_task" = NA,
+                         "payment_accuracy_threshold" = NA,
+                         "worker_id_found_on_MTurk" = NA,
+                         "task_name" = NA,
+                         "task_date" = NA,
+                         "treatment_payrate" = NA,
+                         "pay_or_not" = NA
+                         )
   write.csv(x = tmp_frame, file = custom_path)
 }
 # DONT_USE_construct_frame_workerIDs_task_empty(path3)
 
 
-# get MTurk workerid
+# get MTurk workerid for those who submitted on Amazon
 get_MTurk_worker_id = function(csv_path) {
-  current_MTurk_data = fread(csv_path)
-  worker_id = current_MTurk_data$WorkerId
-  worker_id
+  read.csv(csv_path)$WorkerId
 }
 
 # get current task data from qualtric
