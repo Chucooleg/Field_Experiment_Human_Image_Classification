@@ -9,6 +9,20 @@ Date | Time | Description | Payrate | No. tasks | Qualtric data | MTurk data | S
 10282017 | UTC 12pm | Pilot | 0.10 | 50 | /qualtric_data/20171028_results_pilot_0.10.csv | /MTurkdata/Batch_2987746_batch_results (1).csv | awaiting analysis
 
 
+## Important CSV files
+
+Title | Location | Description | Last Author
+---- | ----
+Worker_status| ./MTurk_ID_status/worker_status | who to pay, who completed the task, who did not complete the task, who passed the screeners, HIT conditions, how much we paid him/her | Legg
+
+
+## Important R codes
+
+Title | Location | Description | Last Author
+---- | ----
+Worker Payment | ./code | For any task , figure out who to pay based on Mturk and Qualtric csv files | Legg
+
+
 ## General Links
 
 Description | Link
