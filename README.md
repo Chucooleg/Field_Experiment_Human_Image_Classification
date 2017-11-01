@@ -26,7 +26,7 @@ Worker Payment | ./code | For any task , figure out who to pay based on Mturk an
 ## General Links
 
 Description | Link | Last Author
----- | ----
+---- | ---- | ----
 Progress Report Requirement | https://github.com/UCB-MIDS/experiments-causality/blob/master/assignments/peerEvaluation/earlyProgress.org | Instructor
 Progress Report Draft 1 | https://docs.google.com/a/berkeley.edu/document/d/1bsplevTe2r1WSkr9CtahCQqXQVZcAwy53YT3luDyIl0/edit?usp=sharing | Frederic
 Progress Report Draft 2 | https://docs.google.com/document/d/1Yhr5kHKtd8nOIaGXs8-zGHXOvcbgDqg0s2AijNdVW8U/edit?usp=sharing | Legg
