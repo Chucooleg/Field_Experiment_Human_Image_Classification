@@ -3,7 +3,7 @@
 rm(list = ls())
 
 # load supporting functions
-source(file = "data_transformation_functions.r")
+source(file = "pilot_data_transformation_functions.r")
 
 # existing file, be careful when you overwrite
 existing_path = "../MTurk_ID_status/worker_status.csv"

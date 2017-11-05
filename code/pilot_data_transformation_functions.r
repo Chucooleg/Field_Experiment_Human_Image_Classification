@@ -201,10 +201,17 @@ evaluate_worker_perf = function(current_task_data, allQ) {
 ### Run fucntion
 # evaluate_worker_perf(current_task_data, allQ)
 
+# provide stats summaries of accuracies over all workers given a csv
+summarize_worker_perf = function(current_task_data, allQ) {
+  worker_perf = evaluate_worker_perf(current_task_data, allQ)
+  worker_perf[,.(N = .N, mean = mean(accuracy), std = sd(accuracy), 
+                 se = sd(accuracy)/sqrt(.N),min = min(accuracy), max = max(accuracy))]
+  
+}
 
-# evaluate question accuracies
+# provide stats summaries of accuracies over all questions given a csv
 # screener questions not included
-evaluate_question_accuracy = function(current_task_data, allQ) {
+summarize_question_accuracy = function(current_task_data, allQ) {
   # read in correct responses
   tmp.dt.questions = convert_raw_to_correct_ans(current_task_data, allQ)
   n = length(allQ) - 2 # minus 2 screener questions

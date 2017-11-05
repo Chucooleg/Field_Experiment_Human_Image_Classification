@@ -20,7 +20,11 @@ Worker_status| ./MTurk_ID_status/worker_status | who to pay, who completed the t
 
 Title | Location | Description | Last Author
 ---- | ---- | ---- | ----
-Worker Payment | ./code | For any task , figure out who to pay based on Mturk and Qualtric csv files | Legg
+Pilot Results | ./code/pilot_results_WIP.r | Analyze Pilot results
+Data Transformation Functions for Pilot | ./code/pilot_data_transformation_functions.r | R functions repository
+Worker Payment | ./code/pilot_worker_payment.r | For any task , figure out who to pay based on Mturk and Qualtric csv files | Legg
+Worker Status Update | ./code/pilot_worker_status.r | For any task, record task history of each worker
+
 
 
 ## General Links
