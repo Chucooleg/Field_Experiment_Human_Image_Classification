@@ -6,7 +6,7 @@ ans = c(
   "Shih Tzu",
   "Shih Tzu",
   "Cocker Spaniel",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Golden retriever",
   "Cocker Spaniel",
   "Yorkshire Terrier",
@@ -15,14 +15,14 @@ ans = c(
   "Yorkshire Terrier",
   "Bloodhound",
   "Shih Tzu",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Saluki",
   "Yorkshire Terrier",
   "Not A Dog",
   "Cocker Spaniel",
   "Golden retriever",
   "Golden retriever",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Yorkshire Terrier",
   "Bloodhound",
   "Cocker Spaniel",
@@ -30,7 +30,7 @@ ans = c(
   "Boston Bull",
   "Saluki",
   "Cocker Spaniel",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Golden retriever",
   "Yorkshire Terrier",
   "Saluki",
@@ -48,9 +48,9 @@ ans = c(
   "Shih Tzu",
   "Bloodhound",
   "Boston Bull",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Shih Tzu",
-  "Irish wolfhound",
+  "Irish Wolfhound",
   "Bloodhound"        
 )
 
@@ -208,6 +208,26 @@ summarize_worker_perf = function(current_task_data, allQ) {
                  se = sd(accuracy)/sqrt(.N),min = min(accuracy), max = max(accuracy))]
   
 }
+
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+evaluate_question_perf = function(evaluate_question_perf, allQ) {
+  tmp.dt.questions = convert_raw_to_correct_ans(current_task_data, allQ)
+  tmp.dt.questions = tmp.dt.questions[, c("TQ1","TQ2","TQ3","TQ4","TQ5","TQ6",
+                                          "TQ7","TQ8","TQ9","TQ10","TQ11","TQ12",
+                                          "TQ13","TQ14","TQ15","TQ16","SQ1","TQ17","TQ18",
+                                          "TQ19","TQ20","TQ21","TQ22","TQ23","TQ24",
+                                          "TQ25","TQ26","TQ27","TQ28","TQ29","TQ30",
+                                          "TQ31","TQ32","TQ33","SQ2","TQ34","TQ35","TQ36",
+                                          "TQ37","TQ38","TQ39","TQ40","TQ41","TQ42",
+                                          "TQ43","TQ44","TQ45","TQ46","TQ47","TQ48")]
+  tmp.dt.questions$dum = 1
+  aggregate(. ~ dum,data = tmp.dt.questions, FUN = mean)
+}
+
+# TQ5, TQ14, TQ20, TQ28, TQ45, TQ47
+# TQ5, TQ14, TQ20, TQ28, TQ45, TQ47
 
 # provide stats summaries of accuracies over all questions given a csv
 # screener questions not included
