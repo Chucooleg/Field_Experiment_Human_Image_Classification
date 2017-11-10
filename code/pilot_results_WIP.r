@@ -98,4 +98,16 @@ summary(regr1)
 summary(regr2)
 
 
+#---------------------------------------------------------------------#
+# DISTRIBUTION OF ACCURACY
 
+# pooling 0.10 & 0.25 treatments
+hist(regr_table$accuracy)
+
+hist(regr_table[treatment == 0.25,]$accuracy)
+hist(regr_table[treatment == 0.10,]$accuracy)
+# Notice that both histograms are very left skewed
+# This calls the appropriateness of OLS asymptotics for ATE SE & p-val estimation into question
+# Hopefully with a larger sample size, asymtotics will be more reliable
+# Anyhow, this says that we should report p-val using randomization inference in addition to regression
+# Just like many of the papers we read in class
