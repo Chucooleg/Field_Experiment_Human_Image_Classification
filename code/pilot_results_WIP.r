@@ -96,7 +96,8 @@ regr1 = lm(accuracy ~ treatment, data = regr_table)
 regr2 = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table)
 summary(regr1)
 summary(regr2)
-
+coeftest(regr1, vcov(regr1))
+coeftest(regr2, vcov(regr2))
 
 #---------------------------------------------------------------------#
 # DISTRIBUTION OF ACCURACY
