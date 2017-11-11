@@ -100,6 +100,11 @@ coeftest(regr1, vcov(regr1))
 coeftest(regr2, vcov(regr2))
 
 #---------------------------------------------------------------------#
+# MISSING : RANDOMIZATION INFERENCE
+
+# PLEASE FILL IN
+
+#---------------------------------------------------------------------#
 # DISTRIBUTION OF ACCURACY
 
 # pooling 0.10 & 0.25 treatments
