@@ -100,7 +100,7 @@ coeftest(regr1, vcov(regr1))
 coeftest(regr2, vcov(regr2))
 
 #---------------------------------------------------------------------#
-# MISSING : RANDOMIZATION INFERENCE
+# MISSING : RANDOMIZATION INFERENCE (for CACE -- compliers average causal effect)
 
 # PLEASE FILL IN
 

@@ -1,0 +1,35 @@
+Design Graph:
+N = 400
+R N_g1=100 C_0.00 C_0.00 C_0.00
+R N_g2=100 C_0.00 C_0.00 T_0.15
+R N_g3=100 C_0.00 T_0.15 T_0.15
+R N_g4=100 T_0.15 T_0.15 T_0.15
+
+---------------------------------------------------------------------
+Regression Modeling:
+Please Specify
+? Add in : no consequences if unfinished
+Qualtrics Survey Setup:
+
+Re-shuffle questions and split into 3 blocks of 16 questions
+Add in timers for each block
+
+Data Transformation:
+Rewrite the code to match new answers
+---------------------------------------------------------------------
+Analysis: (P.157 GG)
+
+Find ITT by Regr
+(Use robust se with coftest)
+Apply randomization inference to find p.val
+Examine distribution from randomization inference
+
+Find ITT_D by Regr
+(Use robust se with coftest)
+
+Find CACE by Regr
+(Use robust se with coftest)
+Apply randomization inference to find p.val
+Examine distribution from randomization inference
+
+Find 
