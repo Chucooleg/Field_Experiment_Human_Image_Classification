@@ -1,9 +1,10 @@
 # Use this code to append updated worker status info to existing worker status sheet
 
 rm(list = ls())
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 
 # load supporting functions
-source(file = "pilot_data_transformation_functions.r")
+source(file = "order1_data_transformation_functions.r")
 
 # existing file, be careful when you overwrite
 existing_path = "../MTurk_ID_status/worker_status.csv"
@@ -13,8 +14,8 @@ existing_path = "../MTurk_ID_status/worker_status.csv"
 
 
 # this is the qualtric csv file you download from qualtric platform, containing survey results
-qualtric_data_path = "../qualtric_data/20171028_qualtric_results_pilot_0.25.csv" #!!!UPDATE
-MTurk_data_path = "../MTurk_data/20171028_mturk_results_pilot_0.25.csv" #!!!UPDATE
+qualtric_data_path = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv" #!!!UPDATE
+MTurk_data_path = "../MTurk_data/20171111_mturk_results_order1_0.55.csv" #!!!UPDATE
 
 # construct contents for file update
 current_task_data = get_current_task_data(csv_path = qualtric_data_path)
@@ -24,8 +25,8 @@ worderIDs_task_status = construct_frame_worderIDs_task_status(current_task_data 
                                                               submitted_MTurk_ids = MTurk_worker_id,
                                                               allQ = allQ, 
                                                               payment_accuracy_threshold = 0.25, 
-                                                              task_name = "pilot", #!!!UPDATE
-                                                              treatment_payrate = 0.25) #!!! UPADTE
+                                                              task_name = "order1", #!!!UPDATE
+                                                              treatment_payrate = 0.55) #!!! UPADTE
 
 # CAUTION!
 # EXIT EXCEL FILE FIRST

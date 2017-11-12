@@ -32,4 +32,11 @@ Find CACE by Regr
 Apply randomization inference to find p.val
 Examine distribution from randomization inference
 
+Find CACE by 2SLS (GG P.159) Regr (?)
+(Use robust se with coftest)
+
 Find 
+
+---------------------------------------------------------------------
+Report: 
+Define compliance, non-compliance
