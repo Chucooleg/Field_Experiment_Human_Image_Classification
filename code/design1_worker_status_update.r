@@ -4,7 +4,7 @@ rm(list = ls())
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 
 # load supporting functions
-source(file = "order1_data_transformation_functions.r")
+source(file = "design1_data_transformation_functions.r")
 
 # existing file, be careful when you overwrite
 existing_path = "../MTurk_ID_status/worker_status.csv"

@@ -4,7 +4,7 @@ rm(list = ls())
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 
 # load supporting functions
-source(file = "order1_data_transformation_functions.r")
+source(file = "design1_data_transformation_functions.r")
 
 # EARLIER EXPERIMENT
 qualtric_data_path_0.10 = "../qualtric_data/20171111_qualtric_results_order1_0.10.csv"

@@ -3,7 +3,7 @@ rm(list = ls())
 
 # load supporting functions
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
-source(file = "order1_data_transformation_functions.r")
+source(file = "design1_data_transformation_functions.r")
 
 #---------------------------------------------------------------------#
 # FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT

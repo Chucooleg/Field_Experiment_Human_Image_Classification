@@ -12,7 +12,7 @@ qualtric_data_path = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv
 MTurk_data_path = "../MTurk_data/20171111_mturk_results_order1_0.55.csv" #!!! UPDATE
 
 # load supporting functions
-source(file = "order1_data_transformation_functions.r")
+source(file = "design1_data_transformation_functions.r")
 
 
 current_task_data = get_current_task_data(csv_path = qualtric_data_path)
