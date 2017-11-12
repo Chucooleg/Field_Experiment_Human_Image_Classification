@@ -14,8 +14,8 @@ existing_path = "../MTurk_ID_status/worker_status.csv"
 
 
 # this is the qualtric csv file you download from qualtric platform, containing survey results
-qualtric_data_path = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv" #!!!UPDATE
-MTurk_data_path = "../MTurk_data/20171111_mturk_results_order1_0.55.csv" #!!!UPDATE
+qualtric_data_path = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv" #!!!UPDATE
+MTurk_data_path = "../MTurk_data/20171112_mturk_results_order1_0.25.csv" #!!!UPDATE
 
 # construct contents for file update
 current_task_data = get_current_task_data(csv_path = qualtric_data_path)
@@ -26,13 +26,14 @@ worderIDs_task_status = construct_frame_worderIDs_task_status(current_task_data 
                                                               allQ = allQ, 
                                                               payment_accuracy_threshold = 0.25, 
                                                               task_name = "order1", #!!!UPDATE
-                                                              treatment_payrate = 0.55) #!!! UPADTE
+                                                              treatment_payrate = 0.25,
+                                                              existing_path = existing_path) #!!! UPADTE
 
 # CAUTION!
 # EXIT EXCEL FILE FIRST
 # append content
 existing_status = fread(existing_path)[,-c("V1")]
-all_status = rbind(existing_status, worderIDs_task_status)
+all_status = rbind(existing_status, worderIDs_task_status, fill=TRUE)
 write.csv(x = all_status, file = existing_path)
 
 

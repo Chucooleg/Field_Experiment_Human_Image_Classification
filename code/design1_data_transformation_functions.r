@@ -79,19 +79,24 @@ allQ = c("TQ1", "TQ2", "TQ3", "TQ4", "TQ5", "TQ6",
 
 
 # get dataframe of worker ids and their task status
-construct_frame_worderIDs_task_status = function(current_task_data, submitted_MTurk_ids, allQ, payment_accuracy_threshold, task_name, treatment_payrate) {
+construct_frame_worderIDs_task_status = function(current_task_data, submitted_MTurk_ids, allQ, payment_accuracy_threshold, task_name, treatment_payrate, existing_path) {
   
   # for those who completed the task
   dt_completer_status = evaluate_worker_perf(current_task_data, allQ)[,c("worker_id",
                                                                "accuracy",
                                                                "screener")]
   dt_completer_status[, complete_task := 1][, payment_accuracy_threshold:=payment_accuracy_threshold]
+  completer_repeater_ids = identify_repeaters_from_database(existing_path, dt_completer_status$worker_ids)
+  dt_completer_status[, repeater := as.numeric(worker_id %in% completer_repeater_ids)]
   
   # for those who did not complete the task
-  not_completer_id = current_task_data[Finished == "FALSE", ]$worker_id
+  not_completer_id = current_task_data[toupper(Finished) == "FALSE", ]$worker_id
   dt_not_completer_status = data.table(worker_id = not_completer_id)
   dt_not_completer_status[, accuracy := NA][, screener := NA][, complete_task := 0][,payment_accuracy_threshold:=payment_accuracy_threshold]
-  
+  not_completer_repeater_ids = identify_repeaters_from_database(existing_path, dt_not_completer_status$worker_ids)
+  dt_not_completer_status[, repeater := as.numeric(worker_id %in% not_completer_repeater_ids)]
+
+
   # for everyone with identifiable worker id
   dt_status = rbind(dt_completer_status, dt_not_completer_status)
   dt_status[, worker_id_found_on_MTurk := as.numeric(worker_id %in% submitted_MTurk_ids)]
@@ -101,7 +106,8 @@ construct_frame_worderIDs_task_status = function(current_task_data, submitted_MT
   dt_status[, pay_or_not := as.numeric(accuracy >= payment_accuracy_threshold & 
                                                    screener == 1 & 
                                                    complete_task == 1 &
-                                                   worker_id_found_on_MTurk == 1 )]
+                                                   worker_id_found_on_MTurk == 1 &
+                                                   repeater == 0)]
   dt_status
 }
 # TEST function
@@ -147,7 +153,7 @@ get_current_task_data = function(csv_path) {
 # return new data table [worder_id, covariates, time_spent, TQ1correct, TQ2correct...]
 convert_raw_to_correct_ans = function(current_task_data, allQ) {
   # raw response
-  tmp.dt.finished = current_task_data[Finished == "TRUE", ]
+  tmp.dt.finished = current_task_data[toupper(Finished) == "TRUE", ]
   # correct response scaffold
   tmp.dt.correct = data.table(worker_id = tmp.dt.finished$worker_id,
                               CQ1 = tmp.dt.finished$CQ1,
@@ -291,16 +297,25 @@ get_worderIDs_viewed_task = function(current_task_data) {
 
 # get list of worker ids from turks who completed the task
 get_worderIDs_completed_task = function(current_task_data) {
-  available = current_task_data[Finished == "TRUE", ]$worker_id
+  available = current_task_data[toupper(Finished) == "TRUE", ]$worker_id
   available
 }
 
 # get list of worker ids from turks who did not completed the task
 get_worderIDs_not_completed_task = function(current_task_data) {
-  available = current_task_data[Finished == "FALSE", ]$worker_id
+  available = current_task_data[toupper(Finished) == "FALSE", ]$worker_id
   available
 }
 
+
+# get list of worker ids existing in worker status sheet already
+# we use this to weed out repeaters (we dont pay them and we don't use their data)
+identify_repeaters_from_database = function(existing_path, current_worker_ids) {
+  existing_ids = read.csv(existing_path)$worker_id
+  filter = current_worker_ids %in% existing_ids
+  repeater_ids = current_worker_ids[filter]
+  repeater_ids
+}
 
 #------------------------------------------------
 

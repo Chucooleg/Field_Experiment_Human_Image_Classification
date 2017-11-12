@@ -69,12 +69,62 @@ nrow(worker_perf_0.55)
 # ORDER 1, PAYMENT RATE = 0.40
 
 # Please fill in (reuse above code block)
+# read in qualtric output csv
+qualtric_data_path_0.40 = "../qualtric_data/20171112_qualtric_results_order1_0.40.csv"
+current_task_data_0.40 = get_current_task_data(qualtric_data_path_0.40)
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_0.40 = evaluate_question_perf(current_task_data_0.40, allQ)
+question_perf_0.40
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_0.40, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_0.40 = evaluate_worker_perf(current_task_data_0.40, allQ)
+worker_perf_0.40
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_0.40, allQ)
+
+#number of observations valid for regression
+nrow(worker_perf_0.40)
+
 
 #---------------------------------------------------------------------#
 # FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
 # ORDER 1, PAYMENT RATE = 0.25
 
 # Please fill in (reuse above code block)
+# read in qualtric output csv
+qualtric_data_path_0.25 = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv"
+current_task_data_0.25 = get_current_task_data(qualtric_data_path_0.25)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_0.25$worker_id %in% current_task_data_0.40$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_0.25_weeded = current_task_data_0.25[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_0.25 = evaluate_question_perf(current_task_data_0.25_weeded, allQ)
+question_perf_0.25
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_0.25_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_0.25 = evaluate_worker_perf(current_task_data_0.25_weeded, allQ)
+worker_perf_0.25
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_0.25_weeded, allQ)
+
+#number of observations valid for regression
+nrow(worker_perf_0.25)
 
 #---------------------------------------------------------------------#
 # POOLING TWO CSV FILES FROM DIFFERENT TREATMENTS
@@ -82,10 +132,9 @@ nrow(worker_perf_0.55)
 # pool the data from different treatments together
 worker_perf_0.10$treatment = 0.10
 worker_perf_0.55$treatment = 0.55
-#worker_perf_0.55$treatment = 0.40
-#worker_perf_0.55$treatment = 0.25
-regr_table = rbind(worker_perf_0.10, worker_perf_0.55) # TEMPORARY
-# regr_table = rbind(worker_perf_0.10, worker_perf_0.25, worker_perf_0.40, worker_perf_0.55) # ONCE ALL FOUR POSTINGS ARE DONE
+worker_perf_0.40$treatment = 0.40
+worker_perf_0.25$treatment = 0.25
+regr_table = rbind(worker_perf_0.10, worker_perf_0.25, worker_perf_0.40, worker_perf_0.55) # ONCE ALL FOUR POSTINGS ARE DONE
 
 
 # our covariates are CQ1, CQ2_3, CQ3
@@ -152,7 +201,7 @@ lmtest::coeftest(regr2, vcov(regr2))
 # CAN REPEAT TWO-SAMPLE T-TEST FOR THE OTHER PRICES '
 # (0.10 vs 0.25) (0.25 vs 0.40), (0.40 vs 0.55)
 
-
+# !!! PLEASE FILL IN
 
 #---------------------------------------------------------------------#
 # MISSING : RANDOMIZATION INFERENCE (for CACE -- compliers average causal effect)
@@ -167,8 +216,8 @@ hist(regr_table$accuracy)
 
 hist(regr_table[treatment == 0.55,]$accuracy)
 hist(regr_table[treatment == 0.10,]$accuracy)
-#hist(regr_table[treatment == 0.25,]$accuracy)
-#hist(regr_table[treatment == 0.40,]$accuracy)
+hist(regr_table[treatment == 0.25,]$accuracy)
+hist(regr_table[treatment == 0.40,]$accuracy)
 
 # Notice that both histograms are very left skewed
 # This calls the appropriateness of OLS asymptotics for ATE SE & p-val estimation into question
