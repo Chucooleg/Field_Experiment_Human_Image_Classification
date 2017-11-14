@@ -2,8 +2,21 @@
 rm(list = ls())
 
 # load supporting functions
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
+setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
+
+#---------------------------------------------------------------------#
+# NOTES FROM PROBLEM SHEETS AND ANY CAVEATS?
+
+## Combining experiments:  See PS2, problem 2, part d, about pooling data from two different studies that have very different means and std errors.
+##  This causes biased results if the data is just pooled. we should use Equation 3.10 in FE Ch.3, this is the right way.
+## Discuss confidence intervals
+## Do we need to worry about clustering in this case? I guess our experiments aren't separate clusters as we are getting samples from the same population (roughly)
+##  probably a good idea to briefly discuss this in our final report. 
+## Blocking? I guess we don't have it...
+## Formulate results from all regressions in nice tables, like the ones seen in readings. 
+## Dimensions of our experiment? Also, we should probably create those cool simple regression models with the X's Os and Ts
+## Do we have Compliers and Never-takers? Are they enough to make a difference?
 
 #---------------------------------------------------------------------#
 # FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
@@ -143,6 +156,10 @@ regr_table$CQ1 = as.factor(regr_table$CQ1)
 regr_table$CQ2_3 = as.numeric(regr_table$CQ2_3)
 regr_table$CQ3 = as.factor(regr_table$CQ3)
 
+
+# converting data types for Q4 and Q5 if we decide to use it
+regr_table$CQ5 = regr_table$CQ5 == "Yes"
+regr_table$CQ4 = as.factor(regr_table$CQ4)
 #---------------------------------------------------------------------#
 # CHECK COVARIATE BALANCE
 
@@ -182,34 +199,95 @@ lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
 # ESTIMATING ATE
 
 # TWO-SAMPLE T-TEST
-# test if variance of the two groups are unequal
-car::leveneTest(worker_perf_0.10$accuracy,worker_perf_0.55$accuracy,center=median)
-# 2 sample independent t-test
-t.test(worker_perf_0.10$accuracy,
-       worker_perf_0.55$accuracy,
-       alternative = "two.sided", var.equal = TRUE)
+est.t.test = function(d1, d2, alt){
+  stacked_data = stack(list(d1=d1,d2=d2))
+  ltest = car::leveneTest(values~ind,data = stacked_data, center = median)
+  levene_p_val = ltest[1,3]
+  t.test(d1, d2, alternative = alt, var.equal = levene_p_val >0.05)
+}
+
+# Remember to discuss confidence intervals, David likes those
+est.t.test(worker_perf_0.10$accuracy,worker_perf_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_0.10$accuracy,worker_perf_0.25$accuracy, "two.sided")
+est.t.test(worker_perf_0.10$accuracy,worker_perf_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_0.25$accuracy,worker_perf_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_0.25$accuracy,worker_perf_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_0.40$accuracy,worker_perf_0.55$accuracy, "two.sided")
 
 # REGRESSION
-regr1 = lm(accuracy ~ treatment, data = regr_table)
-regr2 = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table)
-summary(regr1)
-summary(regr2)
-lmtest::coeftest(regr1, vcov(regr1))
-lmtest::coeftest(regr2, vcov(regr2))
+est.regr.simple = function(r_table){
+  regr = lm(accuracy ~ treatment, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
 
+est.regr.covars = function(r_table){
+  regr = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
 
-# CAN REPEAT TWO-SAMPLE T-TEST FOR THE OTHER PRICES '
-# (0.10 vs 0.25) (0.25 vs 0.40), (0.40 vs 0.55)
+est.regr.full = function(r_table){
+  regr = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3 + CQ4 + CQ5, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
 
-# !!! PLEASE FILL IN
+est.regr.simple(regr_table)
+est.regr.covars(regr_table)
+est.regr.full(regr_table)
+
+# test if variance of the two groups are unequal
+# car::leveneTest(worker_perf_0.10$accuracy,worker_perf_0.55$accuracy,center=median)
+# 
+# sd = stack(list(d1=worker_perf_0.10$accuracy, d2=worker_perf_0.55$accuracy))
+# ltest = car::leveneTest(values~ind,data = sd, center = median)
+# # 2 sample independent t-test
+# t.test(worker_perf_0.10$accuracy,
+#        worker_perf_0.55$accuracy,
+#        alternative = "two.sided", var.equal = TRUE)
+# 
+# regr1 = lm(accuracy ~ treatment, data = regr_table)
+# regr2 = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table)
+# # don't know if it counts as fishing expedition, but adding screener to this also produces a statistically significant result. the screener variable is also highly stat significant. 
+# regr3 = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3 + screener, data = regr_table)
+# summary(regr1)
+# summary(regr2)
+# summary(regr3)
+# lmtest::coeftest(regr1, vcov(regr1))
+# lmtest::coeftest(regr2, vcov(regr2))
+# lmtest::coeftest(regr3, vcov(regr3))
 
 #---------------------------------------------------------------------#
-# MISSING : RANDOMIZATION INFERENCE (for CACE -- compliers average causal effect)
+# RANDOMIZATION INFERENCE
+
+n10 = nrow(worker_perf_0.10)
+n25 = nrow(worker_perf_0.25)
+n40 = nrow(worker_perf_0.40)
+n55 = nrow(worker_perf_0.55)
+
+rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.55,n55)))
+
+est.ri.ate = function(d, treatment){
+  d$treatment_new = treatment
+  m1 = lm(accuracy ~ treatment_new, data =d)
+  ate = lmtest::coeftest(m1, vcov(m1))[2]
+  return(ate)
+} 
+
+# treatment = rand_ass()
+ate = est.ri.ate(regr_table,regr_table$treatment)
+all_ate <- replicate(5000, est.ri.ate(regr_table, rand_ass()))
+
+# one-tailed p-val, is this correct?
+mean(ate<all_ate)
+
+# two-tailed p-val, is this correct?
+mean(ate < all_ate & -ate > -all_ate)
+
+# CACE -- compliers average causal effect - with randomization inference
 
 # !!!PLEASE FILL IN
 
 #---------------------------------------------------------------------#
-# DISTRIBUTION OF ACCURACY
+# EDA & DISTRIBUTION OF ACCURACY
 
 # pooling 0.10 & 0.25 treatments
 hist(regr_table$accuracy)
@@ -224,3 +302,10 @@ hist(regr_table[treatment == 0.40,]$accuracy)
 # Hopefully with a larger sample size, asymtotics will be more reliable
 # Anyhow, this says that we should report p-val using randomization inference in addition to regression
 # Just like many of the papers we read in class
+
+#---------------------------------------------------------------------#
+# HIGHER ORDER TERMS
+
+# !!!PLEASE FILL IN
+
+#---------------------------------------------------------------------#
