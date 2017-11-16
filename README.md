@@ -4,27 +4,37 @@ W241 Final Project
 
 ## Experiment Schedule
 
-Date | Time | Description | Payrate | No. tasks | Qualtric data | MTurk data | Status
----- | ---- | ---- | ---- | ---- | ---- | ---- | ----
-10282017 | UTC 12pm | Pilot | 0.10 | 50 | /qualtric_data/20171028_results_pilot_0.10.csv | /MTurkdata/20171028_mturk_results_pilot_0.10.csv | awaiting analysis
-10292017 | UTC 12pm | Pilot | 0.25 | 50 | /qualtric_data/20171029_results_pilot_0.25.csv | /MTurkdata/20171028_mturk_results_pilot_0.25.csv | awaiting analysis
+Date | Time | Description | Payrate | No. tasks 
+---- | ---- | ---- | ---- | ---- | ---- 
+10/28/2017 | PT 04:17 | Pilot | 0.10 | 50 
+10/29/2017 | PT 05:23 | Pilot | 0.25 | 50 
+11/11/2017 | PT 02:44 | Design 1 Order 1 | 0.10 | 100
+11/11/2017 | PT 14:49 | Design 1 Order 1 | 0.55 | 100
+11/12/2017 | PT 02:32 | Design 1 Order 1 | 0.25 | 100 
+11/12/2017 | PT 08:18 | Design 1 Order 1 | 0.40 | 100
+11/18/2017 | PT (02:44) | Design 1 Order 2 | 0.40 | 100
+11/18/2017 | PT (14:49) | Design 1 Order 2 | 0.25 | 100
+11/19/2017 | PT (02:32) | Design 1 Order 2 | 0.55 | 100
+11/19/2017 | PT (08:18) | Design 1 Order 2 | 0.10 | 100
+
 
 ## Important CSV files
 
-Title | Location | Description | Last Author
+Title | Location | Description
 ---- | ---- | ---- | ----
-Worker_status| ./MTurk_ID_status/worker_status | who to pay, who completed the task, who did not complete the task, who passed the screeners, HIT conditions, how much we paid him/her | Legg
+MTurk Data | MTurk_data/... | csv downloaded from Mturk platform after every posting
+Qualtric Data | qualtric_data/... | csv downloaded from Qualtrics platform after every posting
+Worker_status| MTurk_ID_status/worker_status | everything associated with a particular worker ID
 
 
 ## Important R codes
 
-Title | Location | Description | Last Author
+Title | Location | Description
 ---- | ---- | ---- | ----
-Pilot Results | ./code/pilot_results_WIP.r | Analyze Pilot results
-Data Transformation Functions for Pilot | ./code/pilot_data_transformation_functions.r | R functions repository
-Worker Payment | ./code/pilot_worker_payment.r | For any task , figure out who to pay based on Mturk and Qualtric csv files | Legg
-Worker Status Update | ./code/pilot_worker_status.r | For any task, record task history of each worker
-
+Design 1, Order 1 Analysis| code/order1_results_WIP.r | Stat. Analysis
+Design 1, Order 1 Data Transformation Functions| code/design1_data_transformation_functions.r | All Supporting R Functions
+Design 1, Order 1 Analysis| code/design1_worker_payment.r| Figure out who to pay
+Pilot Analysis| code/pilot_results_WIP.r | Stat. Analysis
 
 
 ## General Links
