@@ -305,12 +305,13 @@ hist(regr_table[treatment == 0.40,]$accuracy)
 
 #---------------------------------------------------------------------#
 # HIGHER ORDER TERMS
+treatment_sq <- regr_table$treatment^2
+treatment_cubed <- regr_table$treatment^3
 
-# !!!PLEASE FILL IN
+est.regr.highord = function(r_table){
+  regr = lm(accuracy ~ treatment + treatment_sq + treatment_cubed + CQ1 + CQ2_3 + CQ3 + CQ4 + CQ5, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
 
-#---------------------------------------------------------------------#
-# REGRESSION TABLES
-
-# !!!PLEASE FILL IN
-
-#---------------------------------------------------------------------#
+est.regr.highord(regr_table)
+est.regr.full(regr_table)
