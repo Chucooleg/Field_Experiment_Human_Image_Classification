@@ -18,9 +18,26 @@ breed_select = function(){
 breed_select()
 
 
-# DESIGN 1
+# Check if question difficulty levels are balanced
+
+design2.order.part1 = c(12,9,5,7,12,7,8,6,8,4,8,5,11,5,10,9)
+design2.order.part2 = c(13,9,4,9,13,10,9,4,11,11,6,6,8,4,5,12)
+design2.order.part3 = c(6,7,4,12,6,11,11,9,9,12,4,7,7,10,10,13)
+
+length(design2.order.part1)
+length(design2.order.part2)
+length(design2.order.part3)
+
+sum(design2.order.part1 %%2 == 0)
+sum(design2.order.part2 %%2 == 0)
+sum(design2.order.part3 %%2 == 0)
+
+
+# DESIGN 2 (same order as DESGIN 1, simply that the break locations are different, 
+# there's also one extra cat question in session 3)
 question number, breed, image id on google drive 
 ------------------------------------------------
+# DESING 2 SESSION 1
 1:       Boston_Bull 12
 2:          Shih_Tzu  9
 3:          Shih_Tzu  5
@@ -29,6 +46,7 @@ question number, breed, image id on google drive
 6:  Golden_Retriever  7
 7:    Cocker_Spaniel  8
 8: Yorkshire_Terrier  6
+(Please insert question for cat_1 image here)
 9:            Saluki  8
 10:          Shih_Tzu  4
 11: Yorkshire_Terrier  8
@@ -37,7 +55,8 @@ question number, breed, image id on google drive
 14:   Irish_Wolfhound  5
 15:            Saluki 10
 16: Yorkshire_Terrier  9
-(Please insert question for cat_1 image here)
+
+# DESING 2 SESSION 2
 17:    Cocker_Spaniel 13
 18:  Golden_Retriever  9
 19:  Golden_Retriever  4
@@ -46,62 +65,7 @@ question number, breed, image id on google drive
 22:        Bloodhound 10
 23:    Cocker_Spaniel  9
 24:            Saluki  4
-25:       Boston_Bull 11
-26:            Saluki 11
-27:    Cocker_Spaniel  6
-28:   Irish_Wolfhound  6
-29:  Golden_Retriever  8
-30: Yorkshire_Terrier  4
-31:            Saluki  5
-32:    Cocker_Spaniel 12
-33:       Boston_Bull  6
 (Please insert question for cat_2 image here)
-34: Yorkshire_Terrier  7
-35:       Boston_Bull  4
-36:  Golden_Retriever 12
-37:        Bloodhound  6
-38:  Golden_Retriever 11
-39:        Bloodhound 11
-40:            Saluki  9
-41:       Boston_Bull  9
-42:          Shih_Tzu 12
-43:        Bloodhound  4
-44:       Boston_Bull  7
-45:   Irish_Wolfhound  7
-46:          Shih_Tzu 10
-47:   Irish_Wolfhound 10
-48:        Bloodhound 13
-
-
-# DESIGN 2
-question number, breed, image id on google drive 
-------------------------------------------------
-  1:       Boston_Bull 12
-2:          Shih_Tzu  9
-3:          Shih_Tzu  5
-4:    Cocker_Spaniel  7
-5:   Irish_Wolfhound 12
-6:  Golden_Retriever  7
-7:    Cocker_Spaniel  8
-8: Yorkshire_Terrier  6
-9:            Saluki  8
-10:          Shih_Tzu  4
-11: Yorkshire_Terrier  8
-12:        Bloodhound  5
-13:          Shih_Tzu 11
-14:   Irish_Wolfhound  5
-15:            Saluki 10
-16: Yorkshire_Terrier  9
-# break
-(Please insert question for cat_1 image here)
-17:    Cocker_Spaniel 13
-18:  Golden_Retriever  9
-19:  Golden_Retriever  4
-20:   Irish_Wolfhound  9
-21: Yorkshire_Terrier 13
-22:        Bloodhound 10
-23:    Cocker_Spaniel  9
-24:            Saluki  4
 25:       Boston_Bull 11
 26:            Saluki 11
 27:    Cocker_Spaniel  6
@@ -110,7 +74,8 @@ question number, breed, image id on google drive
 30: Yorkshire_Terrier  4
 31:            Saluki  5
 32:    Cocker_Spaniel 12
-# break
+
+# DESING 2 SESSION 3
 33:       Boston_Bull  6
 34: Yorkshire_Terrier  7
 35:       Boston_Bull  4
@@ -119,6 +84,7 @@ question number, breed, image id on google drive
 38:  Golden_Retriever 11
 39:        Bloodhound 11
 40:            Saluki  9
+(Please insert question for cat_3 image here)
 41:       Boston_Bull  9
 42:          Shih_Tzu 12
 43:        Bloodhound  4
@@ -127,3 +93,6 @@ question number, breed, image id on google drive
 46:          Shih_Tzu 10
 47:   Irish_Wolfhound 10
 48:        Bloodhound 13
+
+
+
