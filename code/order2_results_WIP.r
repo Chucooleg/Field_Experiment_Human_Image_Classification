@@ -2,7 +2,8 @@
 rm(list = ls())
 
 # load supporting functions
-setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
+# setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 
 #---------------------------------------------------------------------#
@@ -20,72 +21,10 @@ source(file = "design1_data_transformation_functions.r")
 
 #---------------------------------------------------------------------#
 # FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
-# ORDER 1, PAYMENT RATE = 0.10
+# ORDER 2, PAYMENT RATE = 0.40
 
 # read in qualtric output csv
-qualtric_data_path_0.10 = "../qualtric_data/20171111_qualtric_results_order1_0.10.csv"
-current_task_data_0.10 = get_current_task_data(qualtric_data_path_0.10)
-
-# evaluate accuracy per question
-# of a particular question, how many people got it right?
-question_perf_0.10 = evaluate_question_perf(current_task_data_0.10, allQ)
-question_perf_0.10
-
-#stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_0.10, allQ)
-
-#evaluate accuracy per worker, return a table per worker
-worker_perf_0.10 = evaluate_worker_perf(current_task_data_0.10, allQ)
-worker_perf_0.10
-
-#stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_0.10, allQ)
-
-#number of observations valid for regression
-nrow(worker_perf_0.10)
-
-#---------------------------------------------------------------------#
-# FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
-# ORDER 1, PAYMENT RATE = 0.55
-
-# read in qualtric output csv
-qualtric_data_path_0.55 = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv"
-current_task_data_0.55 = get_current_task_data(qualtric_data_path_0.55)
-
-# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
-filter = !(current_task_data_0.55$worker_id %in% current_task_data_0.10$worker_id)
-# get number of violaters
-sum_spillover = sum(!filter)
-# weed out the violaters 
-current_task_data_0.55_weeded = current_task_data_0.55[filter, ]
-
-# evaluate accuracy per question
-# of a particular question, how many people got it right?
-question_perf_0.55 = evaluate_question_perf(current_task_data_0.55_weeded, allQ)
-question_perf_0.55
-
-#stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_0.55_weeded, allQ)
-
-#evaluate accuracy per worker, return a table per worker
-worker_perf_0.55 = evaluate_worker_perf(current_task_data_0.55_weeded, allQ)
-worker_perf_0.55
-
-#stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_0.55_weeded, allQ)
-
-#number of observations valid for regression
-nrow(worker_perf_0.55)
-
-#---------------------------------------------------------------------#
-# FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
-# ORDER 1, PAYMENT RATE = 0.40
-
-# Please fill in (reuse above code block)
-# read in qualtric output csv
-qualtric_data_path_0.40 = "../qualtric_data/20171112_qualtric_results_order1_0.40.csv"
-
-
+qualtric_data_path_0.40 = "../qualtric_data/20171118_qualtric_results_order2_0.40.csv"
 current_task_data_0.40 = get_current_task_data(qualtric_data_path_0.40)
 
 # evaluate accuracy per question
@@ -95,9 +34,6 @@ question_perf_0.40
 
 #stats summary of accuracies over all questions
 summarize_question_accuracy(current_task_data_0.40, allQ)
-
-
-
 
 #evaluate accuracy per worker, return a table per worker
 worker_perf_0.40 = evaluate_worker_perf(current_task_data_0.40, allQ)
@@ -109,17 +45,15 @@ summarize_worker_perf(current_task_data_0.40, allQ)
 #number of observations valid for regression
 nrow(worker_perf_0.40)
 
-
 #---------------------------------------------------------------------#
 # FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
-# ORDER 1, PAYMENT RATE = 0.25
+# ORDER 2, PAYMENT RATE = 0.25
 
-# Please fill in (reuse above code block)
 # read in qualtric output csv
-qualtric_data_path_0.25 = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv"
+qualtric_data_path_0.25 = "../qualtric_data/20171118_qualtric_results_order2_0.25.csv"
 current_task_data_0.25 = get_current_task_data(qualtric_data_path_0.25)
 
-# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
 filter = !(current_task_data_0.25$worker_id %in% current_task_data_0.40$worker_id)
 # get number of violaters
 sum_spillover = sum(!filter)
@@ -143,6 +77,73 @@ summarize_worker_perf(current_task_data_0.25_weeded, allQ)
 
 #number of observations valid for regression
 nrow(worker_perf_0.25)
+
+#---------------------------------------------------------------------#
+# FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
+# ORDER 2, PAYMENT RATE = 0.55
+
+# Please fill in (reuse above code block)
+# read in qualtric output csv
+qualtric_data_path_0.55 = "../qualtric_data/20171119_qualtric_results_order2_0.55.csv"
+
+
+current_task_data_0.55 = get_current_task_data(qualtric_data_path_0.55)
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_0.55 = evaluate_question_perf(current_task_data_0.55, allQ)
+question_perf_0.55
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_0.55, allQ)
+
+
+
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_0.55 = evaluate_worker_perf(current_task_data_0.55, allQ)
+worker_perf_0.55
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_0.55, allQ)
+
+#number of observations valid for regression
+nrow(worker_perf_0.55)
+
+
+#---------------------------------------------------------------------#
+# FOCUS ON A SINGLE CSV FILE CORRESPONDING TO A SINGLE TREATMENT
+# ORDER 2, PAYMENT RATE = 0.10
+
+# Please fill in (reuse above code block)
+# read in qualtric output csv
+qualtric_data_path_0.10 = "../qualtric_data/20171119_qualtric_results_order2_0.10.csv"
+current_task_data_0.10 = get_current_task_data(qualtric_data_path_0.10)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_0.10$worker_id %in% current_task_data_0.55$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_0.10_weeded = current_task_data_0.10[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_0.10 = evaluate_question_perf(current_task_data_0.10_weeded, allQ)
+question_perf_0.10
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_0.10_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_0.10 = evaluate_worker_perf(current_task_data_0.10_weeded, allQ)
+worker_perf_0.10
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_0.10_weeded, allQ)
+
+#number of observations valid for regression
+nrow(worker_perf_0.10)
 
 #---------------------------------------------------------------------#
 # POOLING TWO CSV FILES FROM DIFFERENT TREATMENTS

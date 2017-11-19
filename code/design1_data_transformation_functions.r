@@ -91,15 +91,15 @@ construct_frame_worderIDs_task_status = function(current_task_data, submitted_MT
   
   # for those who did not complete the task
   not_completer_id = current_task_data[toupper(Finished) == "FALSE", ]$worker_id
-  dt_not_completer_status = data.table(worker_id = not_completer_id)
+  dt_not_completer_status = data.table(worker_id = toupper(not_completer_id))
   dt_not_completer_status[, accuracy := NA][, screener := NA][, complete_task := 0][,payment_accuracy_threshold:=payment_accuracy_threshold]
   not_completer_repeater_ids = identify_repeaters_from_database(existing_path, dt_not_completer_status$worker_ids)
-  dt_not_completer_status[, repeater := as.numeric(worker_id %in% not_completer_repeater_ids)]
+  dt_not_completer_status[, repeater := as.numeric(toupper(worker_id) %in% not_completer_repeater_ids)]
 
 
   # for everyone with identifiable worker id
   dt_status = rbind(dt_completer_status, dt_not_completer_status)
-  dt_status[, worker_id_found_on_MTurk := as.numeric(worker_id %in% submitted_MTurk_ids)]
+  dt_status[, worker_id_found_on_MTurk := as.numeric(toupper(worker_id) %in% toupper(submitted_MTurk_ids))]
   dt_status[, task_name := task_name]
   dt_status[, task_date := substr(current_task_data[1]$StartDate, 1, 10)]
   dt_status[, treatment_payrate := treatment_payrate]  

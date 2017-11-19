@@ -1,7 +1,7 @@
 # This code helps to determine whether to pay a worker or not, based on his or her task performance
 
 #------------------------------------------------------------------------------------------------#
-# ORDER 1 $0.55 
+# ORDER 2 $0.40 
 
 rm(list = ls())
 
@@ -9,8 +9,8 @@ rm(list = ls())
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 
 
-qualtric_data_path = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv" #!!! UPDATE
-MTurk_data_path = "../MTurk_data/20171112_mturk_results_order1_0.25.csv" #!!! UPDATE
+qualtric_data_path = "../qualtric_data/20171118_qualtric_results_order2_0.25.csv" #!!! UPDATE
+MTurk_data_path = "../MTurk_data/20171118_mturk_results_order2_0.25.csv" #!!! UPDATE
 
 # load supporting functions
 source(file = "design1_data_transformation_functions.r")
@@ -24,7 +24,7 @@ worderIDs_task_status = construct_frame_worderIDs_task_status(current_task_data 
                                                               submitted_MTurk_ids = MTurk_worker_id,
                                                               allQ = allQ, 
                                                               payment_accuracy_threshold = 0.25, 
-                                                              task_name = "order1", #!!! UPDATE
+                                                              task_name = "order2", #!!! UPDATE
                                                               treatment_payrate = 0.25, #!!! UPDATE
                                                               existing_path = existing_path) 
 

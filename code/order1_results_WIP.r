@@ -2,7 +2,8 @@
 rm(list = ls())
 
 # load supporting functions
-setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
+# setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 
 #---------------------------------------------------------------------#
@@ -84,6 +85,8 @@ nrow(worker_perf_0.55)
 # Please fill in (reuse above code block)
 # read in qualtric output csv
 qualtric_data_path_0.40 = "../qualtric_data/20171112_qualtric_results_order1_0.40.csv"
+
+
 current_task_data_0.40 = get_current_task_data(qualtric_data_path_0.40)
 
 # evaluate accuracy per question
@@ -93,6 +96,9 @@ question_perf_0.40
 
 #stats summary of accuracies over all questions
 summarize_question_accuracy(current_task_data_0.40, allQ)
+
+
+
 
 #evaluate accuracy per worker, return a table per worker
 worker_perf_0.40 = evaluate_worker_perf(current_task_data_0.40, allQ)
@@ -282,9 +288,7 @@ mean(ate<all_ate)
 # two-tailed p-val, is this correct?
 mean(ate < all_ate & -ate > -all_ate)
 
-# CACE -- compliers average causal effect - with randomization inference
-
-# !!!PLEASE FILL IN
+# OMIT (CACE -- compliers average causal effect - with randomization inference)
 
 #---------------------------------------------------------------------#
 # EDA & DISTRIBUTION OF ACCURACY
@@ -314,4 +318,9 @@ est.regr.highord = function(r_table){
 }
 
 est.regr.highord(regr_table)
-est.regr.full(regr_table)
+#---------------------------------------------------------------------#
+# REGRESSION TABLES
+
+# !!!PLEASE FILL IN
+
+#---------------------------------------------------------------------#
