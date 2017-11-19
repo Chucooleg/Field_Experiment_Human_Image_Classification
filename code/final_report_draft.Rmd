@@ -1,0 +1,67 @@
+---
+title: 'You Get What You Pay For: Experimental Analysis on the Relationship Between Pay and Work Quality'
+author: ''
+date: \today
+output:
+  pdf_document: default
+---
+
+
+```{r}
+# load packages 
+library(foreign)
+library(sandwich)
+library(lmtest)
+library(data.table)
+library(multiwayvcov)
+```
+
+# Introduction
+
+In the world of economics, it is commonly believed that renumeration for a unit of work done is strongly related to the quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, giving them similar tasks and different payments on a random basis, as such an action could be considered unethical and would lead to a serious disruption within the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part their pay plays into that. The Amazon Mechanical Turk platform for the completion of tasks using crowdsourcing provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or the potentially high cost of wasting employees' time on tasks that don't bring value to the company.  Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge) where we randomly picked subjects to be payed different amounts and looked at the overall difference in the quality of the results. 
+
+# Study Background & Motivation
+
+# Experimental Design
+
+## AMT
+
+## Qualtric
+
+## Experiment Schedule
+
+# Design 1 Experiments
+
+## Data
+
+## Analysis
+
+# Design 2 Experiments
+
+## Data
+
+## Analysis
+
+# Combined Results and Analysis
+
+# Future Work
+
+# Conclusion
+
+# Bibliography
+https://dl.acm.org/citation.cfm?id=1809422
+
+https://link.springer.com/article/10.1007%2Fs10683-011-9273-9?LI=true
+
+https://arxiv.org/pdf/1001.0627.pdf
+
+https://www.researchgate.net/profile/Daniel_Veit/publication/216184483_More_than_fun_and_money_Worker_Motivation_in_Crowdsourcing--A_Study_on_Mechanical_Turk/links/0fcfd50e5afe007d78000000.pdf
+
+```{r}
+y_contr = c(3,4,5,4,3,2)
+y_treat = c(2,3,4,8,6,4)
+comply = c(1,2,3)
+ate = mean(y_treat - y_contr)
+cace = mean(y_treat[comply]-y_contr[comply])
+cat("ATE:",ate,"\n","CACE:",cace,"\n")
+```
