@@ -18,17 +18,42 @@ library(multiwayvcov)
 
 # Introduction
 
-In the world of economics, it is commonly believed that renumeration for a unit of work done is strongly related to the quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, giving them similar tasks and different payments on a random basis, as such an action could be considered unethical and would lead to a serious disruption within the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part their pay plays into that. The Amazon Mechanical Turk platform for the completion of tasks using crowdsourcing provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or the potentially high cost of wasting employees' time on tasks that don't bring value to the company.  Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge) where we randomly picked subjects to be payed different amounts and looked at the overall difference in the quality of the results. 
+In most economies, it is generally believed that renumeration for someone's work is strongly related to the effort they will put into it, and the eventual quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, say, by giving them similar tasks and different payments on a random basis, as this could be considered unethical and would lead to a serious disruption in the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part the pay plays. 
+The Amazon Mechanical Turk platform for the crowdsourced completion of tasks provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or high costs of wasted man-hours. Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge), randomly putting subjects in different payment brackets and measuring how results differed between groups.
+The paper is organized as follows: section 2 discusses background and motivations, section 3 explains the experimental design, detailing the platforms used and the experimental schedule, sections 4 and 5 present the data and analysis for the two types of experiments, section 6 discusses overall results, section 7 looks at possible future studies, followed by a conclusion and bibliography.
 
 # Study Background & Motivation
 
 # Experimental Design
 
-## AMT
+The AMT platform allows us, as requestors to create a task that is of a difficulty of our choosing, which we could then post on the platform, defining how much we are willing to pay and how many people we want doing it. AMT workers (our subjects) see the task and how much it pays and decide whether or not they want to take part. Once the task is completed by all the workers, it gets taken off the platform and we can download and analyze the results. Through AMT's qualification system we could make sure that each worker only took part in a single task. By using their worker IDs and randomly assigned survey IDs, we were able to track which workers actually finished the task and which just looked at it. 
 
-## Qualtric
+The task we set for this experiment consisted of a survey (created and managed using Qualtric) that asked people to complete 8 personal details questions (knowledge of dogs, preference for work with certain media, etc.), followed by 50 multiple choice questions. Each multiple choice question asked people to look at a photo of a dog and pick the breed it belongs to out of 8 possible choices. The workers were also given a document presenting a sample picture for each breed, so that workers' results depended only on their efforts and not on their general knowledge of dogs, since that would have otherwise lead to skewed results. To capture the quality of work, we measured the accuracy with which workers correctly classified images. Two screener questions were included that asked workers to classify pictures of cats, so that we could isolate workers that went through the survey without reading the questions. 
+
+For this study we followed two experimental designs: a between-subjects design and a stepped wedge design, both of which used the same task to measure accuracy. The first set of experiments followed a between-subjects design, and involved releasing the task on the AMT platform at different times with one of four possible payments (\$0.10, \$0.25, \$0.40, \$0.55). We released only one task at a time (otherwise workers would only do the higher paying one), and every time we would wait for 100 workers to complete the task before pulling it off the platform. Through Qualtric, which hosted the survey, we could track people that only looked at the survey without completing it to the end, so we could subsequently exclude them from future tries. Apart from tracking how workers answered all the questions, Qualtric allowed us to track how long they spent doing the survey, which we also consider in our analysis. One important thing to note about this approach is that it suffers from the downside that different types of people may choose to take part in tasks that present different payments, so we may not always be comparing apples to apples when looking at different groups. However, we hope that AMT's population of workers is large enough to provide enough random sampling(**this needs to be fixed and explained better**).
+
+(Add table here)
+- col1: Name of Experiment (e.g. Design 1, Order 1, $??)
+- col2: $ Treatment
+- col3: The PST date time this Mturk posting was posted
+- col4 : How long it took for all 100 HITs to be submitted
+- col5: How many completed HITs were received in the first 30min after launching.
+- col6: Average accuracy for that posting
+
+
+The second set of experiments involved following a stepped wedge design, where we released a single task on the AMT platform of 48 questions to be done by 400 workers that pays \$0.10. Once a worker starts the survey, we would randomly assign her to one of four treatment groups, using functionality provided by Qualtric. The first group would complete the 48 questions without any difference to the first design. The second group would complete the first 32 questions normally, but they would then be told that they would actually be paid \$0.15 extra before doing the final 16 questions. The third group would be told about the bonus after completing the first 16 questions, and the fourth group would be told about the bonus before starting any of the questions. This way we hope to achieve real random assignment and truly compare apples to apples. 
+
+(add table here)
+(A) R C_\$0.00 C_\$0.00 C_$0.00
+(B) R C_\$0.00 C_\$0.00 T_$0.15 
+(C) R C_\$0.00 T_\$0.15 T_$0.15
+(D) R T_\$0.15 T_\$0.15 T_$0.15 
+
+## AMT and Qualtric
 
 ## Experiment Schedule
+
+# Pilot Experiment
 
 # Design 1 Experiments
 
