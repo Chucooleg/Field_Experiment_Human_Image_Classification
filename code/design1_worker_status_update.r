@@ -5,6 +5,7 @@ setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experi
 
 # load supporting functions
 source(file = "design1_data_transformation_functions.r")
+source(file = "design1_data_analysis_functions.r")
 
 # existing file, be careful when you overwrite
 existing_path = "../MTurk_ID_status/worker_status.csv"
@@ -14,8 +15,8 @@ existing_path = "../MTurk_ID_status/worker_status.csv"
 
 
 # this is the qualtric csv file you download from qualtric platform, containing survey results
-qualtric_data_path = "../qualtric_data/20171118_qualtric_results_order2_0.25.csv" #!!! UPDATE
-MTurk_data_path = "../MTurk_data/20171118_mturk_results_order2_0.25.csv" #!!! UPDATE
+qualtric_data_path = "../qualtric_data/20171119_qualtric_results_order2_0.55.csv" #!!! UPDATE
+MTurk_data_path = "../MTurk_data/20171119_mturk_results_order2_0.55.csv" #!!! UPDATE
 
 # construct contents for file update
 current_task_data = get_current_task_data(csv_path = qualtric_data_path)
@@ -26,7 +27,7 @@ worderIDs_task_status = construct_frame_worderIDs_task_status(current_task_data 
                                                               allQ = allQ, 
                                                               payment_accuracy_threshold = 0.25, 
                                                               task_name = "order2", #!!!UPDATE
-                                                              treatment_payrate = 0.25,
+                                                              treatment_payrate = 0.55,
                                                               existing_path = existing_path) #!!! UPADTE
 
 # CAUTION!
