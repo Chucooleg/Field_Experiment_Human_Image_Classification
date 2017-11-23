@@ -24,7 +24,7 @@ MTurk_worker_id = get_MTurk_worker_id(csv_path = MTurk_data_path)
 worderIDs_task_status = construct_frame_worderIDs_task_status(current_task_data = current_task_data, 
                                                               submitted_MTurk_ids = MTurk_worker_id,
                                                               allQ = allQ, 
-                                                              payment_accuracy_threshold = 0.25, 
+                                                              payment_accuracy_threshold = 0.75, 
                                                               task_name = "order2", #!!! UPDATE
                                                               treatment_payrate = 0.10, #!!! UPDATE
                                                               existing_path = existing_path) 
