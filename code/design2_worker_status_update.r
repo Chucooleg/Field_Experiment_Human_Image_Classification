@@ -11,8 +11,8 @@ source(file = "design1_data_analysis_functions.r")
 #---------------------------------------------------------------------#
 
 # read in qualtric output csv
-qualtric_data_path = "../qualtric_data/20171123_qualtric_results_design2_pilot.csv" #!!! UPDATE
-MTurk_data_path = "../MTurk_data/20171123_mturk_results_design2_pilot.csv" #!!! UPDATE
+qualtric_data_path = "../qualtric_data/20171127_qualtric_results_design2_main.csv" #!!! UPDATE
+MTurk_data_path = "../MTurk_data/20171127_mturk_results_design2_main.csv" #!!! UPDATE
 
 # load supporting functions
 source(file = "design2_data_transformation_functions.r")
@@ -30,8 +30,8 @@ worderIDs_task_status = construct_frame_worderIDs_task_status.design2(current_ta
                                                                       allQ = allQ.design2, 
                                                                       payment_accuracy_threshold = 0.75, 
                                                                       task_name = "design2 pilot", #!!! UPDATE
-                                                                      treatment_payrate = 0.10, #!!! UPDATE
-                                                                      bonus_rate = 0.05,
+                                                                      treatment_payrate = 0.22, #!!! UPDATE
+                                                                      bonus_rate = 0.10,
                                                                       existing_path = existing_path) 
 
 # CAUTION!

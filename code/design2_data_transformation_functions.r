@@ -436,7 +436,7 @@ evaluate_worker_perf.design2 = function(current_task_data, allQ.design2) {
                                TQ17,TQ18,TQ19,TQ20,TQ21,TQ22,TQ23,TQ24,
                                SQ2,
                                TQ25,TQ26,TQ27,TQ28,TQ29,TQ30,TQ31,TQ32,
-                               TQ33,SQ2,TQ34,TQ35,TQ36,TQ37,TQ38,TQ39,TQ40,
+                               TQ33,TQ34,TQ35,TQ36,TQ37,TQ38,TQ39,TQ40,
                                SQ3,
                                TQ41,TQ42,TQ43,TQ44,TQ45,TQ46,TQ47,TQ48))/length(allQ.design2),
               by = worker_id]
