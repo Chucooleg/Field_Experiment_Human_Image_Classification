@@ -65,19 +65,6 @@ allQ = c("TQ1", "TQ2", "TQ3", "TQ4", "TQ5", "TQ6",
          "TQ43", "TQ44", "TQ45", "TQ46", "TQ47", "TQ48")
 
 # --------------------------------------------------------------------------------------------------
-# get list of turks to assign qualification
-
-# funtion (existing_csv, current_task_data)
-# read in existing_csv as existing_dt
-# read in current task data as dt
-# check accuracies of current task data 
-# construct temp_accuracies_dt
-# [worder_id, date of task, task description, complete 1/0 ,accuracy, payment_accuracy_threshold, pay 1/0]
-# append temp_accuracies_dt to existing_dt
-# overwrite exiting_dt to existing_cv
-# return temp_accuracies_dt, existing_dt
-
-
 # get dataframe of worker ids and their task status
 construct_frame_worderIDs_task_status = function(current_task_data, submitted_MTurk_ids, allQ, payment_accuracy_threshold, task_name, treatment_payrate, existing_path) {
   
@@ -86,7 +73,7 @@ construct_frame_worderIDs_task_status = function(current_task_data, submitted_MT
                                                                "accuracy",
                                                                "screener")]
   dt_completer_status[, complete_task := 1][, payment_accuracy_threshold:=payment_accuracy_threshold]
-  completer_repeater_ids = identify_repeaters_from_database(existing_path, dt_completer_status$worker_ids)
+  completer_repeater_ids = identify_repeaters_from_database(existing_path, dt_completer_status$worker_id)
   dt_completer_status[, repeater := as.numeric(worker_id %in% completer_repeater_ids)]
   
   # for those who did not complete the task
