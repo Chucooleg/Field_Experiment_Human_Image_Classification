@@ -114,6 +114,67 @@ construct_frame_worderIDs_task_status.design2 = function(current_task_data, subm
 # dum = construct_frame_worderIDs_task_status(current_task_data = current_task_data, allQ = allQ, payment_accuracy_threshold = 0.25, task_name = "pilot 0.25")
 
 
+convert_raw_attriters.design2 = function(current_task_data) {
+  # raw responses
+  tmp.dt.attriters = current_task_data[toupper(Finished) == "FALSE"]
+
+  # GET CCC!!!
+  tmp.dt.group = tmp.dt.attriters[`CCC_Signal_Page Submit` > 0]
+  tmp.dt.CCC = data.table(worker_id = (tmp.dt.group$worker_id),
+                          CQ1 = tmp.dt.group$CQ1,
+                          CQ2_1 = tmp.dt.group$CQ2_1,
+                          CQ2_2 = tmp.dt.group$CQ2_2,
+                          CQ2_3 = tmp.dt.group$CQ2_3,
+                          CQ2_4 = tmp.dt.group$CQ2_4,
+                          CQ3 = tmp.dt.group$CQ3,
+                          CQ4 = tmp.dt.group$CQ4,
+                          CQ5 = tmp.dt.group$CQ5,
+                          group = 'CCC')
+  
+  # GET CCT!!!
+  tmp.dt.group = tmp.dt.attriters[`CCT_signal_Page Submit` > 0]
+  tmp.dt.CCT = data.table(worker_id = (tmp.dt.group$worker_id),
+                          CQ1 = tmp.dt.group$CQ1,
+                          CQ2_1 = tmp.dt.group$CQ2_1,
+                          CQ2_2 = tmp.dt.group$CQ2_2,
+                          CQ2_3 = tmp.dt.group$CQ2_3,
+                          CQ2_4 = tmp.dt.group$CQ2_4,
+                          CQ3 = tmp.dt.group$CQ3,
+                          CQ4 = tmp.dt.group$CQ4,
+                          CQ5 = tmp.dt.group$CQ5,
+                          group = 'CCT')
+ 
+  # GET CTT!!!
+  tmp.dt.group = tmp.dt.attriters[`CTT_signal_Page Submit` > 0]
+  tmp.dt.CTT = data.table(worker_id = (tmp.dt.group$worker_id),
+                          CQ1 = tmp.dt.group$CQ1,
+                          CQ2_1 = tmp.dt.group$CQ2_1,
+                          CQ2_2 = tmp.dt.group$CQ2_2,
+                          CQ2_3 = tmp.dt.group$CQ2_3,
+                          CQ2_4 = tmp.dt.group$CQ2_4,
+                          CQ3 = tmp.dt.group$CQ3,
+                          CQ4 = tmp.dt.group$CQ4,
+                          CQ5 = tmp.dt.group$CQ5,
+                          group = 'CTT') 
+  
+  # GET TTT!!!
+  tmp.dt.group = tmp.dt.attriters[`TTT_signal_Page Submit` > 0]
+  tmp.dt.TTT = data.table(worker_id = (tmp.dt.group$worker_id),
+                          CQ1 = tmp.dt.group$CQ1,
+                          CQ2_1 = tmp.dt.group$CQ2_1,
+                          CQ2_2 = tmp.dt.group$CQ2_2,
+                          CQ2_3 = tmp.dt.group$CQ2_3,
+                          CQ2_4 = tmp.dt.group$CQ2_4,
+                          CQ3 = tmp.dt.group$CQ3,
+                          CQ4 = tmp.dt.group$CQ4,
+                          CQ5 = tmp.dt.group$CQ5,
+                          group = 'TTT') 
+  
+  rm(tmp.dt.group, tmp.dt.attriters) # clear up some memory
+  tmp.dt.groups = rbind(tmp.dt.CCC, tmp.dt.CCT, tmp.dt.CTT, tmp.dt.TTT)
+  tmp.dt.groups
+}
+
 
 
 convert_raw_to_correct_ans.design2 = function(current_task_data, allQ.design2){
@@ -467,12 +528,15 @@ evaluate_worker_perf.design2 = function(current_task_data, allQ.design2) {
               
   # const screener col
   tmp.dt.perf[,screener:= as.numeric(SQ1==1 & SQ2==1 & SQ3==1)]
+  tmp.dt.perf[,screener_S1:= as.numeric(SQ1==1)]
+  tmp.dt.perf[,screener_S2:= as.numeric(SQ2==1)]
+  tmp.dt.perf[,screener_S3:= as.numeric(SQ3==1)]
   dt.perf = tmp.dt.perf[,c("worker_id", 
                            "CQ1", "CQ2_1", "CQ2_2", "CQ2_3", "CQ2_4", "CQ3", "CQ4", "CQ5", 
                            "group",
                            "time_spent","time_spent_S1", "time_spent_S2", "time_spent_S3", 
                            "accuracy",  "accuracy_S1", "accuracy_S2","accuracy_S3",
-                           "screener")]
+                           "screener", "screener_S1", "screener_S2", "screener_S3")]
   dt.perf
 }
 

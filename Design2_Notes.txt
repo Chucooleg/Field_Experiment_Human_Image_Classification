@@ -40,3 +40,10 @@ Find
 ---------------------------------------------------------------------
 Report: 
 Define compliance, non-compliance
+
+---------------------------------------------------------------------
+
+Design 1 : Clustered SE
+
+Design 2 : Check attrition, or fill-in missing data for extreme case (p.241 worst case scenario)
+Design 2 : sub group analysis check heterogeneity with interaction effects FE P.392 -->F-test to see if they are all the same. Individual t-test with multiple comparison correction to check if individually significant?
