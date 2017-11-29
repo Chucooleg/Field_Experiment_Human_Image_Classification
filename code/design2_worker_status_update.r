@@ -16,7 +16,6 @@ MTurk_data_path = "../MTurk_data/20171127_mturk_results_design2_main.csv" #!!! U
 
 # load supporting functions
 source(file = "design2_data_transformation_functions.r")
-#source(file = "design1_data_analysis_functions.r")
 existing_path = "../MTurk_ID_status/worker_status.csv"
 
 
