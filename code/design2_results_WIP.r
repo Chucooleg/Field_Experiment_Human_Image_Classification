@@ -1,6 +1,8 @@
 # Use this code to evaluate worker performance based on pilot resul csvs
 rm(list = ls())
 
+library(multcomp)
+
 # load supporting functions
 # setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
@@ -112,7 +114,21 @@ summary(cov_check_CQ5.3) #nothing significant
 
 unique(by_Session.table$CQ1)
 
-lm(round_accuracy ~ group * round + CQ1 + CQ2 + CQ3 + CQ4 + CQ5,data=by_Session.table)
+mod.1 = lm(round_accuracy ~ group * round + CQ1 + CQ2 + CQ3 + CQ4 + CQ5,data=by_Session.table)
+summary(mod.1)
 
-# Specify model?
+mod.0 = lm(round_accuracy ~ group * round,data=by_Session.table)
+summary(mod.0)
 
+
+summary(glht(mod.0, vcov=vcovHC(mod.0),
+             linfct=rbind(
+               trial1=c(1,0,0,0,0,0,0,0,0,0,0,0),
+               trial2 =c(1,0,0,0,0,0,0,0,0,0,0,1)
+               )))
+
+summary(mcp(mod.0, vcov=vcovHC(mod.0),
+             linfct=rbind(
+               trial1=c(1,0,0,0,0,0,0,0,0,0,0,0),
+               trial2 =c(1,0,0,0,0,0,0,0,0,0,0,1)
+             )))
