@@ -4,7 +4,6 @@ rm(list = ls())
 library(multcomp)
 
 # load supporting functions
-# setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
 setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 source(file = "design2_data_transformation_functions.r")
 #source(file = "design2_data_analysis_functions.r")
@@ -131,9 +130,15 @@ summary(cov_check_CQ5.3) #nothing significant
 
 
 #---------------------------------------------------------------------#
-# Can do some brief EDA
-
-# !!! Please fill in 
+# Brief EDA
+# check output var distribution
+hist(by_HIT.table$overall_accuracy)
+hist(by_Session.table$round_accuracy)
+# Notice that both histograms are very left skewed
+# This calls the appropriateness of OLS asymptotics for ATE SE & p-val estimation into question
+# Hopefully with a larger sample size, asymtotics will be more reliable
+# Anyhow, this says that we should report p-val using randomization inference in addition to regression
+# Just like many of the papers we read in class
 
 #---------------------------------------------------------------------#
 # Model Overall -- Comparing only by group 
