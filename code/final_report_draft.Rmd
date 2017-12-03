@@ -1,6 +1,6 @@
 ---
 title: 'You Get What You Pay For: Experimental Analysis on the Relationship Between Pay and Work Quality'
-author: ''
+author: 'Legg Yeung, Stanimir Vichev & Frederic Suares'
 date: \today
 output:
   pdf_document: default
@@ -16,13 +16,23 @@ library(data.table)
 library(multiwayvcov)
 ```
 
+```{r}
+# load supporting functions
+# setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
+setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
+# setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
+source(file = "design1_data_transformation_functions.r")
+source(file = "design1_data_analysis_functions.r")
+# source(file = "pilot_data_transformation_functions.r")
+```
 # Introduction
 
 In most economies, it is generally believed that renumeration for someone's work is strongly related to the effort they will put into it, and the eventual quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, say, by giving them similar tasks and different payments on a random basis, as this could be considered unethical and would lead to a serious disruption in the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part the pay plays. 
-The Amazon Mechanical Turk platform for the crowdsourced completion of tasks provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or high costs of wasted man-hours. Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge), randomly putting subjects in different payment brackets and measuring how results differed between groups.
+The Amazon Mechanical Turk (AMT) platform for the crowdsourced completion of tasks provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or high costs of wasted man-hours. Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge), randomly putting subjects in different payment brackets and measuring how results differed between groups.
 The paper is organized as follows: section 2 discusses background and motivations, section 3 explains the experimental design, detailing the platforms used and the experimental schedule, sections 4 and 5 present the data and analysis for the two types of experiments, section 6 discusses overall results, section 7 looks at possible future studies, followed by a conclusion and bibliography.
 
-# Study Background & Motivation
+# Related Work
+The use of online labour markets as an effective and efficient platform for social science experimentation has been noted by several studies, and explored in detail in Horton et. al. 2011. They perform several successful experiments and even look at the labour supply curves of workers. This shows that we have made the right choice of platform to conduct our research. Another experiment done by Horton  & Chilton, 2010, develops a novel method for estimating the smallest price for a task that a worker would accept. They also look into the way workers respond to incentives, with some being rational and some setting earnings targets. Finally, Mason & Watts, 2009, use the AMT platform to explore the effect of financial incentives on the performance of workers. They conclude that higher financial incentives increase the quantity, but not quality, of the work done by workers, citing an anchoring effect as the cause of this. By doing a similar experiment nearly 9 years later, we hope to see whether we get the same results as online labour markets such as AMT gain more prominence and popularity, leading to a more diverse market with more workers and requestors.  
 
 # Experimental Design
 
@@ -30,7 +40,7 @@ The AMT platform allows us, as requestors to create a task that is of a difficul
 
 The task we set for this experiment consisted of a survey (created and managed using Qualtric) that asked people to complete 8 personal details questions (knowledge of dogs, preference for work with certain media, etc.), followed by 50 multiple choice questions. Each multiple choice question asked people to look at a photo of a dog and pick the breed it belongs to out of 8 possible choices. The workers were also given a document presenting a sample picture for each breed, so that workers' results depended only on their efforts and not on their general knowledge of dogs, since that would have otherwise lead to skewed results. To capture the quality of work, we measured the accuracy with which workers correctly classified images. Two screener questions were included that asked workers to classify pictures of cats, so that we could isolate workers that went through the survey without reading the questions. 
 
-For this study we followed two experimental designs: a between-subjects design and a stepped wedge design, both of which used the same task to measure accuracy. The first set of experiments followed a between-subjects design, and involved releasing the task on the AMT platform at different times with one of four possible payments (\$0.10, \$0.25, \$0.40, \$0.55). We released only one task at a time (otherwise workers would only do the higher paying one), and every time we would wait for 100 workers to complete the task before pulling it off the platform. Through Qualtric, which hosted the survey, we could track people that only looked at the survey without completing it to the end, so we could subsequently exclude them from future tries. Apart from tracking how workers answered all the questions, Qualtric allowed us to track how long they spent doing the survey, which we also consider in our analysis. One important thing to note about this approach is that it suffers from the downside that different types of people may choose to take part in tasks that present different payments, so we may not always be comparing apples to apples when looking at different groups. However, we hope that AMT's population of workers is large enough to provide enough random sampling(**this needs to be fixed and explained better**).
+For this study we followed two experimental designs: a between-subjects design and a stepped wedge design, both of which used the same task to measure accuracy. The first set of experiments followed a between-subjects design, and involved releasing the task on the AMT platform at different times with one of four possible payments (\$0.10, \$0.25, \$0.40, \$0.55). We released only one task at a time (otherwise workers would only do the higher paying one), waiting for 100 workers to complete the task before pulling it off the platform. Through Qualtric, which hosted the survey, we could track people that only looked at the survey without finishing it, allowing us to exclude them from future tries. Apart from tracking how workers answered all the questions, Qualtric allowed us to track how long they spent doing the survey, which we also consider in our analysis. One important thing to note about this approach is that it suffers from the downside that different types of people may choose to take part in tasks that present different payments, so we may not always be comparing apples to apples when looking at different groups. However, we hope that AMT's population of workers is large enough to provide enough random sampling (**this needs to be fixed and explained better**).
 
 (Add table here)
 - col1: Name of Experiment (e.g. Design 1, Order 1, $??)
@@ -43,29 +53,525 @@ For this study we followed two experimental designs: a between-subjects design a
 
 The second set of experiments involved following a stepped wedge design, where we released a single task on the AMT platform of 48 questions to be done by 400 workers that pays \$0.10. Once a worker starts the survey, we would randomly assign her to one of four treatment groups, using functionality provided by Qualtric. The first group would complete the 48 questions without any difference to the first design. The second group would complete the first 32 questions normally, but they would then be told that they would actually be paid \$0.15 extra before doing the final 16 questions. The third group would be told about the bonus after completing the first 16 questions, and the fourth group would be told about the bonus before starting any of the questions. This way we hope to achieve real random assignment and truly compare apples to apples. 
 
-(add table here)
-(A) R C_\$0.00 C_\$0.00 C_$0.00
-(B) R C_\$0.00 C_\$0.00 T_$0.15 
-(C) R C_\$0.00 T_\$0.15 T_$0.15
-(D) R T_\$0.15 T_\$0.15 T_$0.15 
-
+```{r}
+d2df = data.frame(Wave=c("A", "B", "C", "D"), Step_1_Pay=c(0,0,0,0.15), Step_2_Pay=c(0,0,0.15,0.15), Step_3_Pay=c(0,0.15,0.15,0.15))
+knitr::kable(d2df, "markdown")
+```
 ## AMT and Qualtric
-
+ - I think this isn't needed, we explain it in the intro.
+ 
 ## Experiment Schedule
 
-# Pilot Experiment
+# Pilot Experiment - hide some of the code that isn't interesting
+
+## Data
+Here we get all the data we need to use. Perhaps hide the below?
+
+```{r}
+# read in qualtric output csv
+qualtric_pilot_data_path_0.25 = "../qualtric_data/20171028_qualtric_results_pilot_0.25.csv"
+current_task_pilot_data_0.25 = get_current_task_data(qualtric_pilot_data_path_0.25)
+
+qualtric_pilot_data_path_0.10 = "../qualtric_data/20171028_qualtric_results_pilot_0.10.csv"
+current_task_pilot_data_0.10 = get_current_task_data(qualtric_pilot_data_path_0.10)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_pilot_0.25 = evaluate_worker_perf(current_task_pilot_data_0.25, allQ)
+worker_perf_pilot_0.10 = evaluate_worker_perf(current_task_pilot_data_0.10, allQ)
+
+# pool the data from different treatments together
+worker_perf_pilot_0.25$treatment = 0.25
+worker_perf_pilot_0.10$treatment = 0.10
+regr_table_pilot = rbind(worker_perf_pilot_0.10, worker_perf_pilot_0.25)
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_pilot$CQ1 = as.factor(regr_table_pilot$CQ1)
+regr_table_pilot$CQ2_3 = as.numeric(regr_table_pilot$CQ2_3)
+regr_table_pilot$CQ3 = as.factor(regr_table_pilot$CQ3)
+
+```
+
+## EDA
+```{r}
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_pilot_data_0.25, allQ)
+summarize_worker_perf(current_task_pilot_data_0.10, allQ)
+
+# DISTRIBUTION OF ACCURACY
+
+# pooling 0.10 & 0.25 treatments
+hist(regr_table_pilot$accuracy)
+
+hist(regr_table_pilot[treatment == 0.25,]$accuracy)
+hist(regr_table_pilot[treatment == 0.10,]$accuracy)
+# Notice that both histograms are very left skewed
+# This calls the appropriateness of OLS asymptotics for ATE SE & p-val estimation into question
+# Hopefully with a larger sample size, asymtotics will be more reliable
+# Anyhow, this says that we should report p-val using randomization inference in addition to regression
+# Just like many of the papers we read in class
+```
+
+## Covariate Balance
+```{r}
+# Dog friends question
+CQ1_1 = regr_table_pilot$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_pilot$CQ1 == "around half"
+CQ1_3 = regr_table_pilot$CQ1 == "a lot more than half"
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_pilot$treatment)
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_pilot$treatment)
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_pilot$treatment)
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_pilot)
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_pilot$CQ3 == "Yes"
+CQ3_2 = regr_table_pilot$CQ3 == "No"
+CQ3_3 = regr_table_pilot$CQ3 == "Maybe"
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_pilot$treatment)
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_pilot$treatment)
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_pilot$treatment)
+```
+
+## Estimating ATE
+```{r}
+# TWO-SAMPLE T-TEST
+# test if variance of the two groups are unequal
+car::leveneTest(worker_perf_pilot_0.10$accuracy,worker_perf_pilot_0.25$accuracy,center=median)
+# 2 sample independent t-test
+t.test(worker_perf_pilot_0.10$accuracy,
+       worker_perf_pilot_0.25$accuracy,
+       alternative = "two.sided", var.equal = TRUE)
+
+# REGRESSION
+regr1_pilot = lm(accuracy ~ treatment, data = regr_table_pilot)
+regr2_pilot = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table_pilot)
+summary(regr1_pilot)
+summary(regr2_pilot)
+coeftest(regr1_pilot, vcov(regr1_pilot))
+coeftest(regr2_pilot, vcov(regr2_pilot))
+```
 
 # Design 1 Experiments
 
 ## Data
+```{r}
+# DESIGN 1 ORDER 1
 
-## Analysis
+# read in qualtric output csv
+qualtric_data_path_d1o1_0.10 = "../qualtric_data/20171111_qualtric_results_order1_0.10.csv"
+current_task_data_d1o1_0.10 = get_current_task_data(qualtric_data_path_d1o1_0.10)
+qualtric_data_path_d1o1_0.55 = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv"
+current_task_data_d1o1_0.55 = get_current_task_data(qualtric_data_path_d1o1_0.55)
+qualtric_data_path_d1o1_0.40 = "../qualtric_data/20171112_qualtric_results_order1_0.40.csv"
+current_task_data_d1o1_0.40 = get_current_task_data(qualtric_data_path_d1o1_0.40)
+qualtric_data_path_d1o1_0.25 = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv"
+current_task_data_d1o1_0.25 = get_current_task_data(qualtric_data_path_d1o1_0.25)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
+filter = !(current_task_data_d1o1_0.55$worker_id %in% current_task_data_d1o1_0.10$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o1_0.55_weeded = current_task_data_d1o1_0.55[filter, ]
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_d1o1_0.25$worker_id %in% current_task_data_d1o1_0.40$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o1_0.25_weeded = current_task_data_d1o1_0.25[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_d1o1_0.10 = evaluate_question_perf(current_task_data_d1o1_0.10, allQ)
+question_perf_d1o1_0.55 = evaluate_question_perf(current_task_data_0.55_d1o1_weeded, allQ)
+question_perf_d1o1_0.40 = evaluate_question_perf(current_task_data_d1o1_0.40, allQ)
+question_perf_d1o1_0.25 = evaluate_question_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_d1o1_0.10 = evaluate_worker_perf(current_task_data_d1o1_0.10, allQ)
+worker_perf_d1o1_0.55 = evaluate_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+worker_perf_d1o1_0.40 = evaluate_worker_perf(current_task_data_d1o1_0.40, allQ)
+worker_perf_d1o1_0.25 = evaluate_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+# pool the data from different treatments together
+worker_perf_d1o1_0.10$treatment = 0.10
+worker_perf_d1o1_0.55$treatment = 0.55
+worker_perf_d1o1_0.40$treatment = 0.40
+worker_perf_d1o1_0.25$treatment = 0.25
+regr_table_d1o1 = rbind(worker_perf_d1o1_0.10, worker_perf_d1o1_0.25, worker_perf_d1o1_0.40, worker_perf_d1o1_0.55) 
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o1$CQ1 = as.factor(regr_table_d1o1$CQ1)
+regr_table_d1o1$CQ2_3 = as.numeric(regr_table_d1o1$CQ2_3)
+regr_table_d1o1$CQ3 = as.factor(regr_table_d1o1$CQ3)
+
+# POOLING THREE (0.25, 0.40, 0.55) CSV FILES FROM DIFFERENT TREATMENTS
+
+# pool the data from different treatments together
+regr_table_d1o1_exclude0.10 = rbind(worker_perf_d1o1_0.25, worker_perf_d1o1_0.40, worker_perf_d1o1_0.55)
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o1_exclude0.10$CQ1 = as.factor(regr_table_d1o1_exclude0.10$CQ1)
+regr_table_d1o1_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o1_exclude0.10$CQ2_3)
+regr_table_d1o1_exclude0.10$CQ3 = as.factor(regr_table_d1o1_exclude0.10$CQ3)
+
+
+```
+
+```{r}
+# DESIGN 1 ORDER 2
+
+# read in qualtric output csv
+qualtric_data_path_d1o2_0.40 = "../qualtric_data/20171118_qualtric_results_order2_0.40.csv"
+current_task_data_d1o2_0.40 = get_current_task_data(qualtric_data_path_d1o2_0.40)
+qualtric_data_path_d1o2_0.25 = "../qualtric_data/20171118_qualtric_results_order2_0.25.csv"
+current_task_data_d1o2_0.25 = get_current_task_data(qualtric_data_path_d1o2_0.25)
+qualtric_data_path_d1o2_0.55 = "../qualtric_data/20171119_qualtric_results_order2_0.55.csv"
+current_task_data_d1o2_0.55 = get_current_task_data(qualtric_data_path_d1o2_0.55)
+qualtric_data_path_d1o2_0.10 = "../qualtric_data/20171119_qualtric_results_order2_0.10.csv"
+current_task_data_d1o2_0.10 = get_current_task_data(qualtric_data_path_d1o2_0.10)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
+filter = !(current_task_data_d1o2_0.25$worker_id %in% current_task_data_d1o2_0.40$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_0.25_d1o2_weeded = current_task_data_d1o2_0.25[filter, ]
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_d1o2_0.10$worker_id %in% current_task_data_d1o2_0.55$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_0.10_d1o2_weeded = current_task_data_d1o2_0.10[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_d1o2_0.10 = evaluate_question_perf(current_task_data_d1o2_0.10, allQ)
+question_perf_d1o2_0.55 = evaluate_question_perf(current_task_data_0.55_d1o2_weeded, allQ)
+question_perf_d1o2_0.40 = evaluate_question_perf(current_task_data_d1o2_0.40, allQ)
+question_perf_d1o2_0.25 = evaluate_question_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_d1o2_0.10 = evaluate_worker_perf(current_task_data_d1o2_0.10, allQ)
+worker_perf_d1o2_0.55 = evaluate_worker_perf(current_task_data_d1o2_0.55_weeded, allQ)
+worker_perf_d1o2_0.40 = evaluate_worker_perf(current_task_data_d1o2_0.40, allQ)
+worker_perf_d1o2_0.25 = evaluate_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+# pool the data from different treatments together
+worker_perf_d1o2_0.10$treatment = 0.10
+worker_perf_d1o2_0.55$treatment = 0.55
+worker_perf_d1o2_0.40$treatment = 0.40
+worker_perf_d1o2_0.25$treatment = 0.25
+regr_table_d1o2 = rbind(worker_perf_d1o2_0.10, worker_perf_d1o2_0.25, worker_perf_d1o2_0.40, worker_perf_d1o2_0.55) 
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o2$CQ1 = as.factor(regr_table_d1o2$CQ1)
+regr_table_d1o2$CQ2_3 = as.numeric(regr_table_d1o2$CQ2_3)
+regr_table_d1o2$CQ3 = as.factor(regr_table_d1o2$CQ3)
+
+# POOLING THREE (0.25, 0.40, 0.55) CSV FILES FROM DIFFERENT TREATMENTS
+
+# pool the data from different treatments together
+regr_table_d1o2_exclude0.10 = rbind(worker_perf_d1o2_0.25, worker_perf_d1o2_0.40, worker_perf_d1o2_0.55)
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o2_exclude0.10$CQ1 = as.factor(regr_table_d1o2_exclude0.10$CQ1)
+regr_table_d1o2_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o2_exclude0.10$CQ2_3)
+regr_table_d1o2_exclude0.10$CQ3 = as.factor(regr_table_d1o2_exclude0.10$CQ3)
+```
+## EDA
+```{r}
+
+# DESIGN 1 ORDER 1
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o1_0.10, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o1_0.55_weeded, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o1_0.40, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o1_0.25_weeded, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+hist(regr_table_d1o1$accuracy)
+hist(regr_table_d1o1[treatment == 0.55,]$accuracy)
+hist(regr_table_d1o1[treatment == 0.10,]$accuracy)
+hist(regr_table_d1o1[treatment == 0.25,]$accuracy)
+hist(regr_table_d1o1[treatment == 0.40,]$accuracy)
+```
+
+```{r}
+
+# DESIGN 1 ORDER 2
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o2_0.10, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o2_0.10, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o2_0.55_weeded, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o2_0.55_weeded, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o2_0.40, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
+
+#stats summary of accuracies over all questions
+summarize_question_accuracy(current_task_data_d1o2_0.25_weeded, allQ)
+
+#stats summary of accuracies over all workers
+summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+hist(regr_table_d1o2$accuracy)
+hist(regr_table_d1o2[treatment == 0.55,]$accuracy)
+hist(regr_table_d1o2[treatment == 0.10,]$accuracy)
+hist(regr_table_d1o2[treatment == 0.25,]$accuracy)
+hist(regr_table_d1o2[treatment == 0.40,]$accuracy)
+```
+## Covariate balance
+```{r}
+# DESIGN 1 ORDER 1
+
+# Dog friends question
+CQ1_1 = regr_table_d1o1$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1o1$CQ1 == "around half"
+CQ1_3 = regr_table_d1o1$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_d1o1)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1o1$CQ3 == "Yes"
+CQ3_2 = regr_table_d1o1$CQ3 == "No"
+CQ3_3 = regr_table_d1o1$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
+```{r}
+# DESIGN 1 ORDER 2
+
+# Dog friends question
+CQ1_1 = regr_table_d1o2$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1o2$CQ1 == "around half"
+CQ1_3 = regr_table_d1o2$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_d1o2)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1o2$CQ3 == "Yes"
+CQ3_2 = regr_table_d1o2$CQ3 == "No"
+CQ3_3 = regr_table_d1o2$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
+## Estimating ATE
+```{r}
+
+# DESIGN 1 ORDER 1
+# ATE by T-test
+est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.25$accuracy, "two.sided")
+est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o1_0.25$accuracy,worker_perf_d1o1_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o1_0.25$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o1_0.40$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
+
+# ATE by REGRESSION
+# REMEMBER TO REPORT
+# -COEFFICIENT INTERPRETATION
+# -STANDARD ERRORS
+# -CONFIDENCE INTERVAL
+# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
+# ---we want to see if the covariates as a block has any explanatory power
+est.regr.simple(regr_table_d1o1) #ATE = 0.87 result is problematic 
+est.regr.covars(regr_table_d1o1) #ATE = 0.87 result is problematic 
+
+
+est.regr.simple(regr_table_d1o1_exclude0.10) # ATE = 0.23
+est.regr.covars(regr_table_d1o1_exclude0.10) # ATE = 0.20
+
+#---------------------------------------------------------------------#
+# RANDOMIZATION INFERENCE
+
+n10 = nrow(worker_perf_d1o1_0.10)
+n25 = nrow(worker_perf_d1o1_0.25)
+n40 = nrow(worker_perf_d1o1_0.40)
+n55 = nrow(worker_perf_d1o1_0.55)
+
+rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.55,n55)))
+
+# INCLUDING ALL four postings
+# treatment = rand_ass()
+ate_d1o1 = est.ri.ate(regr_table_d1o1,regr_table_d1o1$treatment)
+all_ate_d1o1 <- replicate(5000, est.ri.ate(regr_table_d1o1, rand_ass()))
+hist(all_ate_d1o1)
+# two-tailed p-val, is this correct?
+mean(ate_d1o1 < all_ate_d1o1 & -ate_d1o1 > -all_ate_d1o1)
+
+# EXCLUDING $0.10 posting
+# treatment = rand_ass()
+ate_d1o1_exclude_0.10 = est.ri.ate(regr_table_d1o1_exclude0.10,regr_table_d1o1_exclude0.10$treatment)
+all_ate_d1o1_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o1_exclude0.10, rand_ass()))
+hist(all_ate_d1o1_exclude_0.10)
+# two-tailed p-val, is this correct?
+mean(ate_d1o1_exclude_0.10 < all_ate_d1o1_exclude_0.10 & -ate_d1o1_exclude_0.10 > -all_ate_d1o1_exclude_0.10)
+
+# SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
+regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
+summary(regr.sqord)
+lmtest::coeftest(regr, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# dev.off() --> if the following line gives an error
+plot(allEffects(regr.sqord, default.levels=50))
+
+# THIRD ORDER TERM -- doesn't make sense (pls look at the effects plot)
+regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
+summary(regr.cubedord)
+lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# dev.off() --> if the following line gives an error
+plot(allEffects(regr.cubedord, default.levels=50))
+```
+
+```{r}
+
+# DESIGN 1 ORDER 2
+# ATE by T-test
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.25$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.40$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+
+# ATE by REGRESSION
+# REMEMBER TO REPORT
+# -COEFFICIENT INTERPRETATION
+# -STANDARD ERRORS
+# -CONFIDENCE INTERVAL
+# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
+# ---we want to see if the covariates as a block has any explanatory power
+est.regr.simple(regr_table_d1o2) #ATE = 0.87 result is problematic 
+est.regr.covars(regr_table_d1o2) #ATE = 0.87 result is problematic 
+
+
+est.regr.simple(regr_table_d1o2_exclude0.10) # ATE = 0.23
+est.regr.covars(regr_table_d1o2_exclude0.10) # ATE = 0.20
+
+#---------------------------------------------------------------------#
+# RANDOMIZATION INFERENCE
+
+n10 = nrow(worker_perf_d1o2_0.10)
+n25 = nrow(worker_perf_d1o2_0.25)
+n40 = nrow(worker_perf_d1o2_0.40)
+n55 = nrow(worker_perf_d1o2_0.55)
+
+rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.55,n55)))
+
+# INCLUDING ALL four postings
+# treatment = rand_ass()
+ate_d1o2 = est.ri.ate(regr_table_d1o2,regr_table_d1o2$treatment)
+all_ate_d1o2 <- replicate(5000, est.ri.ate(regr_table_d1o2, rand_ass()))
+hist(all_ate_d1o2)
+# two-tailed p-val, is this correct?
+mean(ate_d1o2 < all_ate_d1o2 & -ate_d1o2 > -all_ate_d1o2)
+
+# EXCLUDING $0.10 posting
+# treatment = rand_ass()
+ate_d1o2_exclude_0.10 = est.ri.ate(regr_table_d1o2_exclude0.10,regr_table_d1o2_exclude0.10$treatment)
+all_ate_d1o2_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o2_exclude0.10, rand_ass()))
+hist(all_ate_d1o2_exclude_0.10)
+# two-tailed p-val, is this correct?
+mean(ate_d1o2_exclude_0.10 < all_ate_d1o2_exclude_0.10 & -ate_d1o2_exclude_0.10 > -all_ate_d1o2_exclude_0.10)
+
+# SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
+regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
+summary(regr.sqord)
+lmtest::coeftest(regr, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# dev.off() --> if the following line gives an error
+plot(allEffects(regr.sqord, default.levels=50))
+
+# THIRD ORDER TERM -- doesn't make sense (pls look at the effects plot)
+regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
+summary(regr.cubedord)
+lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# dev.off() --> if the following line gives an error
+plot(allEffects(regr.cubedord, default.levels=50))
+```
+## Regression Table
 
 # Design 2 Experiments
 
 ## Data
 
-## Analysis
+## EDA
+
+## Covariate Balance
+
+## Estimating ATE
+
+## Regression Table
 
 # Combined Results and Analysis
 
@@ -74,13 +580,13 @@ The second set of experiments involved following a stepped wedge design, where w
 # Conclusion
 
 # Bibliography
-https://dl.acm.org/citation.cfm?id=1809422
 
-https://link.springer.com/article/10.1007%2Fs10683-011-9273-9?LI=true
+Mason, Winter and Watts, Duncan J. 2010. Financial incentives and the "performance of crowds". SIGKDD Explor. Newsl. 11, 2 (May 2010), 100-108. DOI=http://dx.doi.org/10.1145/1809400.1809422 . https://dl.acm.org/citation.cfm?id=1809422
 
+Horton, J.J., Rand, D.G. & Zeckhauser, R.J. Exp Econ (2011) 14: 399. DOI=https://doi.org/10.1007/s10683-011-9273-9 . https://link.springer.com/article/10.1007%2Fs10683-011-9273-9?LI=true
+
+Horton, J.J., Chilton, L.B.2011. The Labor Economics of Paid Crowdsourcing.
 https://arxiv.org/pdf/1001.0627.pdf
-
-https://www.researchgate.net/profile/Daniel_Veit/publication/216184483_More_than_fun_and_money_Worker_Motivation_in_Crowdsourcing--A_Study_on_Mechanical_Turk/links/0fcfd50e5afe007d78000000.pdf
 
 ```{r}
 y_contr = c(3,4,5,4,3,2)
