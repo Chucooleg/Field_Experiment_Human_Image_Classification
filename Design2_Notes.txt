@@ -1,21 +1,16 @@
-Design Graph:
-N = 400
-R N_g1=100 C_0.00 C_0.00 C_0.00
-R N_g2=100 C_0.00 C_0.00 T_0.15
-R N_g3=100 C_0.00 T_0.15 T_0.15
-R N_g4=100 T_0.15 T_0.15 T_0.15
+Treatment: Notified that if the section came with/without a bonus
 
----------------------------------------------------------------------
-Regression Modeling:
-Please Specify
-? Add in : no consequences if unfinished
-Qualtrics Survey Setup:
+Assumptions:
+- All subjects receive the treatment, only CACE
+- No anticipation effect, ignore treatment allocated after the current session
+- Ignore treatment allocated two rounds ago
 
-Re-shuffle questions and split into 3 blocks of 16 questions
-Add in timers for each block
+- cannot simply compare all treatment rounds to control rounds because the probability of being assigned treatment is much higher in the later sessions, when subjects are warmed up to the task already.
 
-Data Transformation:
-Rewrite the code to match new answers
+
+Attrition:
+Write about or resolve any differential attrition
+
 ---------------------------------------------------------------------
 Analysis: (P.157 GG)
 
