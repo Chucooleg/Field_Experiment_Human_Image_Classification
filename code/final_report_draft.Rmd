@@ -38,7 +38,13 @@ The use of online labour markets as an effective and efficient platform for soci
 
 The AMT platform allows us, as requestors to create a task that is of a difficulty of our choosing, which we could then post on the platform, defining how much we are willing to pay and how many people we want doing it. AMT workers (our subjects) see the task and how much it pays and decide whether or not they want to take part. Once the task is completed by all the workers, it gets taken off the platform and we can download and analyze the results. Through AMT's qualification system we could make sure that each worker only took part in a single task. By using their worker IDs and randomly assigned survey IDs, we were able to track which workers actually finished the task and which just looked at it. 
 
-The task we set for this experiment consisted of a survey (created and managed using Qualtric) that asked people to complete 8 personal details questions (knowledge of dogs, preference for work with certain media, etc.), followed by 50 multiple choice questions. Each multiple choice question asked people to look at a photo of a dog and pick the breed it belongs to out of 8 possible choices. The workers were also given a document presenting a sample picture for each breed, so that workers' results depended only on their efforts and not on their general knowledge of dogs, since that would have otherwise lead to skewed results. To capture the quality of work, we measured the accuracy with which workers correctly classified images. Two screener questions were included that asked workers to classify pictures of cats, so that we could isolate workers that went through the survey without reading the questions. 
+The task we set for this experiment consisted of a survey (created and managed using Qualtric) that asked people to complete 8 personal details questions (knowledge of dogs, preference for work with certain media, etc.), followed by 50 multiple choice questions. 
+
+```{r}
+d2df = data.frame(N=c("CQ1","CQ2","CQ3","CQ4", "CQ5"),CovariateQuestion=c("What portion of your friends own pets?", "Please rank your preferences to work with the following media", "Have you ever lived with (or planned to live with) any dogs in your household?", "On average, how many tasks on AMT do you complete every week?", "Do you use LinkedIn?"))
+knitr::kable(d2df, "markdown")
+```
+Each multiple choice question asked people to look at a photo of a dog and pick the breed it belongs to out of 8 possible choices. The workers were also given a document presenting a sample picture for each breed, so that workers' results depended only on their efforts and not on their general knowledge of dogs, since that would have otherwise lead to skewed results. To capture the quality of work, we measured the accuracy with which workers correctly classified images. Two screener questions were included that asked workers to classify pictures of cats, so that we could isolate workers that went through the survey without reading the questions. 
 
 For this study we followed two experimental designs: a between-subjects design and a stepped wedge design, both of which used the same task to measure accuracy. The first set of experiments followed a between-subjects design, and involved releasing the task on the AMT platform at different times with one of four possible payments (\$0.10, \$0.25, \$0.40, \$0.55). We released only one task at a time (otherwise workers would only do the higher paying one), waiting for 100 workers to complete the task before pulling it off the platform. Through Qualtric, which hosted the survey, we could track people that only looked at the survey without finishing it, allowing us to exclude them from future tries. Apart from tracking how workers answered all the questions, Qualtric allowed us to track how long they spent doing the survey, which we also consider in our analysis. One important thing to note about this approach is that it suffers from the downside that different types of people may choose to take part in tasks that present different payments, so we may not always be comparing apples to apples when looking at different groups. However, we hope that AMT's population of workers is large enough to provide enough random sampling (**this needs to be fixed and explained better**).
 
@@ -65,7 +71,7 @@ knitr::kable(d2df, "markdown")
 # Pilot Experiment - hide some of the code that isn't interesting
 
 ## Data
-Here we get all the data we need to use. Perhaps hide the below?
+We ran a pilot study in order to test our experimental design and work out any conceptual and technical problems with our setup. We submitted an image recognition task once at the price of \$0.1 and once at the price of \$0.25, with 54 people taking part in each. We aimed to release the tasks around the same time on two separate days (Tuesday and Wednesday), hoping to mimic similar conditions as much as possible. The prices were chosen to be close to the average price for tasks of this size (\$0.10) and significantly higher for enough statistical power to see difference (\$0.25).
 
 ```{r}
 # read in qualtric output csv
@@ -92,26 +98,35 @@ regr_table_pilot$CQ3 = as.factor(regr_table_pilot$CQ3)
 ```
 
 ## EDA
+The below shows an excerpt of the data we collected, showing workers' answers to the covariate questions, a summary of worker accuracy for the image classification questions, whether workers passed the screener, the treatment, and the time workers spent (in seconds) doing the task. 
 ```{r}
-#stats summary of accuracies over all workers
-summarize_worker_perf(current_task_pilot_data_0.25, allQ)
-summarize_worker_perf(current_task_pilot_data_0.10, allQ)
+head(regr_table_pilot)
+```
 
-# DISTRIBUTION OF ACCURACY
+The below table shows a summary of the pilot runs and accuracy data. Comparing the two pilot runs, we could see that the run that paid more had a higher accuracy and completed faster than the lower paying run. 
 
-# pooling 0.10 & 0.25 treatments
+```{r}
+smry_025 = summarize_worker_perf(current_task_pilot_data_0.25, allQ)
+smry_010 = summarize_worker_perf(current_task_pilot_data_0.10, allQ)
+
+avg_time_025 = mean(as.numeric(regr_table_pilot[regr_table_pilot$treatment == 0.25,]$time_spent))/60
+avg_time_010= mean(as.numeric(regr_table_pilot[regr_table_pilot$treatment == 0.10,]$time_spent))/60
+
+pilot_summary = data.frame(Name=c("Pilot", "Pilot"), Run=c(1,2), Treatmet=c(0.1,0.25), N=c(nrow(worker_perf_pilot_0.10),nrow(worker_perf_pilot_0.25)),TotalTimeTaken=c("2h 30min","1h 20min"), AvgTimePerTaskMin = c(avg_time_010,avg_time_025), AccuracyMean=c(smry_010$mean,smry_025$mean), AccuracySE=c(smry_010$se,smry_025$se))
+knitr::kable(pilot_summary, "markdown")
+```
+
+Looking at the accuracy distribution, we can see that it is heavily skewed to the left, which is in line with general expectations that most people aim to do well on the task, but only some manage to achieve it. The fact that our distribution is not normal made us consider the appropriateness of OLS asymptotics for estimation of the ATE and its standard error. While a larger sample size might make the asymptotics more reliable, we nevertheless include randomization inference to our analysis alongside regression. 
+```{r}
 hist(regr_table_pilot$accuracy)
 
-hist(regr_table_pilot[treatment == 0.25,]$accuracy)
-hist(regr_table_pilot[treatment == 0.10,]$accuracy)
-# Notice that both histograms are very left skewed
-# This calls the appropriateness of OLS asymptotics for ATE SE & p-val estimation into question
-# Hopefully with a larger sample size, asymtotics will be more reliable
-# Anyhow, this says that we should report p-val using randomization inference in addition to regression
-# Just like many of the papers we read in class
+# hist(regr_table_pilot[treatment == 0.25,]$accuracy)
+# hist(regr_table_pilot[treatment == 0.10,]$accuracy)
 ```
 
 ## Covariate Balance
+
+We also performed a covariate balance check, regressiong each of our covariate question responses on the treatment. As you can see if you run the hidden code below, the treatment cannot predict any of the covariates in a statistically significant way.  
 ```{r}
 # Dog friends question
 CQ1_1 = regr_table_pilot$CQ1 == "a lot less than half"
@@ -133,24 +148,30 @@ cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_pilot$treatment)
 cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_pilot$treatment)
 ```
 
+
 ## Estimating ATE
+
+We performed some very basic regression analysis on our pilot data, so we could get an initial feel of the results we would be getting. First, we conducted a Levene test, which showed us that the variances of the \$0.10 outcomes and the \$0.25 outcomes are similar. Therefore, we ran a student t-test, as well as a simple and a full regression with robust standard error. 
 ```{r}
-# TWO-SAMPLE T-TEST
-# test if variance of the two groups are unequal
 car::leveneTest(worker_perf_pilot_0.10$accuracy,worker_perf_pilot_0.25$accuracy,center=median)
+```
+
+```{r}
 # 2 sample independent t-test
 t.test(worker_perf_pilot_0.10$accuracy,
        worker_perf_pilot_0.25$accuracy,
        alternative = "two.sided", var.equal = TRUE)
+```
 
+```{r}
 # REGRESSION
-regr1_pilot = lm(accuracy ~ treatment, data = regr_table_pilot)
-regr2_pilot = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table_pilot)
-summary(regr1_pilot)
-summary(regr2_pilot)
+regr1_simple_pilot = lm(accuracy ~ treatment, data = regr_table_pilot)
+regr2_simple_pilot = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table_pilot)
 coeftest(regr1_pilot, vcov(regr1_pilot))
 coeftest(regr2_pilot, vcov(regr2_pilot))
 ```
+
+While the t-test and the simple regression imply that we can reject the null hypothesis that there is no difference between the two means, the full regression shows no statistical significance (p-val ~ 0.07) for the ATE. These results lead us to believe that we could see statistically significant results in the complete experiment we planned that would include more participants. 
 
 # Design 1 Experiments
 
@@ -185,7 +206,7 @@ current_task_data_d1o1_0.25_weeded = current_task_data_d1o1_0.25[filter, ]
 # evaluate accuracy per question
 # of a particular question, how many people got it right?
 question_perf_d1o1_0.10 = evaluate_question_perf(current_task_data_d1o1_0.10, allQ)
-question_perf_d1o1_0.55 = evaluate_question_perf(current_task_data_0.55_d1o1_weeded, allQ)
+question_perf_d1o1_0.55 = evaluate_question_perf(current_task_data_d1o1_0.55_weeded, allQ)
 question_perf_d1o1_0.40 = evaluate_question_perf(current_task_data_d1o1_0.40, allQ)
 question_perf_d1o1_0.25 = evaluate_question_perf(current_task_data_d1o1_0.25_weeded, allQ)
 
@@ -218,8 +239,6 @@ regr_table_d1o1_exclude0.10 = rbind(worker_perf_d1o1_0.25, worker_perf_d1o1_0.40
 regr_table_d1o1_exclude0.10$CQ1 = as.factor(regr_table_d1o1_exclude0.10$CQ1)
 regr_table_d1o1_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o1_exclude0.10$CQ2_3)
 regr_table_d1o1_exclude0.10$CQ3 = as.factor(regr_table_d1o1_exclude0.10$CQ3)
-
-
 ```
 
 ```{r}
@@ -240,25 +259,25 @@ filter = !(current_task_data_d1o2_0.25$worker_id %in% current_task_data_d1o2_0.4
 # get number of violaters
 sum_spillover = sum(!filter)
 # weed out the violaters 
-current_task_data_0.25_d1o2_weeded = current_task_data_d1o2_0.25[filter, ]
+current_task_data_d1o2_0.25_weeded = current_task_data_d1o2_0.25[filter, ]
 
 # !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
 filter = !(current_task_data_d1o2_0.10$worker_id %in% current_task_data_d1o2_0.55$worker_id)
 # get number of violaters
 sum_spillover = sum(!filter)
 # weed out the violaters 
-current_task_data_0.10_d1o2_weeded = current_task_data_d1o2_0.10[filter, ]
+current_task_data_d1o2_0.10_weeded = current_task_data_d1o2_0.10[filter, ]
 
 # evaluate accuracy per question
 # of a particular question, how many people got it right?
-question_perf_d1o2_0.10 = evaluate_question_perf(current_task_data_d1o2_0.10, allQ)
-question_perf_d1o2_0.55 = evaluate_question_perf(current_task_data_0.55_d1o2_weeded, allQ)
+question_perf_d1o2_0.10 = evaluate_question_perf(current_task_data_d1o2_0.10_weeded, allQ)
+question_perf_d1o2_0.55 = evaluate_question_perf(current_task_data_d1o2_0.55, allQ)
 question_perf_d1o2_0.40 = evaluate_question_perf(current_task_data_d1o2_0.40, allQ)
 question_perf_d1o2_0.25 = evaluate_question_perf(current_task_data_d1o2_0.25_weeded, allQ)
 
 #evaluate accuracy per worker, return a table per worker
-worker_perf_d1o2_0.10 = evaluate_worker_perf(current_task_data_d1o2_0.10, allQ)
-worker_perf_d1o2_0.55 = evaluate_worker_perf(current_task_data_d1o2_0.55_weeded, allQ)
+worker_perf_d1o2_0.10 = evaluate_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
+worker_perf_d1o2_0.55 = evaluate_worker_perf(current_task_data_d1o2_0.55, allQ)
 worker_perf_d1o2_0.40 = evaluate_worker_perf(current_task_data_d1o2_0.40, allQ)
 worker_perf_d1o2_0.25 = evaluate_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
 
@@ -287,33 +306,51 @@ regr_table_d1o2_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o2_exclude0.10$CQ2_3
 regr_table_d1o2_exclude0.10$CQ3 = as.factor(regr_table_d1o2_exclude0.10$CQ3)
 ```
 ## EDA
+
+```{r}
+head(regr_table_d1o1)
+head(regr_table_d1o2)
+```
+
+Comparing the two results...
 ```{r}
 
 # DESIGN 1 ORDER 1
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o1_0.10, allQ)
+# summarize_question_accuracy(current_task_data_d1o1_0.10, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
+smry_010 = summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o1_0.55_weeded, allQ)
+# summarize_question_accuracy(current_task_data_d1o1_0.55_weeded, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+smry_055 = summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o1_0.40, allQ)
+# summarize_question_accuracy(current_task_data_d1o1_0.40, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
+smry_040 = summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o1_0.25_weeded, allQ)
+# summarize_question_accuracy(current_task_data_d1o1_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+smry_025 = summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
 
+avg_time_025 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.25,]$time_spent))/60
+avg_time_010= mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.10,]$time_spent))/60
+avg_time_040 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.40,]$time_spent))/60
+avg_time_055= mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.55,]$time_spent))/60
+
+d1o1_summary = data.frame(Name=c("Design 1", "Design 1", "Design 1", "Design 1"), Order=c(1,1,1,1), Treatmet=c(0.1,0.25, 0.40, 0.55), N=c(nrow(worker_perf_d1o1_0.10),nrow(worker_perf_d1o1_0.25),nrow(worker_perf_d1o1_0.40),nrow(worker_perf_d1o1_0.55)), TotalTimeTaken=c("check","check", "check", "check"), AvgTimePerTaskMin = c(avg_time_010,avg_time_025,avg_time_040,avg_time_055), AccuracyMean=c(smry_010$mean,smry_025$mean,smry_040$mean,smry_055$mean), AccuracySE=c(smry_010$se,smry_025$se,smry_040$se,smry_055$se))
+knitr::kable(d1o1_summary, "markdown")
+```
+
+```{r}
+# group these somehow
 hist(regr_table_d1o1$accuracy)
 hist(regr_table_d1o1[treatment == 0.55,]$accuracy)
 hist(regr_table_d1o1[treatment == 0.10,]$accuracy)
@@ -325,29 +362,39 @@ hist(regr_table_d1o1[treatment == 0.40,]$accuracy)
 
 # DESIGN 1 ORDER 2
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o2_0.10, allQ)
+# summarize_question_accuracy(current_task_data_d1o2_0.10_weeded, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o2_0.10, allQ)
+smry_010 = summarize_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o2_0.55_weeded, allQ)
+# summarize_question_accuracy(current_task_data_d1o2_0.55, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o2_0.55_weeded, allQ)
+smry_055 = summarize_worker_perf(current_task_data_d1o2_0.55, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o2_0.40, allQ)
+# summarize_question_accuracy(current_task_data_d1o2_0.40, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
+smry_040 = summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
 
 #stats summary of accuracies over all questions
-summarize_question_accuracy(current_task_data_d1o2_0.25_weeded, allQ)
+# summarize_question_accuracy(current_task_data_d1o2_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
-summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+smry_025=summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
 
+avg_time_025 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.25,]$time_spent))/60
+avg_time_010= mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.10,]$time_spent))/60
+avg_time_040 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.40,]$time_spent))/60
+avg_time_055= mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.55,]$time_spent))/60
+
+d1o1_summary = data.frame(Name=c("Design 1", "Design 1", "Design 1", "Design 1"), Order=c(2,2,2,2), Treatmet=c(0.1,0.25, 0.40, 0.55), N=c(nrow(worker_perf_d1o2_0.10),nrow(worker_perf_d1o2_0.25),nrow(worker_perf_d1o2_0.40),nrow(worker_perf_d1o2_0.55)), TotalTimeTaken=c("check","check", "check", "check"), AvgTimePerTaskMin = c(avg_time_010,avg_time_025,avg_time_040,avg_time_055), AccuracyMean=c(smry_010$mean,smry_025$mean,smry_040$mean,smry_055$mean), AccuracySE=c(smry_010$se,smry_025$se,smry_040$se,smry_055$se))
+knitr::kable(d1o1_summary, "markdown")
+```
+
+```{r}
 hist(regr_table_d1o2$accuracy)
 hist(regr_table_d1o2[treatment == 0.55,]$accuracy)
 hist(regr_table_d1o2[treatment == 0.10,]$accuracy)
