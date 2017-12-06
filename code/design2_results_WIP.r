@@ -332,47 +332,35 @@ head(Y01.table.filled,20)
 head(Y11.table.filled,20)
 
 
+
 # WORK IN PROGRESS
-# Randomization Inference
+# Sampling Distribution to generate CI
 
-
+ATEs_0100.hat = c()
+ATEs_1100.hat = c()
 treatments = c(rep("CCC",61), rep("CCT",58), rep("CTT",60), rep("TTT",64))
 
+
 # write function to wrap below
-treat = sample(x=treatments,size=length(treatments),replace = F)
-
-# create simulated schedule
-sim.outcomes = create_simulated_schedule(sim.outcomes.template, treat) 
-
-# estimate ATE from simulated schedule
-est.ATE_from_simoutcomes = function(simulated_outcomes) {
-  
-  Y01_S1 = simulated_outcomes[round=="one" & group=="TTT",round_accuracy]
-  Y01_S2 = simulated_outcomes[round=="two" & group=="CTT",round_accuracy]
-  Y01_S3 = simulated_outcomes[round=="three" & group=="CTT",round_accuracy]
-  Y00_S1 = simulated_outcomes[round=="one" & group!="TTT",round_accuracy]
-  Y00_S2 = simulated_outcomes[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
-  Y00_S3 = simulated_outcomes[round=="three" & group=="CCC",round_accuracy]
-  Y11_S2 = simulated_outcomese[round=="two" & group=="TTT",round_accuracy]
-  Y11_S3 = simulated_outcomes[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy] 
-  
-  E_Y01 = (sum(Y01_S1)/0.25 + sum(Y01_S2)/0.25 + sum(Y01_S3)/0.25) / 
-    (length(Y01_S1)/0.25 + length(Y01_S2)/0.25  + length(Y01_S3)/0.25 )
-  
-  E_Y00.1 = (sum(Y00_S1)/0.75 + sum(Y00_S2)/0.50+ sum(Y00_S3)/0.25) /
-    (length(Y00_S1)/0.75 + length(Y00_S2)/0.50+ length(Y00_S3)/0.25)
-  
-  E_Y01_Y00 = E_Y01 - E_Y00.1 
-  
-  E_Y11 = (sum(Y11_S2)/0.25 + sum(Y11_S3)/0.50) /
-    (length(Y11_S2)/0.25 + length(Y11_S3)/0.50)
-  
-  E_Y00.2 = (sum(Y00_S2)/0.50 + sum(Y00_S3)/0.25) /
-    (length(Y00_S2)/0.50 + length(Y00_S3)/0.25)
-  
-  E_Y11_Y00 = E_Y11 - E_Y00.2
+for (i in 1:1000) {
+  treat = sample(x=treatments,size=length(treatments),replace = F)
+  # create simulated schedule
+  sim.outcomes = create_simulated_schedule(sim.outcomes.template, treat) 
+  # estimate ATE from simulated schedule
+  estimates = est.ATE_from_simoutcomes(sim.outcomes)
+  ATEs_1100.hat = c(ATEs_1100.hat, estimates[[2]])
+  ATEs_0100.hat = c(ATEs_0100.hat, estimates[[1]])
 }
 
+# list of simulated ATE estimates
+ATEs_0100.hat
+ATEs_1100.hat 
+# histogram of simulated ATE estimates
+hist(ATEs_0100.hat, breaks = 20)
+hist(ATEs_1100.hat, breaks = 20)
+# CIs of simulated ATE estimates
+quantile(ATEs_0100.hat, c(0.025, 0.975))
+quantile(ATEs_1100.hat, c(0.025, 0.975))
 #---------------------------------------------------------------------
 # NOTES below for figuring out general linear hypothesis
 "

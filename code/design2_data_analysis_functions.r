@@ -86,7 +86,7 @@ est.ATE_from_simoutcomes = function(simulated_outcomes) {
   Y00_S1 = simulated_outcomes[round=="one" & group!="TTT",round_accuracy]
   Y00_S2 = simulated_outcomes[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
   Y00_S3 = simulated_outcomes[round=="three" & group=="CCC",round_accuracy]
-  Y11_S2 = simulated_outcomese[round=="two" & group=="TTT",round_accuracy]
+  Y11_S2 = simulated_outcomes[round=="two" & group=="TTT",round_accuracy]
   Y11_S3 = simulated_outcomes[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy] 
   
   E_Y01 = (sum(Y01_S1)/0.25 + sum(Y01_S2)/0.25 + sum(Y01_S3)/0.25) / 
@@ -104,4 +104,6 @@ est.ATE_from_simoutcomes = function(simulated_outcomes) {
     (length(Y00_S2)/0.50 + length(Y00_S3)/0.25)
   
   E_Y11_Y00 = E_Y11 - E_Y00.2
+  
+  list(E_Y01_Y00, E_Y11_Y00)
 }
