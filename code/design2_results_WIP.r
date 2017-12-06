@@ -1,19 +1,27 @@
 # Use this code to evaluate worker performance based on pilot resul csvs
 rm(list = ls())
 
-library(multcomp)
-
 # load supporting functions
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/241_Final/Field_Experiment_Human_Image_Classification/code")
 source(file = "design2_data_transformation_functions.r")
-#source(file = "design2_data_analysis_functions.r")
+source(file = "design2_data_analysis_functions.r")
 
 #---------------------------------------------------------------------#
 
 # read in data for analysis
 by_HIT.table = fread("../modeling_data/design2_by_HIT.csv")
 by_Session.table = fread("../modeling_data/design2_by_Session.csv")
+observed_outcomes_table = fread("../modeling_data/design2_observed_outcomes_table.csv")
+assigned_treatment_condition_table = fread("../modeling_data/design2_assigned_treatment_condition_tablee.csv")
 
+Y00.table= fread("../modeling_data/design2_Y00_table.csv")
+Y01.table= fread("../modeling_data/design2_Y01_table.csv")
+Y11.table= fread("../modeling_data/design2_Y11_table.csv")
+
+
+Y00.table.filled= fread("../modeling_data/design2_Y00_table_full.csv")
+Y01.table.filled= fread("../modeling_data/design2_Y01_table_full.csv")
+Y11.table.filled= fread("../modeling_data/design2_Y11_table_full.csv")
 #View(by_HIT.table)
 #View(by_Session.table)
 #---------------------------------------------------------------------#
@@ -44,40 +52,9 @@ by_HIT.table$CQ5 = factor(by_HIT.table$CQ5, levels = c("Never heard of Linkedin"
 attrition_by_group = lm(observed~group,data=by_HIT.table)
 summary(attrition_by_group) #nothing significant
 
-attrition_by_group_CQ1.1 = lm(observed~group,data=by_HIT.table[CQ1=="a lot less than half",])
-summary(attrition_by_group_CQ1.1) # groupCCT 0.047434 *
-attrition_by_group_CQ1.2 = lm(observed~group,data=by_HIT.table[CQ1=="around half",])
-summary(attrition_by_group_CQ1.2) # nothing significant
-attrition_by_group_CQ1.3 = lm(observed~group,data=by_HIT.table[CQ1=="a lot more than half",])
-summary(attrition_by_group_CQ1.3) # groupCCT 0.00154 *
-
-attrition_by_group_CQ2 = lm(observed~group*CQ2,data=by_HIT.table)
-summary(attrition_by_group_CQ2) # nothing significant
-
-attrition_by_group_CQ3.1 = lm(observed~group,data=by_HIT.table[CQ3=="Yes",])
-summary(attrition_by_group_CQ3.1) # nothing significant
-attrition_by_group_CQ3.2 = lm(observed~group,data=by_HIT.table[CQ3=="No",])
-summary(attrition_by_group_CQ3.2) # nothing significant
-attrition_by_group_CQ3.3 = lm(observed~group,data=by_HIT.table[CQ3=="Maybe",])
-summary(attrition_by_group_CQ3.3) # nothing significant
-
-attrition_by_group_CQ4.1 = lm(observed~group,data=by_HIT.table[CQ4=="0 to 10",])
-summary(attrition_by_group_CQ4.1) # nothing significant
-attrition_by_group_CQ4.2 = lm(observed~group,data=by_HIT.table[CQ4=="11 to 20",])
-summary(attrition_by_group_CQ4.2) # nothing significant
-attrition_by_group_CQ4.3 = lm(observed~group,data=by_HIT.table[CQ4=="21 to 30",])
-summary(attrition_by_group_CQ4.3) # nothing significant
-attrition_by_group_CQ4.4 = lm(observed~group,data=by_HIT.table[CQ4=="31 to 40",])
-summary(attrition_by_group_CQ4.4) # nothing significant
-attrition_by_group_CQ4.5 = lm(observed~group,data=by_HIT.table[CQ4=="41 or more",])
-summary(attrition_by_group_CQ4.5) # nothing significant
-
-attrition_by_group_CQ5.1 = lm(observed~group,data=by_HIT.table[CQ5=="Yes",])
-summary(attrition_by_group_CQ5.1) # nothing significant
-attrition_by_group_CQ5.2 = lm(observed~group,data=by_HIT.table[CQ5=="No",])
-summary(attrition_by_group_CQ5.2) # nothing significant
-attrition_by_group_CQ5.3 = lm(observed~group,data=by_HIT.table[CQ5=="Never heard of Linkedin",])
-summary(attrition_by_group_CQ5.3) # nothing significant
+# Use interactions!
+attrition_by_group_CQ = lm(observed~group*CQ1 + group*CQ2 + group*CQ3 + group*CQ4 + group*CQ5,data=by_HIT.table)
+summary(attrition_by_group_CQ) #violations mostly related to CQ1
 
 #---------------------------------------------------------------------#
 # check covariate balance (among non-attriters)
@@ -173,7 +150,12 @@ lmtest::coeftest(mod.design2.by_HIT.cov.all_screeners_passed, vcov=vcovHC(mod.de
 
 # WITH COVARIATES
 mod.design2.by_Session = lm(round_accuracy ~ group * round,data=by_Session.table)
-summary(mod.design2.by_Session)
+coeftest(mod.design2.by_Session, vcov=vcovHC(mod.design2.by_Session))
+
+
+# WITH COVARIATES (TO BE CONTINUED)
+mod.design2.by_Session.cov = lm(round_accuracy ~ group * round + CQ1 + CQ2 + CQ3 + CQ4 + CQ5,data=by_Session.table)
+coeftest(mod.design2.by_Session.cov, vcov=vcovHC(mod.design2.by_Session.cov))
 
 "
 Round       R1 R2 R3
@@ -204,8 +186,217 @@ b_11 groupCTT:roundthree -0.0046609  0.0530039 -0.0879   0.9300
 b_12 groupTTT:roundthree  0.0094323  0.0524767  0.1797   0.8574 
 ---------------------------------------------------------------------
 "
+
+"
+Full Model
+
+Estimate Std. Error t value  Pr(>|t|)    
+b_1  (Intercept)              0.4832592  0.0905885  5.3347 1.291e-07 ***
+b_2  groupCCT                 0.0132190  0.0358540  0.3687  0.712470    
+b_3  groupCTT                -0.0369008  0.0371396 -0.9936  0.320773    
+b_4  groupTTT                -0.0073552  0.0340609 -0.2159  0.829096    
+b_5  roundtwo                -0.0173578  0.0321583 -0.5398  0.589533    
+b_6  roundthree               0.0144648  0.0318498  0.4542  0.649855    
+b_7  CQ1around half           0.0809586  0.0289370  2.7978  0.005286 ** 
+b_8  CQ1a lot more than half  0.1153769  0.0287837  4.0084 6.763e-05 ***
+b_9  CQ2                      0.0237025  0.0097418  2.4331  0.015218 *  
+b_10 CQ3Maybe                -0.1525802  0.0541354 -2.8185  0.004960 ** 
+b_11 CQ3Yes                   0.1013461  0.0318965  3.1773  0.001551 ** 
+b_12 CQ411 to 20             -0.0647353  0.0354255 -1.8274  0.068067 .  
+b_13 CQ421 to 30             -0.0304403  0.0302873 -1.0051  0.315217    
+b_14 CQ431 to 40              0.0075191  0.0329807  0.2280  0.819723    
+b_15 CQ441 or more           -0.0315901  0.0271677 -1.1628  0.245310    
+b_16 CQ5No                    0.1814065  0.0797526  2.2746  0.023228 *  
+b_17 CQ5Yes                   0.1143499  0.0805132  1.4203  0.155973    
+b_18 groupCCT:roundtwo       -0.0049546  0.0496381 -0.0998  0.920520    
+b_19 groupCTT:roundtwo        0.0163774  0.0500366  0.3273  0.743532    
+b_20 groupTTT:roundtwo        0.0072475  0.0466586  0.1553  0.876606    
+b_21 groupCCT:roundthree      0.0037908  0.0496820  0.0763  0.939201    
+b_22 groupCTT:roundthree     -0.0046609  0.0501303 -0.0930  0.925949    
+b_23 groupTTT:roundthree      0.0094323  0.0455974  0.2069  0.836179  
+"
 #---------------------------------------------------------------------
 
+# ALL the comparisons we want to make with the Stepped-Wedge Design
+
+summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
+             linfct=rbind(
+               # effect of being in round two rather than round one in group CCC
+               "CCC R2-R1"=c(0,0,0,0,1,0,0,0,0,0, 0, 0),
+               # effect of being in round three rather than round one in group CCC
+               "CCC R3-R1"=c(0,0,0,0,0,1,0,0,0,0, 0, 0),
+               # effect of being in round three rather than round two in group CCC
+               "CCC R3-R2"=c(0,0,0,0,-1,1,0,0,0,0, 0, 0),
+               
+               # effect of being in round two rather than round one in group CCT
+               "CCT R2-R1"=c(0,0,0,0,1,0,1,0,0,0, 0, 0),
+               # effect of being in round three rather than round one in group CCT
+               "CCT R3-R1"=c(0,0,0,0,0,1,0,0,0,1, 0, 0),
+               # effect of being in round three rather than round two in group CCT
+               "CCT R3-R2"=c(0,0,0,0,-1,1,-1,0,0,1, 0, 0),
+               
+               # effect of being in round two rather than round one in group CTT
+               "CTT R2-R1"=c(0,0,0,0,1,0,0,1,0,0, 0, 0),
+               # effect of being in round three rather than round one in group CTT
+               "CTT R3-R1"=c(0,0,0,0,0,1,0,0,0,0, 1, 0),
+               # effect of being in round three rather than round two in group CTT
+               "CTT R3-R2"=c(0,0,0,0,-1,1,0,-1,0,0, 1, 0),
+               
+               # effect of being in round two rather than round one in group TTT
+               "TTT R2-R1"=c(0,0,0,0,1,0,0,0,1,0, 0, 0),
+               # effect of being in round three rather than round one in group TTT
+               "TTT R3-R1"=c(0,0,0,0,0,1,0,0,0,0, 0, 1),
+               # effect of being in round three rather than round two in group TTT
+               "TTT R3-R2"=c(0,0,0,0,-1,1,0,0,-1,0, 0, 1),
+               
+               # Effect of receiving treatment in Round one 
+               "T-C R1"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,0, 0, 0),
+               # Effect of receiving treatment in Round two (regardless of round one status)
+               "T-C R2"=c(0,(-1/2),(1/2),(1/2),0,0,(-1/2),(1/2),(1/2),0, 0, 0),
+               # Effect of receiving treatment in Round three (regardless of round one or two status)
+               "T-C R3"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,(-1/3), (-1/3), 1),
+               
+               # Effect of being in a group TTT that receive all three rounds 
+               # of treatment rather than all control group CCC
+               "TTT-CCC"=c(0,0,0,1,0,0,0,0,1/3,0, 0, 1/3),
+               # Effect of being in any treatment groups rather than all control group CCC 
+               "(T)-CCC"=c(0,1/3,1/3,1/3,0,0,1/9,1/9,1/9,1/9, 1/9, 1/9),
+               
+               # Effect on Round 3, of Receiving Treatment in Round 3 but not earlier : 
+               # Difference-Difference Estimator
+               "D_in_D R3"=c(0,0,0,0,0,0,-1,0,0,1, 0, 0),
+               # Effect on Round 2, of Receiving Treatment in Round 2 but not earlier : 
+               # Difference-Difference Estimator
+               "D_in_D R2"=c(0,0,0,0,0,0,-1/2,1,0,0, 0, 0)
+             )))
+
+
+#---------------------------------------------------------------------
+
+# FE code pp277
+
+# 243 full rows
+table(by_HIT.table[by_HIT.table$overall_accuracy >=0]$group)
+
+
+# Given 243 subjects, with the following group distribution. 
+# possible random allocations
+choose(243,64) * choose(179,60) * choose(119,58)
+
+
+
+# Important substantive assumptions that allow us to get an overall estimate of bonuses assigned to any session.Invoking the no anticipation assumption allow us to ignore treatments that are allocated after the current period. We also ignore treatments that were allocated two sessions prior, which is equivalent to assuming that bonuses' effects wask out entirely after two sessions/.
+
+# We first redefine the potential outcomes as follow:
+# Y_00 (untreated during preceding and current session)
+# Y_01 (untreated during preceding session but treated during current session)
+# Y_11 (treated during preceding and current session)
+
+# And the truncated tables below shows the randomly assigned treatment condition and observed outcomes for 20 of the subjects.
+
+head(assigned_treatment_condition_table,20)
+head(observed_outcomes_table, 20)
+
+# ATE estimate
+# Note that we cannot naively compare average outcomes of treated sessions to the average outcomes of the untreated sessions. This approach is biased because it ignores the fact that the probability of assignment to treatment varies from session to session because individuals are much more likely to be assignedf to bonuses in the final week than in the first week. It is also prone to biase because it ignores lagged effects, treating Y_11 and Y_01 as though they were identical.
+# Instead we begin by calculating the probability of begin assigned to each treatment during each session. These probabilities are displayed below.
+
+design2.prob.table = data.table(Treatment_Condition = c("Pr(00)","Pr(01)","Pr(11)"),
+                                Week_1 = c(0.75, 0.25, 0),
+                                Week_2 = c(0.50, 0.25, 0.25),
+                                Week_3 = c(0.25, 0.25, 0.50))
+design2.prob.table
+
+# Then, in order to obtain unbiased treatment effects, we apply inverse weights. Treated units are weighted by the inverse of the probability of being treated; control units are weighted by the inverse of the probability of being in control. According to the above probability table, calculation of the immediate effect is as follows:
+
+
+# SPECIFY FORMULAsss HERE 
+$$\hat{E}[Y_{01} - Y_{00}] = \frac{ \frac{\sum_{S1} Y_{01}}{0.25} + \frac{\sum_{S2} Y_{01}}{0.25} + \frac{\sum_{S3} Y_{01}}{0.25} }{\frac{64}{0.25}+\frac{60}{0.25} +\frac{60}{0.25}} - \frac{ \frac{\sum_{S1} Y_{00}}{0.75} + \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} }{\frac{179}{0.75}+\frac{119}{0.50} +\frac{61}{0.25}}$$
+
+  
+# sum S1 Y_01 
+Y01_S1 = by_Session.table[round=="one" & group=="TTT",round_accuracy]
+# sum S2 Y_01
+Y01_S2 = by_Session.table[round=="two" & group=="CTT",round_accuracy]
+# sum S3 Y_01
+Y01_S3 = by_Session.table[round=="three" & group=="CTT",round_accuracy]
+
+# sum S1 Y_00
+Y00_S1 = by_Session.table[round=="one" & group!="TTT",round_accuracy]
+# sum S2 Y_00
+Y00_S2 = by_Session.table[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
+# sum S3 Y_00
+Y00_S3 = by_Session.table[round=="three" & group=="CCC",round_accuracy]
+
+
+E_Y01 = (sum(Y01_S1)/0.25 + sum(Y01_S2)/0.25 + sum(Y01_S3)/0.25) / 
+  (length(Y01_S1)/0.25 + length(Y01_S2)/0.25  + length(Y01_S3)/0.25 )
+
+E_Y00.1 = (sum(Y00_S1)/0.75 + sum(Y00_S2)/0.50+ sum(Y00_S3)/0.25) /
+  (length(Y00_S1)/0.75 + length(Y00_S2)/0.50+ length(Y00_S3)/0.25)
+
+E_Y01_Y00 = E_Y01 - E_Y00.1 
+
+# In order to estimate effects for combined immediate and lag effect, we restrict our attention to the second and third weeks, because this type of treatment cannot occur in the first week.
+
+# SPECIFY FORMULAsss HERE 
+$$\hat{E}[Y_{11} - Y_{00}] = \frac{ \frac{\sum_{S2} Y_{11}}{0.25} + \frac{\sum_{S3} Y_{11}}{0.50} }{\frac{64}{0.25}+\frac{124}{0.50}} - \frac{ \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} + }{\frac{119}{0.50}+\frac{61}{0.25}}$$
+
+# sum S1 Y_11
+# non-existent
+# sum S2 Y_11
+Y11_S2 = by_Session.table[round=="two" & group=="TTT",round_accuracy]
+# sum S3 Y_11
+Y11_S3 = by_Session.table[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy]
+
+E_Y11 = (sum(Y11_S2)/0.25 + sum(Y11_S3)/0.50) /
+  (length(Y11_S2)/0.25 + length(Y11_S3)/0.50)
+  
+E_Y00.2 = (sum(Y00_S2)/0.50 + sum(Y00_S3)/0.25) /
+  (length(Y00_S2)/0.50 + length(Y00_S3)/0.25)
+
+E_Y11_Y00 = E_Y11 - E_Y00.2
+
+
+# Get standard errors
+# Below, we generated a hypothetical schedule of outcomes for this experiment. 
+
+# outcome table as is
+head(Y00.table,20)
+head(Y01.table,20)
+head(Y11.table,20)
+
+# Then, we fill in the implied schedule of potential outcomes under the assumption of constant treatment effects.
+head(Y00.table.filled,20)
+head(Y01.table.filled,20)
+head(Y11.table.filled,20)
+
+
+# WORK IN PROGRESS
+# Randomization Inference
+
+treatments = c(rep("CCC",61), rep("CCT",58), rep("CTT",60), rep("TTT",64))
+
+# write function to wrap below
+treat = sample(x=treatments,size=length(treatments),replace = F)
+# create simulated schedule
+sim.outcomes = data.table(worker_id = by_Session.table$worker_id,
+                        group = treat,
+                        )
+# estimate ATE from simulated schedule
+
+
+design2.est.ATE = function(treat) {}
+Y01_S1 = by_Session.table[round=="one" & group=="TTT",round_accuracy]
+Y01_S2 = by_Session.table[round=="two" & group=="CTT",round_accuracy]
+Y01_S3 = by_Session.table[round=="three" & group=="CTT",round_accuracy]
+Y00_S1 = by_Session.table[round=="one" & group!="TTT",round_accuracy]
+Y00_S2 = by_Session.table[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
+Y00_S3 = by_Session.table[round=="three" & group=="CCC",round_accuracy]
+Y11_S2 = by_Session.table[round=="two" & group=="TTT",round_accuracy]
+Y11_S3 = by_Session.table[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy]
+#---------------------------------------------------------------------
+# NOTES below for figuring out general linear hypothesis
 "
 Group CCC Round 1 Accuracy:
 
@@ -242,6 +433,7 @@ b_6 : effect of being in round three rather than round one in group CCC
 b_6 - b_5 : effect of being in round three rather than round two in group CCC
 "
 
+# Model without covariates
 summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
              linfct=rbind(
                "CCC R2-R1"=c(0,0,0,0,1,0,0,0,0,0, 0, 0),
@@ -249,6 +441,13 @@ summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
                "CCC R3-R2"=c(0,0,0,0,-1,1,0,0,0,0, 0, 0)
              )))
 
+# Model with covariates
+summary(glht(mod.design2.by_Session.cov , vcov=vcovHC(mod.design2.by_Session.cov),
+             linfct=rbind(
+               "CCC R2-R1"=c(0,0,0,0,1,0,     0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,      0, 0, 0, 0, 0, 0),
+               "CCC R3-R1"=c(0,0,0,0,0,1,     0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,      0, 0, 0, 0, 0, 0),
+               "CCC R3-R2"=c(0,0,0,0,-1,1,    0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,      0,0,0,0, 0, 0)
+             )))
 #---------------------------------------------------------------------
 
 "
@@ -287,7 +486,7 @@ b_6 + b_10 : effect of being in round three rather than round one in group CCT
 b_6 - b_5 + b_10 - b_7 : effect of being in round three rather than round two in group CCT
 "
 
-
+# Model without covariates
 summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
              linfct=rbind(
                "CCT R2-R1"=c(0,0,0,0,1,0,1,0,0,0, 0, 0),
@@ -295,6 +494,14 @@ summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
                "CCT R3-R2"=c(0,0,0,0,-1,1,-1,0,0,1, 0, 0)
              )))
 
+
+# Model with covariates
+summary(glht(mod.design2.by_Session.cov , vcov=vcovHC(mod.design2.by_Session.cov),
+             linfct=rbind(
+               "CCT R2-R1"=c(0,0,0,0,1,0,     0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,     1,0,0,0, 0, 0),
+               "CCT R3-R1"=c(0,0,0,0,0,1,     0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,     0,0,0,1, 0, 0),
+               "CCT R3-R2"=c(0,0,0,0,-1,1,    0,0,0, 0, 0, 0, 0, 0, 0, 0, 0,    -1,0,0,1, 0, 0)
+             )))
 #---------------------------------------------------------------------
 
 "
@@ -380,9 +587,9 @@ b_6 - b_5 + b_12 - b_9 : effect of being in round three rather than round two in
 
 summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
              linfct=rbind(
-               "CTT R2-R1"=c(0,0,0,0,1,0,0,0,1,0, 0, 0),
-               "CTT R3-R1"=c(0,0,0,0,0,1,0,0,0,0, 0, 1),
-               "CTT R3-R2"=c(0,0,0,0,-1,1,0,0,-1,0, 0, 1)
+               "TTT R2-R1"=c(0,0,0,0,1,0,0,0,1,0, 0, 0),
+               "TTT R3-R1"=c(0,0,0,0,0,1,0,0,0,0, 0, 1),
+               "TTT R3-R2"=c(0,0,0,0,-1,1,0,0,-1,0, 0, 1)
              )))
 
 #---------------------------------------------------------------------
@@ -573,7 +780,7 @@ lmtest::coeftest(mod.design2.by_Session.CCC, vcov=vcovHC(mod.design2.by_Session.
 
 summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
              linfct=rbind(
-               "TTT-CCC"=c(0,1/3,1/3,1/3,0,0,1/9,1/9,1/9,1/9, 1/9, 1/9)
+               "(T)-CCC"=c(0,1/3,1/3,1/3,0,0,1/9,1/9,1/9,1/9, 1/9, 1/9)
              )))
 #---------------------------------------------------------------------
 
@@ -622,9 +829,7 @@ summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
 
 
 #---------------------------------------------------------------------#
-# WITH COVARIATES (TO BE CONTINUED)
-mod.design2.by_Session.cov = lm(round_accuracy ~ group * round + CQ1 + CQ2 + CQ3 + CQ4 + CQ5,data=by_Session.table)
-lmtest::coeftest(mod.design2.cov, vcov=vcovHC(mod.design2.by_Session))
+
 
 
 

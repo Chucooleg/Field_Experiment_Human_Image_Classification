@@ -107,3 +107,178 @@ View(by_HIT.table)
 
 write.csv(by_Session.table, "../modeling_data/design2_by_Session.csv")
 write.csv(by_HIT.table, "../modeling_data/design2_by_HIT.csv")
+
+#---------------------------------------------------------------------#
+# Table of assigned treatment condition, observed outcomes and potential outcomes
+
+to_pivot = data.table(worker_id = by_Session.table$worker_id,
+                 round = by_Session.table$round,
+                 value = by_Session.table$round_accuracy)
+
+observed_outcomes_table = data.table(cast(to_pivot, worker_id~round))
+
+assigned_treatment_condition_table = observed_outcomes_table
+
+CCC_list = by_Session.table[group == "CCC", worker_id]
+CCT_list = by_Session.table[group == "CCT", worker_id]
+CTT_list = by_Session.table[group == "CTT", worker_id]
+TTT_list = by_Session.table[group == "TTT", worker_id]
+
+assigned_treatment_condition_table[worker_id %in% CCC_list,one_assignment:= "00"]
+assigned_treatment_condition_table[worker_id %in% CCC_list,two_assignment:= "00"]
+assigned_treatment_condition_table[worker_id %in% CCC_list,three_assignment:= "00"]
+
+assigned_treatment_condition_table[worker_id %in% CCT_list,one_assignment:= "00"]
+assigned_treatment_condition_table[worker_id %in% CCT_list,two_assignment:= "00"]
+assigned_treatment_condition_table[worker_id %in% CCT_list,three_assignment:= "01"]
+
+assigned_treatment_condition_table[worker_id %in% CTT_list,one_assignment:= "00"]
+assigned_treatment_condition_table[worker_id %in% CTT_list,two_assignment:= "01"]
+assigned_treatment_condition_table[worker_id %in% CTT_list,three_assignment:= "11"]
+
+assigned_treatment_condition_table[worker_id %in% TTT_list,one_assignment:= "01"]
+assigned_treatment_condition_table[worker_id %in% TTT_list,two_assignment:= "11"]
+assigned_treatment_condition_table[worker_id %in% TTT_list,three_assignment:= "11"]
+
+assigned_treatment_condition_table = data.table(worker_id = assigned_treatment_condition_table$worker_id,
+                                                one = assigned_treatment_condition_table$one_assignment,
+                                                two = assigned_treatment_condition_table$two_assignment,
+                                                three = assigned_treatment_condition_table$three_assignment)
+#---------------------------------------------------------------------#
+# write to csv
+
+write.csv(observed_outcomes_table, "../modeling_data/design2_observed_outcomes_table.csv")
+write.csv(assigned_treatment_condition_table, "../modeling_data/design2_assigned_treatment_condition_tablee.csv")
+
+#---------------------------------------------------------------------#
+# design 2 full potential outcomes schedule
+
+Y01.table = data.table(worker_id = observed_outcomes_table$worker_id,
+                       one = NA,
+                       two = NA,
+                       three = NA)
+
+Y00.table = data.table(worker_id = observed_outcomes_table$worker_id,
+                       one = NA,
+                       two = NA,
+                       three = NA)
+
+Y11.table = data.table(worker_id = observed_outcomes_table$worker_id,
+                       one = NA,
+                       two = NA,
+                       three = NA)
+
+# Y00 one 
+Y00.table$one = as.numeric(assigned_treatment_condition_table$one == "00") * observed_outcomes_table$one
+# Y00 two 
+Y00.table$two = as.numeric(assigned_treatment_condition_table$two == "00") * observed_outcomes_table$two
+# Y00 three 
+Y00.table$three = as.numeric(assigned_treatment_condition_table$three == "00") * observed_outcomes_table$three
+
+
+# Y01 one 
+Y01.table$one = as.numeric(assigned_treatment_condition_table$one == "01") * observed_outcomes_table$one
+# Y01 two
+Y01.table$two = as.numeric(assigned_treatment_condition_table$two == "01") * observed_outcomes_table$two
+# Y01 three
+Y01.table$three = as.numeric(assigned_treatment_condition_table$three == "01") * observed_outcomes_table$three
+
+
+# Y11 one 
+Y11.table$one = as.numeric(assigned_treatment_condition_table$one == "11") * observed_outcomes_table$one
+# Y11 two
+Y11.table$two = as.numeric(assigned_treatment_condition_table$two == "11") * observed_outcomes_table$two
+# Y11 three
+Y11.table$three = as.numeric(assigned_treatment_condition_table$three == "11") * observed_outcomes_table$three
+
+
+Y00.table$one[Y00.table$one == 0] = NA
+Y00.table$two[Y00.table$two == 0] = NA
+Y00.table$three[Y00.table$three == 0] = NA
+
+Y01.table$one[Y01.table$one == 0] = NA
+Y01.table$two[Y01.table$two == 0] = NA
+Y01.table$three[Y01.table$three == 0] = NA
+
+Y11.table$one[Y11.table$one == 0] = NA
+Y11.table$two[Y11.table$two == 0] = NA
+Y11.table$three[Y11.table$three == 0] = NA
+
+
+Y00.table.dum = Y00.table
+Y01.table.dum = Y01.table
+Y11.table.dum = Y11.table
+
+Y00.table.dum$one.01 = Y00.table.dum$one + E_Y01_Y00
+Y00.table.dum$one.11 = Y00.table.dum$one + E_Y11_Y00
+Y00.table.dum$two.01 = Y00.table.dum$two + E_Y01_Y00
+Y00.table.dum$two.11 = Y00.table.dum$two + E_Y11_Y00
+Y00.table.dum$three.01 = Y00.table.dum$three + E_Y01_Y00
+Y00.table.dum$three.11 = Y00.table.dum$three + E_Y11_Y00
+
+Y01.table.dum$one.00 = Y01.table.dum$one - E_Y01_Y00
+Y01.table.dum$one.11 = Y01.table.dum$one - E_Y01_Y00 + E_Y11_Y00
+Y01.table.dum$two.00 = Y01.table.dum$two - E_Y01_Y00
+Y01.table.dum$two.11 = Y01.table.dum$two - E_Y01_Y00 + E_Y11_Y00
+Y01.table.dum$three.00 = Y01.table.dum$three - E_Y01_Y00
+Y01.table.dum$three.11 = Y01.table.dum$three - E_Y01_Y00 + E_Y11_Y00
+
+Y11.table.dum$one.00 = Y11.table.dum$one - E_Y11_Y00
+Y11.table.dum$one.01 = Y11.table.dum$one - E_Y11_Y00 + E_Y01_Y00
+Y11.table.dum$two.00 = Y11.table.dum$two - E_Y11_Y00
+Y11.table.dum$two.01 = Y11.table.dum$two - E_Y11_Y00 + E_Y01_Y00
+Y11.table.dum$three.00 = Y11.table.dum$three - E_Y11_Y00
+Y11.table.dum$three.01 = Y11.table.dum$three - E_Y11_Y00 + E_Y01_Y00
+
+Y00.table.dum$one[is.na(Y00.table.dum$one)] = 0
+Y00.table.dum$two[is.na(Y00.table.dum$two)] = 0
+Y00.table.dum$three[is.na(Y00.table.dum$three)] = 0
+Y00.table.dum$one.01[is.na(Y00.table.dum$one.01)] = 0
+Y00.table.dum$one.11[is.na(Y00.table.dum$one.11)] = 0
+Y00.table.dum$two.01[is.na(Y00.table.dum$two.01)] = 0
+Y00.table.dum$two.11[is.na(Y00.table.dum$two.11)] = 0
+Y00.table.dum$three.01[is.na(Y00.table.dum$three.01)] = 0
+Y00.table.dum$three.11[is.na(Y00.table.dum$three.11)] = 0
+
+Y01.table.dum$one[is.na(Y01.table.dum$one)] = 0
+Y01.table.dum$two[is.na(Y01.table.dum$two)] = 0
+Y01.table.dum$three[is.na(Y01.table.dum$three)] = 0
+Y01.table.dum$one.00[is.na(Y01.table.dum$one.00)] = 0
+Y01.table.dum$one.11[is.na(Y01.table.dum$one.11)] = 0
+Y01.table.dum$two.00[is.na(Y01.table.dum$two.00)] = 0
+Y01.table.dum$two.11[is.na(Y01.table.dum$two.11)] = 0
+Y01.table.dum$three.00[is.na(Y01.table.dum$three.00)] = 0
+Y01.table.dum$three.11[is.na(Y01.table.dum$three.11)] = 0
+
+Y11.table.dum$one[is.na(Y11.table.dum$one)] = 0
+Y11.table.dum$two[is.na(Y11.table.dum$two)] = 0
+Y11.table.dum$three[is.na(Y11.table.dum$three)] = 0
+Y11.table.dum$one.00[is.na(Y11.table.dum$one.00)] = 0
+Y11.table.dum$one.01[is.na(Y11.table.dum$one.01)] = 0
+Y11.table.dum$two.00[is.na(Y11.table.dum$two.00)] = 0
+Y11.table.dum$two.01[is.na(Y11.table.dum$two.01)] = 0
+Y11.table.dum$three.00[is.na(Y11.table.dum$three.00)] = 0
+Y11.table.dum$three.01[is.na(Y11.table.dum$three.01)] = 0
+
+
+Y00.table.filled$one = Y00.table.dum$one + Y01.table.dum$one.00 + Y11.table.dum$one.00
+Y00.table.filled$two = Y00.table.dum$two + Y01.table.dum$two.00 + Y11.table.dum$two.00
+Y00.table.filled$three = Y00.table.dum$three + Y01.table.dum$three.00 + Y11.table.dum$three.00
+
+Y01.table.filled$one = Y00.table.dum$one.01 + Y01.table.dum$one + Y11.table.dum$one.01
+Y01.table.filled$two = Y00.table.dum$two.01 + Y01.table.dum$two + Y11.table.dum$two.01
+Y01.table.filled$three = Y00.table.dum$three.01 + Y01.table.dum$three + Y11.table.dum$three.01
+
+Y11.table.filled$one = Y00.table.dum$one.11 + Y01.table.dum$one.11 + Y11.table.dum$one
+Y11.table.filled$two = Y00.table.dum$two.11 + Y01.table.dum$two.11 + Y11.table.dum$two
+Y11.table.filled$three = Y00.table.dum$three.11 + Y01.table.dum$three.11 + Y11.table.dum$three
+#---------------------------------------------------------------------#
+# write to csv
+
+write.csv(Y00.table, "../modeling_data/design2_Y00_table.csv")
+write.csv(Y01.table, "../modeling_data/design2_Y01_table.csv")
+write.csv(Y11.table, "../modeling_data/design2_Y11_table.csv")
+
+write.csv(Y00.table.filled, "../modeling_data/design2_Y00_table_full.csv")
+write.csv(Y01.table.filled, "../modeling_data/design2_Y01_table_full.csv")
+write.csv(Y11.table.filled, "../modeling_data/design2_Y11_table_full.csv")
