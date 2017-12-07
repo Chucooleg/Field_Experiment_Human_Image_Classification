@@ -26,6 +26,17 @@ est.regr.covars = function(r_table){
   lmtest::coeftest(regr, vcov(regr))
 }
 
+# ATE by REGRESSION -- on covariates only
+est.regr.covars_order = function(r_table){
+  regr = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3 + order1, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
+
+# ATE by REGRESSION -- on covariates only
+est.regr.covars_order_interact = function(r_table){
+  regr = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3 + order1 + order1*treatment, data = r_table)
+  lmtest::coeftest(regr, vcov(regr))
+}
 #-------------------------------------------------------------------------------------
 # FOR RANDOMIZATION INFERENCE
 

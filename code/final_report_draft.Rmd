@@ -27,7 +27,7 @@ source(file = "design1_data_analysis_functions.r")
 ```
 # Introduction
 
-In most economies, it is generally believed that renumeration for someone's work is strongly related to the effort they will put into it, and the eventual quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, say, by giving them similar tasks and different payments on a random basis, as this could be considered unethical and would lead to a serious disruption in the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part the pay plays. 
+In most economies, it is generally believed that remuneration for someone's work is strongly related to the effort they will put into it, and the eventual quality of the results. Unfortunately, this is a concept that is challenging to test in the normal world. Employers cannot easily conduct experiments with their own employees, say, by giving them similar tasks and different payments on a random basis, as this could be considered unethical and would lead to a serious disruption in the workforce. At the same time, such a study would be very helpful to employers who want to understand what motivates their employees, and what part the pay plays. 
 The Amazon Mechanical Turk (AMT) platform for the crowdsourced completion of tasks provides a great opportunity for experimentally testing the relationship between payment and quality of work without having to worry about subject interaction or high costs of wasted man-hours. Our experiment uses the AMT platform to experimentally test whether payment for a task has a positive effect on the quality of its result. We used two different experimental designs (normal and stepped wedge), randomly putting subjects in different payment brackets and measuring how results differed between groups.
 The paper is organized as follows: section 2 discusses background and motivations, section 3 explains the experimental design, detailing the platforms used and the experimental schedule, sections 4 and 5 present the data and analysis for the two types of experiments, section 6 discusses overall results, section 7 looks at possible future studies, followed by a conclusion and bibliography.
 
@@ -68,7 +68,7 @@ knitr::kable(d2df, "markdown")
  
 ## Experiment Schedule
 
-# Pilot Experiment - hide some of the code that isn't interesting
+# Design 1 Pilot Experiment
 
 ## Data
 We ran a pilot study in order to test our experimental design and work out any conceptual and technical problems with our setup. We submitted an image recognition task once at the price of \$0.1 and once at the price of \$0.25, with 54 people taking part in each. We aimed to release the tasks around the same time on two separate days (Tuesday and Wednesday), hoping to mimic similar conditions as much as possible. The prices were chosen to be close to the average price for tasks of this size (\$0.10) and significantly higher for enough statistical power to see difference (\$0.25).
@@ -100,7 +100,7 @@ regr_table_pilot$CQ3 = as.factor(regr_table_pilot$CQ3)
 ## EDA
 The below shows an excerpt of the data we collected, showing workers' answers to the covariate questions, a summary of worker accuracy for the image classification questions, whether workers passed the screener, the treatment, and the time workers spent (in seconds) doing the task. 
 ```{r}
-head(regr_table_pilot)
+summary(regr_table_pilot)
 ```
 
 The below table shows a summary of the pilot runs and accuracy data. Comparing the two pilot runs, we could see that the run that paid more had a higher accuracy and completed faster than the lower paying run. 
@@ -157,26 +157,30 @@ car::leveneTest(worker_perf_pilot_0.10$accuracy,worker_perf_pilot_0.25$accuracy,
 ```
 
 ```{r}
-# 2 sample independent t-test
 t.test(worker_perf_pilot_0.10$accuracy,
        worker_perf_pilot_0.25$accuracy,
        alternative = "two.sided", var.equal = TRUE)
 ```
 
 ```{r}
-# REGRESSION
 regr1_simple_pilot = lm(accuracy ~ treatment, data = regr_table_pilot)
 regr2_simple_pilot = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_table_pilot)
-coeftest(regr1_pilot, vcov(regr1_pilot))
-coeftest(regr2_pilot, vcov(regr2_pilot))
+coeftest(regr1_simple_pilot, vcov(regr1_simple_pilot))
+coeftest(regr2_simple_pilot, vcov(regr2_simple_pilot))
 ```
 
-While the t-test and the simple regression imply that we can reject the null hypothesis that there is no difference between the two means, the full regression shows no statistical significance (p-val ~ 0.07) for the ATE. These results lead us to believe that we could see statistically significant results in the complete experiment we planned that would include more participants. 
+While the t-test and the simple regression imply that we can reject the null hypothesis that there is no difference between the two means, the full regression shows no statistical significance (p-val ~ 0.07) for the ATE. These results lead us to believe that there might be statistical significance in the larger experiment we planned. 
 
 # Design 1 Experiments
 
 ## Data
+
+We ran the real Design 1 (D1) experiment in two parts over two separate weekends. In each part we released four batches to 100 people every time, making sure people who had done or seen the task once couldn't do it again. We released tasks twice a day, every time with a different price. The only difference between the two weekends were the order in which we released the prices (order1 is 0.10, 0.55, 0.25, 0.40; order 2 is 0.40, 0.25, 0.55, 0.10). This allows us to check whether the order of the prices actually makes a difference. 
+
+You can see more information about the D1 data in the summary table below. Similar to what we saw in the pilot, the higher priced HITs were completed much more quickly overall, even though workers seem to spend roughly the same amount of time, on average, on an HIT. The faster overall completion of the higher-priced batches is probably due to workers not wanting to miss out on the higher-paid tasks before they disappear, whereas lower-paid tasks are in less demand. One could interpret this difference in time to completion as a good indicator that the treatment levels we have chosen are varied enough to make a difference for workers. Even so, it is important to note that we might still be getting different kinds of workers for the different tasks. For example, only the faster workers, or the ones with the best internet connection, will be able to do the higher paying HITs. 
 ```{r}
+
+# TODO Hide this
 # DESIGN 1 ORDER 1
 
 # read in qualtric output csv
@@ -242,6 +246,8 @@ regr_table_d1o1_exclude0.10$CQ3 = as.factor(regr_table_d1o1_exclude0.10$CQ3)
 ```
 
 ```{r}
+
+# TODO hide this
 # DESIGN 1 ORDER 2
 
 # read in qualtric output csv
@@ -304,105 +310,153 @@ regr_table_d1o2_exclude0.10 = rbind(worker_perf_d1o2_0.25, worker_perf_d1o2_0.40
 regr_table_d1o2_exclude0.10$CQ1 = as.factor(regr_table_d1o2_exclude0.10$CQ1)
 regr_table_d1o2_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o2_exclude0.10$CQ2_3)
 regr_table_d1o2_exclude0.10$CQ3 = as.factor(regr_table_d1o2_exclude0.10$CQ3)
+
+
+# combine regression tables for the two orders
+regr_table_d1o1$order1 = 1
+regr_table_d1o1_exclude0.10 = 1
+regr_table_d1o2$order1 = 0
+regr_table_d1o2_exclude0.10 = 0
+
+regr_table_d1 = rbind(regr_table_d1o1,regr_table_d1o2)
+regr_table_d1_exclude0.10 = rbind(regr_table_d1o1_exclude0.10, regr_table_d1o2_exclude0.10)
 ```
-## EDA
+
 
 ```{r}
-head(regr_table_d1o1)
-head(regr_table_d1o2)
-```
-
-Comparing the two results...
-```{r}
+# TODO Hide this
 
 # DESIGN 1 ORDER 1
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o1_0.10, allQ)
 
 #stats summary of accuracies over all workers
-smry_010 = summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
+smry_010_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o1_0.55_weeded, allQ)
 
 #stats summary of accuracies over all workers
-smry_055 = summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+smry_055_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o1_0.40, allQ)
 
 #stats summary of accuracies over all workers
-smry_040 = summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
+smry_040_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o1_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
-smry_025 = summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+smry_025_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
 
-avg_time_025 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.25,]$time_spent))/60
-avg_time_010= mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.10,]$time_spent))/60
-avg_time_040 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.40,]$time_spent))/60
-avg_time_055= mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.55,]$time_spent))/60
-
-d1o1_summary = data.frame(Name=c("Design 1", "Design 1", "Design 1", "Design 1"), Order=c(1,1,1,1), Treatmet=c(0.1,0.25, 0.40, 0.55), N=c(nrow(worker_perf_d1o1_0.10),nrow(worker_perf_d1o1_0.25),nrow(worker_perf_d1o1_0.40),nrow(worker_perf_d1o1_0.55)), TotalTimeTaken=c("check","check", "check", "check"), AvgTimePerTaskMin = c(avg_time_010,avg_time_025,avg_time_040,avg_time_055), AccuracyMean=c(smry_010$mean,smry_025$mean,smry_040$mean,smry_055$mean), AccuracySE=c(smry_010$se,smry_025$se,smry_040$se,smry_055$se))
-knitr::kable(d1o1_summary, "markdown")
-```
-
-```{r}
-# group these somehow
-hist(regr_table_d1o1$accuracy)
-hist(regr_table_d1o1[treatment == 0.55,]$accuracy)
-hist(regr_table_d1o1[treatment == 0.10,]$accuracy)
-hist(regr_table_d1o1[treatment == 0.25,]$accuracy)
-hist(regr_table_d1o1[treatment == 0.40,]$accuracy)
-```
-
-```{r}
+avg_time_025_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.25,]$time_spent))/60
+avg_time_010_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.10,]$time_spent))/60
+avg_time_040_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.40,]$time_spent))/60
+avg_time_055_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.55,]$time_spent))/60
 
 # DESIGN 1 ORDER 2
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o2_0.10_weeded, allQ)
 
 #stats summary of accuracies over all workers
-smry_010 = summarize_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
+smry_010_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o2_0.55, allQ)
 
 #stats summary of accuracies over all workers
-smry_055 = summarize_worker_perf(current_task_data_d1o2_0.55, allQ)
+smry_055_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.55, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o2_0.40, allQ)
 
 #stats summary of accuracies over all workers
-smry_040 = summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
+smry_040_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
 
 #stats summary of accuracies over all questions
 # summarize_question_accuracy(current_task_data_d1o2_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
-smry_025=summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+smry_025_d1o2=summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
 
-avg_time_025 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.25,]$time_spent))/60
-avg_time_010= mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.10,]$time_spent))/60
-avg_time_040 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.40,]$time_spent))/60
-avg_time_055= mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.55,]$time_spent))/60
+avg_time_025_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.25,]$time_spent))/60
+avg_time_010_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.10,]$time_spent))/60
+avg_time_040_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.40,]$time_spent))/60
+avg_time_055_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.55,]$time_spent))/60
 
-d1o1_summary = data.frame(Name=c("Design 1", "Design 1", "Design 1", "Design 1"), Order=c(2,2,2,2), Treatmet=c(0.1,0.25, 0.40, 0.55), N=c(nrow(worker_perf_d1o2_0.10),nrow(worker_perf_d1o2_0.25),nrow(worker_perf_d1o2_0.40),nrow(worker_perf_d1o2_0.55)), TotalTimeTaken=c("check","check", "check", "check"), AvgTimePerTaskMin = c(avg_time_010,avg_time_025,avg_time_040,avg_time_055), AccuracyMean=c(smry_010$mean,smry_025$mean,smry_040$mean,smry_055$mean), AccuracySE=c(smry_010$se,smry_025$se,smry_040$se,smry_055$se))
-knitr::kable(d1o1_summary, "markdown")
 ```
 
 ```{r}
-hist(regr_table_d1o2$accuracy)
-hist(regr_table_d1o2[treatment == 0.55,]$accuracy)
+d1_summary = data.frame(
+  Name=c("Design 1", "Design 1", "Design 1", "Design 1","Design 1", "Design 1", "Design 1", "Design 1"), 
+  Order=c(1,1,1,1,2,2,2,2), 
+  Treatmet=c(0.1,0.25, 0.40, 0.55,0.1,0.25, 0.40, 0.55), 
+  N=c(nrow(worker_perf_d1o1_0.10),nrow(worker_perf_d1o1_0.25),nrow(worker_perf_d1o1_0.40),nrow(worker_perf_d1o1_0.55),nrow(worker_perf_d1o2_0.10),nrow(worker_perf_d1o2_0.25),nrow(worker_perf_d1o2_0.40),nrow(worker_perf_d1o2_0.55)), 
+  TotalTimeTaken=c("11h 15min","3h 15min", "0h 40min", "0h 40min","15h 20min","2h 40min", "2h 20min", "3h 10min"), 
+  AvgTimePerTaskMin = c(avg_time_010_d1o1,avg_time_025_d1o1,avg_time_040_d1o1,avg_time_055_d1o1,avg_time_010_d1o2,avg_time_025_d1o2,avg_time_040_d1o2,avg_time_055_d1o2), 
+  AccuracyMean=c(smry_010_d1o1$mean,smry_025_d1o1$mean,smry_040_d1o1$mean,smry_055_d1o1$mean,smry_010_d1o2$mean,smry_025_d1o2$mean,smry_040_d1o2$mean,smry_055_d1o2$mean), 
+  AccuracySE=c(smry_010_d1o1$se,smry_025_d1o1$se,smry_040_d1o1$se,smry_055_d1o1$se,smry_010_d1o2$se,smry_025_d1o2$se,smry_040_d1o2$se,smry_055_d1o2$se))
+knitr::kable(d1_summary, "markdown")
+```
+
+## EDA
+
+Looking at the distribution of the outcome variable in the dataset that combines all of the D1 results, we can see that accuracy displays a strong left skew, which is consistent with the results from our pilot, signifying that the difficulty of our task is satisfactory. The non-normal distribution also means that randomization inference might be needed when analyzing the results.
+
+It is interesting to compare the distribution of outcomes for the 0.10 treatment between order 1 and order 2 results. The order 1 results have a very big right skew, because it has many low accuracy scores. On the other hand, the order 2 distribution for the same treatment follows the overall trend. Such a massive difference between results for the same treatments might mean that there is a problem with the data or the data gathering, or that there was some anomaly that affected our results. 
+```{r}
+# TODO group these somehow
+hist(regr_table_d1$accuracy)
+hist(regr_table_d1o1[treatment == 0.10,]$accuracy)
 hist(regr_table_d1o2[treatment == 0.10,]$accuracy)
-hist(regr_table_d1o2[treatment == 0.25,]$accuracy)
-hist(regr_table_d1o2[treatment == 0.40,]$accuracy)
+qqnorm(regr_table_d1$accuracy)
 ```
+
+
 ## Covariate balance
+
+The covariate balance check on the combined D1 data doesn't show any statistically significant results for the answers to our covariate questions. This means that we shouldn't have any problems with our covariates as they have no relationship with the treatment. Looking at the covariate balance on an order level reveals the same results. You can see the code for this in the hidden section below. 
+```{r} 
+
+# TODO Hide this
+# DESIGN 1 COMBINED
+CQ1_1 = regr_table_d1$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1$CQ1 == "around half"
+CQ1_3 = regr_table_d1$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_d1)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1$CQ3 == "Yes"
+CQ3_2 = regr_table_d1$CQ3 == "No"
+CQ3_3 = regr_table_d1$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
 ```{r}
+# TODO Hide this
+
 # DESIGN 1 ORDER 1
 
 # Dog friends question
@@ -439,6 +493,7 @@ lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
 ```
 
 ```{r}
+# TODO Hide this
 # DESIGN 1 ORDER 2
 
 # Dog friends question
@@ -475,33 +530,130 @@ lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
 ```
 
 ## Estimating ATE
-```{r}
 
-# DESIGN 1 ORDER 1
+We start off by running a student t-test, doing a pairwise comparison between the accuracies for all treatments. We use either a normal t-test or a Welch two sample t-test, depending on how similar the variances between the outputs for each treatment are. All of the results are statistically significant, apart from the comparison between the 0.25 outcomes and the 0.55 outcomes. 
+```{r}
+# TODO Summarise/Hide some of this
+
 # ATE by T-test
-est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.55]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.40]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.40]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.55]$accuracy, "two.sided")
+
+
+```
+We see similar results if we run the tests separately on individual orders. However, it must be noted that running too many comparisons increases the likelihood that we would get a statistically significant results when in reality there isn't one. We take the above results as indicators that there might be some relationship between payment and accuracy, and we explore this using regression and randomization inference in the following sections.
+```{r}
+# Hide this
 est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.25$accuracy, "two.sided")
 est.t.test(worker_perf_d1o1_0.10$accuracy,worker_perf_d1o1_0.40$accuracy, "two.sided")
 est.t.test(worker_perf_d1o1_0.25$accuracy,worker_perf_d1o1_0.40$accuracy, "two.sided")
 est.t.test(worker_perf_d1o1_0.25$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
 est.t.test(worker_perf_d1o1_0.40$accuracy,worker_perf_d1o1_0.55$accuracy, "two.sided")
 
-# ATE by REGRESSION
-# REMEMBER TO REPORT
-# -COEFFICIENT INTERPRETATION
-# -STANDARD ERRORS
-# -CONFIDENCE INTERVAL
-# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
-# ---we want to see if the covariates as a block has any explanatory power
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.25$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+est.t.test(worker_perf_d1o2_0.40$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
+```
+
+
+We can also run a t-test to compare the outcomes of the two different orders. Doing this gives us a p-value of 0.038, suggesting that the order in which we submitted the batches might have made a difference to how high the accuracy is. 
+```{r}
+
+# TODO VERY INTERESTING, not sure how to explain it. 
+est.t.test(regr_table_d1[regr_table_d1$order1 == 1]$accuracy,regr_table_d1[regr_table_d1$order1 == 0]$accuracy, "two.sided")
+```
+
+We ran four linear regression models on the dataset: 
+(1) $accuracy = \theta_{0} + \theta_{1}*treatment$
+
+(2) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3$
+
+(3) $aaccuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1$
+
+(4) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1$
+
+By running these four models, we aimed to understand how the treatment performs when taking into account the covariates (models 1 and 2), as well as whether the order in which we submitted the tasks actually made a difference (model 3). The final model (4) also looks at heterogeneous treatment effects, or whether receiving a treatment in order 1 is better or worse than receiving the same treatment in order 2. 
+```{r}
+
+# TODO Feel free to add to the analysis interpretation below. 
+
+# Also, a regression table should be added. 
+est.regr.simple(regr_table_d1)
+est.regr.covars(regr_table_d1)
+est.regr.covars_order(regr_table_d1)
+est.regr.covars_order_interact(regr_table_d1)
+
+# below was failing for some reason. also, why are we looking at this data and excluding 0.1?
+# est.regr.simple(regr_table_d1_exclude0.10) # ATE = 0.23
+# est.regr.covars(regr_table_d1_exclude0.10) # ATE = 0.20
+```
+
+In all four models we get a statistically significant treatment effect, even when we take into the account the covariates and the ordering. Models 1 to 3 all show a positive treatment effect, meaning that higher pay leads to better worker performance on a given task. However, the results from model 4 show a negative treatment effect when order 2 was used, and a positive treatment effect when order 1 was used. This indicates that the order of the payments (or possibly some other difference between the two weekends) had a strong influence on the effect of the treatment. Finally, the standard errors are consistently small compared to the means we are seeing, leading to statistically significant values. 
+
+```{r}
+# TODO probably hide the below? Not sure we need it when we did such a detailed analysis above. 
 est.regr.simple(regr_table_d1o1) #ATE = 0.87 result is problematic 
 est.regr.covars(regr_table_d1o1) #ATE = 0.87 result is problematic 
 
 
-est.regr.simple(regr_table_d1o1_exclude0.10) # ATE = 0.23
-est.regr.covars(regr_table_d1o1_exclude0.10) # ATE = 0.20
+# est.regr.simple(regr_table_d1o1_exclude0.10) # ATE = 0.23
+# est.regr.covars(regr_table_d1o1_exclude0.10) # ATE = 0.20
 
-#---------------------------------------------------------------------#
-# RANDOMIZATION INFERENCE
+est.regr.simple(regr_table_d1o2) #ATE = 0.87 result is problematic 
+est.regr.covars(regr_table_d1o2) #ATE = 0.87 result is problematic 
+
+
+# est.regr.simple(regr_table_d1o2_exclude0.10) # ATE = 0.23
+# est.regr.covars(regr_table_d1o2_exclude0.10) # ATE = 0.20
+```
+
+We next used randomization inference to account for the non-normal distribution of our data, and to see if this would drastically change our estimates and their p-values.  
+
+```{r}
+
+# TODO change the scale of the x axis, so that the estimate of 0.288 can be seen as a vertical line
+n10 = nrow(regr_table_d1[regr_table_d1$treatment == 0.1])
+n25 = nrow(regr_table_d1[regr_table_d1$treatment == 0.25])
+n40 = nrow(regr_table_d1[regr_table_d1$treatment == 0.40])
+n55 = nrow(regr_table_d1[regr_table_d1$treatment == 0.55])
+
+rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.55,n55)))
+
+
+ate_d1 = est.ri.ate(regr_table_d1,regr_table_d1$treatment)
+ate_d1
+all_ate_d1 <- replicate(5000, est.ri.ate(regr_table_d1, rand_ass()))
+# mean(ate_d1 < all_ate_d1 & -ate_d1 > -all_ate_d1) # gives 0
+plot(density(all_ate_d1))
+abline(v=ate_d1)
+abline(v=-ate_d1)
+
+
+# EXCLUDING $0.10 posting
+# treatment = rand_ass()
+# ate_d1o1_exclude_0.10 = est.ri.ate(regr_table_d1o1_exclude0.10,regr_table_d1o1_exclude0.10$treatment)
+# all_ate_d1o1_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o1_exclude0.10, rand_ass()))
+# hist(all_ate_d1o1_exclude_0.10)
+# # two-tailed p-val, is this correct?
+# mean(ate_d1o1_exclude_0.10 < all_ate_d1o1_exclude_0.10 & -ate_d1o1_exclude_0.10 > -all_ate_d1o1_exclude_0.10)
+```
+
+Our randomization inference results give us an estimate of the ATE of 0.288234, which is statistically significant (p-val = 0) and similar to the results we saw when running OLS regression. This shows that the skewed distribution of our outcome variable doesn't have a detrimental effect on our ATE estimate. 
+
+```{r}
+
+# TODO the below results are very strange, not sure how to interpret them, so I am leaving them for now. 
+# RANDOMIZATION INFERENCE on separate orders
 
 n10 = nrow(worker_perf_d1o1_0.10)
 n25 = nrow(worker_perf_d1o1_0.25)
@@ -513,6 +665,7 @@ rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.5
 # INCLUDING ALL four postings
 # treatment = rand_ass()
 ate_d1o1 = est.ri.ate(regr_table_d1o1,regr_table_d1o1$treatment)
+ate_d1o1
 all_ate_d1o1 <- replicate(5000, est.ri.ate(regr_table_d1o1, rand_ass()))
 hist(all_ate_d1o1)
 # two-tailed p-val, is this correct?
@@ -520,53 +673,12 @@ mean(ate_d1o1 < all_ate_d1o1 & -ate_d1o1 > -all_ate_d1o1)
 
 # EXCLUDING $0.10 posting
 # treatment = rand_ass()
-ate_d1o1_exclude_0.10 = est.ri.ate(regr_table_d1o1_exclude0.10,regr_table_d1o1_exclude0.10$treatment)
-all_ate_d1o1_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o1_exclude0.10, rand_ass()))
-hist(all_ate_d1o1_exclude_0.10)
-# two-tailed p-val, is this correct?
-mean(ate_d1o1_exclude_0.10 < all_ate_d1o1_exclude_0.10 & -ate_d1o1_exclude_0.10 > -all_ate_d1o1_exclude_0.10)
+# ate_d1o1_exclude_0.10 = est.ri.ate(regr_table_d1o1_exclude0.10,regr_table_d1o1_exclude0.10$treatment)
+# all_ate_d1o1_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o1_exclude0.10, rand_ass()))
+# hist(all_ate_d1o1_exclude_0.10)
+# # two-tailed p-val, is this correct?
+# mean(ate_d1o1_exclude_0.10 < all_ate_d1o1_exclude_0.10 & -ate_d1o1_exclude_0.10 > -all_ate_d1o1_exclude_0.10)
 
-# SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
-regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
-summary(regr.sqord)
-lmtest::coeftest(regr, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
-# dev.off() --> if the following line gives an error
-plot(allEffects(regr.sqord, default.levels=50))
-
-# THIRD ORDER TERM -- doesn't make sense (pls look at the effects plot)
-regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
-summary(regr.cubedord)
-lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
-# dev.off() --> if the following line gives an error
-plot(allEffects(regr.cubedord, default.levels=50))
-```
-
-```{r}
-
-# DESIGN 1 ORDER 2
-# ATE by T-test
-est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
-est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.25$accuracy, "two.sided")
-est.t.test(worker_perf_d1o2_0.10$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
-est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.40$accuracy, "two.sided")
-est.t.test(worker_perf_d1o2_0.25$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
-est.t.test(worker_perf_d1o2_0.40$accuracy,worker_perf_d1o2_0.55$accuracy, "two.sided")
-
-# ATE by REGRESSION
-# REMEMBER TO REPORT
-# -COEFFICIENT INTERPRETATION
-# -STANDARD ERRORS
-# -CONFIDENCE INTERVAL
-# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
-# ---we want to see if the covariates as a block has any explanatory power
-est.regr.simple(regr_table_d1o2) #ATE = 0.87 result is problematic 
-est.regr.covars(regr_table_d1o2) #ATE = 0.87 result is problematic 
-
-
-est.regr.simple(regr_table_d1o2_exclude0.10) # ATE = 0.23
-est.regr.covars(regr_table_d1o2_exclude0.10) # ATE = 0.20
-
-#---------------------------------------------------------------------#
 # RANDOMIZATION INFERENCE
 
 n10 = nrow(worker_perf_d1o2_0.10)
@@ -579,6 +691,7 @@ rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.5
 # INCLUDING ALL four postings
 # treatment = rand_ass()
 ate_d1o2 = est.ri.ate(regr_table_d1o2,regr_table_d1o2$treatment)
+ate_d1o2
 all_ate_d1o2 <- replicate(5000, est.ri.ate(regr_table_d1o2, rand_ass()))
 hist(all_ate_d1o2)
 # two-tailed p-val, is this correct?
@@ -586,27 +699,93 @@ mean(ate_d1o2 < all_ate_d1o2 & -ate_d1o2 > -all_ate_d1o2)
 
 # EXCLUDING $0.10 posting
 # treatment = rand_ass()
-ate_d1o2_exclude_0.10 = est.ri.ate(regr_table_d1o2_exclude0.10,regr_table_d1o2_exclude0.10$treatment)
-all_ate_d1o2_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o2_exclude0.10, rand_ass()))
-hist(all_ate_d1o2_exclude_0.10)
-# two-tailed p-val, is this correct?
-mean(ate_d1o2_exclude_0.10 < all_ate_d1o2_exclude_0.10 & -ate_d1o2_exclude_0.10 > -all_ate_d1o2_exclude_0.10)
+# ate_d1o2_exclude_0.10 = est.ri.ate(regr_table_d1o2_exclude0.10,regr_table_d1o2_exclude0.10$treatment)
+# all_ate_d1o2_exclude_0.10 <- replicate(5000, est.ri.ate(regr_table_d1o2_exclude0.10, rand_ass()))
+# hist(all_ate_d1o2_exclude_0.10)
+# # two-tailed p-val, is this correct?
+# mean(ate_d1o2_exclude_0.10 < all_ate_d1o2_exclude_0.10 & -ate_d1o2_exclude_0.10 > -all_ate_d1o2_exclude_0.10)
+```
+
+Finally, we use a higher-order term regression model to see if it fits the data more accurately, giving us further insights into the relationship between remuneration and worker performance.  
+
+```{r}
+
+# TODO if the below is wrong, do we have any notion why? Otherwise, maybe we are overfitting somehow? I wonder if we want to include this. 
 
 # SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
-regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
+regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1)
+lmtest::coeftest(regr.sqord, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# dev.off() --> if the following line gives an error
+plot(allEffects(regr.sqord, default.levels=50))
+```
+
+The estimate for the second-order term is statistically significant and negative, while the first-order term is positive. This means that higher payment has a positive effect on accuracy, but this effect diminishes as the payments become higher and higher. 
+```{r}
+# TODO Remove the below
+
+# DESIGN 1 ORDER 1
+# ATE by REGRESSION
+# REMEMBER TO REPORT
+# -COEFFICIENT INTERPRETATION
+# -STANDARD ERRORS
+# -CONFIDENCE INTERVAL
+# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
+# ---we want to see if the covariates as a block has any explanatory power
+
+#---------------------------------------------------------------------#
+
+# SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
+regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
 summary(regr.sqord)
-lmtest::coeftest(regr, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
+lmtest::coeftest(regr.sqord, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
 # dev.off() --> if the following line gives an error
 plot(allEffects(regr.sqord, default.levels=50))
 
 # THIRD ORDER TERM -- doesn't make sense (pls look at the effects plot)
-regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
-summary(regr.cubedord)
-lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o1)
+# summary(regr.cubedord)
+# lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# # dev.off() --> if the following line gives an error
+# plot(allEffects(regr.cubedord, default.levels=50))
+```
+
+```{r}
+
+# TODO Remove the below
+
+# DESIGN 1 ORDER 2
+
+# ATE by REGRESSION
+# REMEMBER TO REPORT
+# -COEFFICIENT INTERPRETATION
+# -STANDARD ERRORS
+# -CONFIDENCE INTERVAL
+# -F-TEST on the 3 covariates as a block (restricted only has treatment)(full has CQ1-CQ3 as well)
+# ---we want to see if the covariates as a block has any explanatory power
+
+#---------------------------------------------------------------------#
+
+
+# SECOND ORDER TERM -- may be best fitting our data for order 1, but order 2 may given different insights
+regr.sqord = lm(accuracy ~ treatment + I(treatment^2) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
+summary(regr.sqord)
+lmtest::coeftest(regr.sqord, vcov(regr.sqord)) #the coefficient for "treatment" here is wrong", but SE is correct
 # dev.off() --> if the following line gives an error
-plot(allEffects(regr.cubedord, default.levels=50))
+plot(allEffects(regr.sqord, default.levels=50))
+
+# THIRD ORDER TERM -- doesn't make sense (pls look at the effects plot)
+# regr.cubedord = lm(accuracy ~ treatment + I(treatment^2) + I(treatment^3) + CQ1 + CQ2_3 + CQ3, data = regr_table_d1o2)
+# summary(regr.cubedord)
+# lmtest::coeftest(regr, vcov(regr.cubedord)) #the coefficient for "treatment" here is wrong", but SE is correct
+# # dev.off() --> if the following line gives an error
+# plot(allEffects(regr.cubedord, default.levels=50))
 ```
 ## Regression Table
+```{r}
+# TODO I didn't have time to do this, but it will be a nice summary of our results. At the same time, probably not crucial. 
+```
+
+Performing and thoroughly analyzing the D1 experiment allowed us to get an initial notion of the possible relationship between payment levels and level of performance. Specifically, we saw that it is likely to be positive with the actual ATE around 0.287, meaning that for each jump in payment level, the accuracy increases by about 28%. While this sounds like a signficant jump, it is important to keep in mind that the D1 experiment doesn't fully utilize random assignment, which means that our estimates may suffer from omitted variable bias. Even so, these results were useful in preparing our Design 2 experiment, which fully utilized random assignment to check for a causal relationship between remuneration and worker performance. 
 
 # Design 2 Experiments
 
