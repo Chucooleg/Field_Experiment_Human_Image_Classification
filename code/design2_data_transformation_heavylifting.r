@@ -282,3 +282,40 @@ write.csv(Y11.table, "../modeling_data/design2_Y11_table.csv")
 write.csv(Y00.table.filled, "../modeling_data/design2_Y00_table_full.csv")
 write.csv(Y01.table.filled, "../modeling_data/design2_Y01_table_full.csv")
 write.csv(Y11.table.filled, "../modeling_data/design2_Y11_table_full.csv")
+
+
+
+#---------------------------------------------------------------------#
+# Sampling distribution CI
+
+Y00.table.filled.keyed = Y00.table.filled
+Y01.table.filled.keyed = Y01.table.filled
+Y11.table.filled.keyed = Y11.table.filled
+Y00.table.filled.keyed$outcome.key = "00"
+Y01.table.filled.keyed$outcome.key = "01"
+Y11.table.filled.keyed$outcome.key = "11"
+Y.table.keyed = rbind(Y00.table.filled.keyed,Y01.table.filled.keyed,Y11.table.filled.keyed)
+Y00.table.filled.keyed = NA
+Y01.table.filled.keyed = NA
+Y11.table.filled.keyed = NA
+
+Y.table.keyed = Y.table.keyed[,c("worker_id","one","two","three","outcome.key")]
+
+Y.table.keyed.one = Y.table.keyed[,c("worker_id","one","outcome.key")]
+Y.table.keyed.one$round = "one"
+names(Y.table.keyed.one)[names(Y.table.keyed.one) == 'one'] <- 'round_accuracy'
+
+Y.table.keyed.two = Y.table.keyed[,c("worker_id","two","outcome.key")]
+Y.table.keyed.two$round = "two"
+names(Y.table.keyed.two)[names(Y.table.keyed.two) == 'two'] <- 'round_accuracy'
+
+Y.table.keyed.three = Y.table.keyed[,c("worker_id","three","outcome.key")]
+Y.table.keyed.three$round = "three"
+names(Y.table.keyed.three)[names(Y.table.keyed.three) == 'three'] <- 'round_accuracy'
+
+Y.table.keyed = rbind(Y.table.keyed.one,Y.table.keyed.two,Y.table.keyed.three)
+Y.table.keyed
+
+#---------------------------------------------------------------------#
+# write to csv
+write.csv(Y.table.keyed, "../modeling_data/design2_Y_table_keyed.csv")

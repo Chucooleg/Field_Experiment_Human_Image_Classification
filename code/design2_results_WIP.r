@@ -7,46 +7,6 @@ source(file = "design2_data_transformation_functions.r")
 source(file = "design2_data_analysis_functions.r")
 
 #---------------------------------------------------------------------#
-
-# read in data for analysis
-by_HIT.table = fread("../modeling_data/design2_by_HIT.csv")
-by_Session.table = fread("../modeling_data/design2_by_Session.csv")
-observed_outcomes_table = fread("../modeling_data/design2_observed_outcomes_table.csv")
-assigned_treatment_condition_table = fread("../modeling_data/design2_assigned_treatment_condition_tablee.csv")
-
-Y00.table= fread("../modeling_data/design2_Y00_table.csv")
-Y01.table= fread("../modeling_data/design2_Y01_table.csv")
-Y11.table= fread("../modeling_data/design2_Y11_table.csv")
-
-
-Y00.table.filled= fread("../modeling_data/design2_Y00_table_full.csv")
-Y01.table.filled= fread("../modeling_data/design2_Y01_table_full.csv")
-Y11.table.filled= fread("../modeling_data/design2_Y11_table_full.csv")
-#View(by_HIT.table)
-#View(by_Session.table)
-#---------------------------------------------------------------------#
-# Fix data type of imported csv 
-
-by_Session.table$group = factor(by_Session.table$group, levels = c("CCC", "CCT", "CTT", "TTT"))
-by_Session.table$round = factor(by_Session.table$round, levels = c("one", "two", "three"))
-by_Session.table$CQ1 = factor(by_Session.table$CQ1, levels = c("a lot less than half", "around half", "a lot more than half"))
-by_Session.table$CQ2 = as.numeric(by_Session.table$CQ2)
-by_Session.table$CQ3 = factor(by_Session.table$CQ3, levels = c("No", "Maybe", "Yes"))
-by_Session.table$CQ4 = factor(by_Session.table$CQ4, levels = c("0 to 10", "11 to 20", "21 to 30", "31 to 40", "41 or more"))
-by_Session.table$CQ5 = factor(by_Session.table$CQ5, levels = c("Never heard of Linkedin", "No", "Yes"))
-by_Session.table$round_screener = as.numeric(by_Session.table$round_screener)
-by_Session.table$round_timespent = as.numeric(by_Session.table$round_timespent)
-by_Session.table$round_accuracy = as.numeric(by_Session.table$round_accuracy)
-
-
-by_HIT.table$group = factor(by_HIT.table$group, levels = c("CCC", "CCT", "CTT", "TTT"))
-by_HIT.table$CQ1 = factor(by_HIT.table$CQ1, levels = c("a lot less than half", "around half", "a lot more than half"))
-by_HIT.table$CQ2 = as.numeric(by_HIT.table$CQ2)
-by_HIT.table$CQ3 = factor(by_HIT.table$CQ3, levels = c("No", "Maybe", "Yes"))
-by_HIT.table$CQ4 = factor(by_HIT.table$CQ4, levels = c("0 to 10", "11 to 20", "21 to 30", "31 to 40", "41 or more"))
-by_HIT.table$CQ5 = factor(by_HIT.table$CQ5, levels = c("Never heard of Linkedin", "No", "Yes"))
-
-#---------------------------------------------------------------------#
 # check attrition
 
 attrition_by_group = lm(observed~group,data=by_HIT.table)
@@ -372,29 +332,35 @@ head(Y01.table.filled,20)
 head(Y11.table.filled,20)
 
 
-# WORK IN PROGRESS
-# Randomization Inference
 
+# WORK IN PROGRESS
+# Sampling Distribution to generate CI
+
+ATEs_0100.hat = c()
+ATEs_1100.hat = c()
 treatments = c(rep("CCC",61), rep("CCT",58), rep("CTT",60), rep("TTT",64))
 
+
 # write function to wrap below
-treat = sample(x=treatments,size=length(treatments),replace = F)
-# create simulated schedule
-sim.outcomes = data.table(worker_id = by_Session.table$worker_id,
-                        group = treat,
-                        )
-# estimate ATE from simulated schedule
+for (i in 1:1000) {
+  treat = sample(x=treatments,size=length(treatments),replace = F)
+  # create simulated schedule
+  sim.outcomes = create_simulated_schedule(sim.outcomes.template, treat) 
+  # estimate ATE from simulated schedule
+  estimates = est.ATE_from_simoutcomes(sim.outcomes)
+  ATEs_1100.hat = c(ATEs_1100.hat, estimates[[2]])
+  ATEs_0100.hat = c(ATEs_0100.hat, estimates[[1]])
+}
 
-
-design2.est.ATE = function(treat) {}
-Y01_S1 = by_Session.table[round=="one" & group=="TTT",round_accuracy]
-Y01_S2 = by_Session.table[round=="two" & group=="CTT",round_accuracy]
-Y01_S3 = by_Session.table[round=="three" & group=="CTT",round_accuracy]
-Y00_S1 = by_Session.table[round=="one" & group!="TTT",round_accuracy]
-Y00_S2 = by_Session.table[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
-Y00_S3 = by_Session.table[round=="three" & group=="CCC",round_accuracy]
-Y11_S2 = by_Session.table[round=="two" & group=="TTT",round_accuracy]
-Y11_S3 = by_Session.table[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy]
+# list of simulated ATE estimates
+ATEs_0100.hat
+ATEs_1100.hat 
+# histogram of simulated ATE estimates
+hist(ATEs_0100.hat, breaks = 20)
+hist(ATEs_1100.hat, breaks = 20)
+# CIs of simulated ATE estimates
+quantile(ATEs_0100.hat, c(0.025, 0.975))
+quantile(ATEs_1100.hat, c(0.025, 0.975))
 #---------------------------------------------------------------------
 # NOTES below for figuring out general linear hypothesis
 "
