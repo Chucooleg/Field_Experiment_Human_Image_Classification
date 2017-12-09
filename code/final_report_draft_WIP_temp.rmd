@@ -16,7 +16,7 @@ library(multiwayvcov)
 
 ```{r, include=FALSE}
 #setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/241_Final/Field_Experiment_Human_Image_Classification/code")
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
 source(file = "design2_data_transformation_functions.r")
@@ -67,26 +67,99 @@ We hypothesis that higher payment per human intelligence task (HIT) on average w
 
 # Experimental Design and Protocol
 
-Our experiment connect the AMT platform HIT work flow with the Qualtrics platform survey work flow. The AMT platform allows us, as a requestor to post HITs of different treatment pay rates and availabilities. Once a turker select our HIT out of a list of other HITs from other requestors based on our pay rate and description, the turker will be directed to our Qualtrics survey through a web link. The survey form begins by prompting for the turker's identification number and 5 multiple-choice questions for covariates' collection. Then, a separate web link for reference images of eight different dog breeds is provided, followed by 48 classification questions in multiple-choice format back on the Qualtrics form. Once all the question are completed and the Qualtrics survey ends, the turker will submit their identification number of the AMT platform again. Once all the available HITs for a particular posting are claimed, completed and submitted by turkers, both the AMT posting and Qualtrics survey are terminated. Finally, we download data from both platforms, conduct statistical analyses and reward turkers who score higher than a pre-determined accuracy threshold.
+Our experiment connect the AMT platform HIT work flow with the Qualtrics platform survey work flow. The AMT platform allows us, as a requestor to post HITs of different treatment pay rates and availabilities. Once a turker select our HIT out of a list of other HITs from other requestors based on our pay rate and description, the turker will be directed to our Qualtrics survey through a web link. Once all the survey questions are completed and the Qualtrics survey ends, the turker will submit their identification number of the AMT platform again. Once all the available HITs for a particular posting are claimed, completed and submitted by turkers, both the AMT posting and Qualtrics survey are terminated. Finally, we download data from both platforms, conduct statistical analyses and reward turkers who score higher than a pre-determined accuracy threshold.
+
+
+The Qualtrics survey begins by prompting for the turker's identification number and a block of 5 forced-response, multiple-choice questions to probe the turker's aptitude for dog-breed classification. Up until this point, the turker has no knowledge that this is an image classification task, nor relevancy to dog breeds. The turker cannot revisit this question block later. Below, the questions are listed with their answer choices and intended purposes:
+
+
+Number|Question | Answer Choices | Intended purpose
+-----------|-------------|----------------------|------------------------
+1|What portion of your friends own pets?| a lot less than half, around half, a lot more than half | Does the turker live in a dog owning culture?
+2| Please rank your preferences to work with the following media. | audio,text,images,other | Does the turker have a strong preference for image classification?
+3| Have you ever lived with any dogs in your household? If not, have you ever planned to own a dog? | Yes, Maybe, No | Foes the turker pay attention to dog breeds at all?
+4| On average, how many tasks on Amazon Mechanical Turk do you complete every week? | 0 to 10, 11 to 20, 21 to 30, 31 to 40, 40 or more | How much does the turker depend on Amt as a source of income?
+5| Do you use Linkedin? (no need to provide any links) | Yes, No, Never heard of Linkedin | Does the turker has college or higher education? Does the turker take career development seriously?
+
+
+Then, an external web link for dog breed references is provided, followed by 48 classification questions in multiple-choice format on the Qualtrics form. For the design of these classification questions, we chose eight dog breeds with a balance in size and hairy density (footnote).  Even numbered questions are harder and odd numbered questions are easier. A pilot was used to identify and filter out questions which all turkers scored correctly or incorrectly. The order of questions is randomized and show a balance of even and odd numbered questions even when we split the question set into three batches. Screener questions of cat images are mixed-in to help us identify those turkers who were not paying much attention to the task. All images come from the Stanford Dogs Dataset (footnote).
+
+
+However, this simple mechanism poses a threat on the unbiasedness of our estimate. Since turkers self-select into HITs, HITs of different pay rates tend to attract different kinds of turkers. From our prior internet research, turkers tend to be strategic with how their time and expectation matches with pay rate, allotted time and nature of the posted HITs. If we randomize treatment pay rate at the posting level, we would be comparing groups of turkers with different attributes. Therefore, we came up with two experiment designs which branches from the basic mechanism described above. 
+
+
+Design 1 is a traditional between-subject design, we define its unit of analysis as a HIT. Meaning, we place ourselves in the perspective of a data scientist in private industry who invest a company's money on getting human labeled examples for machine learning purposes. Our primary goal is to estimate how much more the company should spend on the AMT platform in order to get more accurate labeled training examples. With this motivation, we do not care about comparability of turker attributes, rather the returned accuracy per HIT as a result of different company spending. As such, selection bias and attrition from turkers are not concerns. (How do we randomize?)
+
+
+Design 2 is a stepped-wedge design, we define its unit of analysis as a turker. Meaning, we place ourselves in the perspective of an economist, who studies the effect of incentives on labor productivity. Our primary goal is to estimate how increments of payment motivates a turker to perform better. With this motivation, unlike design 1, we care about comparability of turker attributes and want to ensure that treatment groups on average comprise of turkers of similar motivations and backgrounds. As such, selection bias and attrition are large concerns. In the following paragraphs we walk through each design in terms of level of randomization, treatments and execution protocol. 
+
+
+In design 1, we randomize at the level of HIT postings. Over two weekends in November 2017, we released eight HIT postings, that is two for each of the four different pay rates. It is a traditional between subject design with clustered randomization. Since it would not be possible randomly post HITs one at a time, we posted them in batches of 100 HITs, each batch correspond to a single pay rate. We manually shuffle the order of postings to minimize order and time of day effects. The four pay rates are chosen according to the typical minimum and maximum of other HITs alike. Time frame for the eight postings do not overlap with each other. Design 1 details are summarized below:
+
+
+\bigskip
+\centerline{\Large Experiment Schedule for Design 1}
+
+
+ Order | Date | Time Frame | Treatment (Pay Rate) | Available HITs
+----------|-----------|-------------|----------------------
+Pilot | Oct 28, 2017 (Saturday) | Morning | $0.10 | 50
+Pilot | Oct 29, 2017 (Sunday) | Afternoon | $0.25 | 50
+1 | Nov 11, 2017 (Saturday) | Morning | $0.10 | 100
+1 | Nov 11, 2017 (Saturday) | Afternoon | $0.55 | 100
+1 | Nov 12, 2017 (Sunday) | Morning | $0.25 | 100
+1 | Nov 12, 2017 (Sunday) | Afternoon | $0.40 | 100
+2 | Nov 18, 2017 (Saturday) | Morning | $0.40 | 100
+2 | Nov 18, 2017 (Saturday) | Afternoon | $0.25 | 100
+2 | Nov 19, 2017 (Sunday) | Morning | $0.55 | 100
+2 | Nov 19, 2017 (Sunday) | Afternoon | $0.10 | 100
+
+\bigskip
+\centerline{\Large Design 1 Notation: Between Subject Design}
+\bigskip
+\centerline{\bfseries R X(0.10) O}
+\centerline{\bfseries }
+\centerline{\bfseries R X(0.25) O}
+\centerline{\bfseries }
+\centerline{\bfseries R X(0.40) O}
+\centerline{\bfseries }
+\centerline{\bfseries R X(0.55) O}
+\bigskip
 
 
 
-- Stan's paragraph (AMT mechanics and why it poses a challenge)
+In design 2, we randomize at the level of turkers instead of postings. On November 26 2017 (Sunday), we released one HIT posting of 240 available HITs and baseline rate of \$0.22. It is a typical stepped-wedge design with randomization at the turkers level. Turkers would sign up for the HIT for the same baseline rate, and then randomized with equal probability into one of four treatment groups after they submitted their identification number and aptitude question answers on the Qualtrics survey form. The treatment group differs by the amount of surprise bonuses (up until this point the turker has no knowledge that this task may come with any bonuses). Here, the 48 dog breed classification questions from design 1 are split into three sesssions of 16 questions. The overall question order is the same as that in design 1, and the three sessions share a balance of difficulty and dog breeds. Each session is associated with a bonus assignment condition of either \$0.10 or nothing with no mention of bonus condition at all. We chose the baserate as \$0.22 rather than \$0.10 to minimize attrition and set the total available HITs to be 240 so to stay within experiment budget. Design 1 details are summarized below: 
 
-- Challenge to answer research question -- why two designs
-- unit of analysis
-- advantages and problems of design 1
-- advantages and problems of design 2
 
-- Design 1
-- Treatment groups
-- Experiment Schedule
+\bigskip
+\centerline{\Large Experiment Schedule for Design 2}
+
+
+Name | Date | Time Frame | Base pay rate | Treatments (bonuses) | Available HITs
+-----|----------|-----------|--------------|----------------------
+Pilot |Nov 23, 2017 (Thursday) | All day | \$0.10 | \$0.00, \$0.05, \$0.10, \$0.15 | 60
+Main  |Nov 26, 2017 (Sunday) | All day | \$0.22 | \$0.00, \$0.10, \$0.20, \$0.30 | 240
+
+
+\bigskip
+\centerline{\Large Design 2 Notation: Stepped-Wedge Design}
+\bigskip
+\centerline{\bfseries R C(0.00) O C(0.00) O C(0.00) O}
+\centerline{\bfseries }
+\centerline{\bfseries R C(0.00) O C(0.00) O T(0.10) O}
+\centerline{\bfseries }
+\centerline{\bfseries R C(0.00) O T(0.10) O T(0.10) O}
+\centerline{\bfseries }
+\centerline{\bfseries R T(0.10) O T(0.10) O T(0.10) O}
+\bigskip
+
+
 - Protocol
 
-- Design 2
-- Treatment groups
-- Time and Date
-- Protocol
+For both experiments, we took specific cautions in our execution protocol. Our pilots results indiciated that although the pool size of Amazon turkers is in the order of hundred thousands, several turkers managed to find and submit our HIT for again but for a different pay rate. 
+
+
+
 
 # Results -- Design 1
 
