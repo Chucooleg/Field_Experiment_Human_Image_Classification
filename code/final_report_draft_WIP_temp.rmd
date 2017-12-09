@@ -117,13 +117,13 @@ Pilot | Oct 29, 2017 (Sunday) | Afternoon | $0.25 | 50
 \bigskip
 \centerline{\Large Design 1 Notation: Between Subject Design}
 \bigskip
-\centerline{\bfseries R X(0.10) O}
+\centerline{\bfseries R T(0.10) O}
 \centerline{\bfseries }
-\centerline{\bfseries R X(0.25) O}
+\centerline{\bfseries R T(0.25) O}
 \centerline{\bfseries }
-\centerline{\bfseries R X(0.40) O}
+\centerline{\bfseries R T(0.40) O}
 \centerline{\bfseries }
-\centerline{\bfseries R X(0.55) O}
+\centerline{\bfseries R T(0.55) O}
 \bigskip
 
 
@@ -154,16 +154,18 @@ Main  |Nov 26, 2017 (Sunday) | All day | \$0.22 | \$0.00, \$0.10, \$0.20, \$0.30
 \bigskip
 
 
-- Protocol
-
-For both experiments, we took specific cautions in our execution protocol. Our pilots results indiciated that although the pool size of Amazon turkers is in the order of hundred thousands, several turkers managed to find and submit our HIT for again but for a different pay rate. 
-
-
+For both experiments, we took specific cautions in our execution protocol. Our pilots results indicated that although the pool size of Amazon turkers is in the order of hundred thousands, several turkers managed to find and submit our HIT for again but for a different pay rate. Additionally, some turkers may check out the HIT, go through the covariate questions, take a look at the dog breed classification questions, leave the HIT at one pay rate and sign up again for another higher pay rate. Therefore, in both designs, we assign turkers with "qualifications" -- labels with which we filter out turkers who have completed our HITs from the pool of turkers who may continue to see our following postings. We also keep a continuously updated list of identification numbers of those turkers who attrited, so to conditionally block them from accessing our Qualtrics survey. Because multiple attempts or preview of the same task under different treatment conditions would have carry-over or spill-over effects on the outcome, we felt that these cautions were necessary. On the other hand, differential attrition of turkers, although not specifically analyzed in design 1 (since our unit of analysis is defined as the returned HIT rather than the turker), was conspicuous in the data. To mitigate the problem that turkers who started in lower pay rate postings tend to attrite more than those who started in higher pay rate postings, we raise the base rate in design 2, in which turkers are our unit of analysis, from \$0.10 to \$0.22. The results section will give describe attrition data in detail.
 
 
 # Results -- Design 1
 
+- pilot
+- main
+
 # Results -- Design 2
+
+- pilot
+- main
 
 # Future Lines of investigation
 
