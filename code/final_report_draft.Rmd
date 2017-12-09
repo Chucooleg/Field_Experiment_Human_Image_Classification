@@ -71,6 +71,7 @@ knitr::kable(d2df, "markdown")
 # Design 1 Pilot Experiment
 
 ## Data
+
 We ran a pilot study in order to test our experimental design and work out any conceptual and technical problems with our setup. We submitted an image recognition task once at the price of \$0.1 and once at the price of \$0.25, with 54 people taking part in each. We aimed to release the tasks around the same time on two separate days (Tuesday and Wednesday), hoping to mimic similar conditions as much as possible. The prices were chosen to be close to the average price for tasks of this size (\$0.10) and significantly higher for enough statistical power to see difference (\$0.25).
 
 ```{r}
@@ -170,6 +171,7 @@ coeftest(regr2_simple_pilot, vcov(regr2_simple_pilot))
 ```
 
 While the t-test and the simple regression imply that we can reject the null hypothesis that there is no difference between the two means, the full regression shows no statistical significance (p-val ~ 0.07) for the ATE. These results lead us to believe that there might be statistical significance in the larger experiment we planned. 
+
 
 # Design 1 Experiments
 

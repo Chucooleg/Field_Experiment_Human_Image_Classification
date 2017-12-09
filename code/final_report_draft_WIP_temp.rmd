@@ -7,16 +7,12 @@ output:
 
 ```{r,include=FALSE}
 rm(list = ls())
-library(foreign)
-library(sandwich)
-library(lmtest)
-library(data.table)
-library(multiwayvcov)
 ```
 
 ```{r, include=FALSE}
 #setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
+#setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
+setwd("C:/Users/chuco/Documents/Repo_Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
 source(file = "design2_data_transformation_functions.r")
@@ -67,7 +63,21 @@ We hypothesis that higher payment per human intelligence task (HIT) on average w
 
 # Experimental Design and Protocol
 
-Our experiment connect the AMT platform HIT work flow with the Qualtrics platform survey work flow. The AMT platform allows us, as a requestor to post HITs of different treatment pay rates and availabilities. Once a turker select our HIT out of a list of other HITs from other requestors based on our pay rate and description, the turker will be directed to our Qualtrics survey through a web link. Once all the survey questions are completed and the Qualtrics survey ends, the turker will submit their identification number of the AMT platform again. Once all the available HITs for a particular posting are claimed, completed and submitted by turkers, both the AMT posting and Qualtrics survey are terminated. Finally, we download data from both platforms, conduct statistical analyses and reward turkers who score higher than a pre-determined accuracy threshold.
+Our experiment connect the AMT platform HIT work flow with the Qualtrics platform survey work flow. The AMT platform allows us, as a requestor to post HITs of different treatment pay rates and availabilities. Once a turker select our HIT out of a list of other HITs from other requestors based on our pay rate and description(printed below), the turker will be directed to our Qualtrics survey through a web link. Once all the survey questions are completed and the Qualtrics survey ends, the turker will submit their identification number of the AMT platform again. Once all the available HITs for a particular posting are claimed, completed and submitted by turkers, both the AMT posting and Qualtrics survey are terminated. Finally, we download data from both platforms, conduct statistical analyses and reward turkers who score higher than a pre-determined accuracy threshold. 
+
+>*Title : Multiple-Choice Task*
+>*Description: This is a 50-question multiple choice task*
+>*Keywords: survey, multiple-choice*
+
+>*Reward per assignment: 0.1*
+>*Time allotted: 20min* (If this is too long, turkers may think this is a very hard task)
+
+>*We need help with this multiple-choice task, which will provide us examples to train a computation model. The survey consist of several demographic questions, followed by 50 multiple choice questions. You don't need any prior experience or knowledge to complete this task. Select the link below to complete the survey. At the end of the survey, you will receive a code to paste into the box below to receive credit for taking our survey.*
+
+>*Make sure to leave this window open as you complete the survey. When you are finished, you will return to this page to paste the code into the box.*
+
+>(And below this they see the survey link and the box to enter the code.)
+
 
 
 The Qualtrics survey begins by prompting for the turker's identification number and a block of 5 forced-response, multiple-choice questions to probe the turker's aptitude for dog-breed classification. Up until this point, the turker has no knowledge that this is an image classification task, nor relevancy to dog breeds. The turker cannot revisit this question block later. Below, the questions are listed with their answer choices and intended purposes:
@@ -157,9 +167,63 @@ Main  |Nov 26, 2017 (Sunday) | All day | \$0.22 | \$0.00, \$0.10, \$0.20, \$0.30
 For both experiments, we took specific cautions in our execution protocol. Our pilots results indicated that although the pool size of Amazon turkers is in the order of hundred thousands, several turkers managed to find and submit our HIT for again but for a different pay rate. Additionally, some turkers may check out the HIT, go through the covariate questions, take a look at the dog breed classification questions, leave the HIT at one pay rate and sign up again for another higher pay rate. Therefore, in both designs, we assign turkers with "qualifications" -- labels with which we filter out turkers who have completed our HITs from the pool of turkers who may continue to see our following postings. We also keep a continuously updated list of identification numbers of those turkers who attrited, so to conditionally block them from accessing our Qualtrics survey. Because multiple attempts or preview of the same task under different treatment conditions would have carry-over or spill-over effects on the outcome, we felt that these cautions were necessary. On the other hand, differential attrition of turkers, although not specifically analyzed in design 1 (since our unit of analysis is defined as the returned HIT rather than the turker), was conspicuous in the data. To mitigate the problem that turkers who started in lower pay rate postings tend to attrite more than those who started in higher pay rate postings, we raise the base rate in design 2, in which turkers are our unit of analysis, from \$0.10 to \$0.22. The results section will give describe attrition data in detail.
 
 
+***
+
+A note on supplementary files: A clean, well organized Github repo is available for this project. Access to raw, intermediate and transformed data is available for the evaluation of this project in the context of course w241 upon request. In addition, many of the programming code displayed in the following sections have been abstracted -- extensive R functions have been written to transform the raw data for statistical modeling and management of our AMT turkers. More R functions have been written to aid inferences. In general, code blocks that are non-analysis related are hidden and only visible in the submitted R file.
+
+***
+
 # Results -- Design 1
 
-- pilot
+## Pilot Study
+
+By running a pilot study for design 1, we tested the experiment protocol, identified problems in our AMT and Qualtrics workflow and conducted a power analysis on the collected data. During the last weekend of Oct 2017, we published two non-overlapping HIT postings each with 50 HITs available. One at the treatment pay rate of \$0.10 on Saturday and the other at the treatment pay rate of \$0.25 on Sunday. We tried to minimize differences in launching conditions for the two postings so to ensure comparability. 
+
+```{r, include=False}
+# read in Qualtrics output csv
+qualtric_pilot_data_path_0.25 = "../qualtric_data/20171028_qualtric_results_pilot_0.25.csv"
+current_task_pilot_data_0.25 = get_current_task_data(qualtric_pilot_data_path_0.25)
+qualtric_pilot_data_path_0.10 = "../qualtric_data/20171028_qualtric_results_pilot_0.10.csv"
+current_task_pilot_data_0.10 = get_current_task_data(qualtric_pilot_data_path_0.10)
+
+# evaluate accuracies and attach covariates per HIT level
+worker_perf_pilot_0.25 = evaluate_worker_perf(current_task_pilot_data_0.25, allQ)
+worker_perf_pilot_0.10 = evaluate_worker_perf(current_task_pilot_data_0.10, allQ)
+
+# pool the data from different treatments together
+worker_perf_pilot_0.25$treatment = 0.25
+worker_perf_pilot_0.10$treatment = 0.10
+regr_table_pilot = rbind(worker_perf_pilot_0.10, worker_perf_pilot_0.25)
+
+# transform pre-treatment covariates CQ1, CQ2_3, CQ3
+regr_table_pilot$CQ1 = as.factor(regr_table_pilot$CQ1)
+regr_table_pilot$CQ2_3 = as.numeric(regr_table_pilot$CQ2_3)
+regr_table_pilot$CQ3 = as.factor(regr_table_pilot$CQ3)
+```
+
+### Data
+
+The below table shows a summary of the two pilot postings and corresponding average accuracies. In comparison, we can see that the posting that paid more returned a higher average accuracy and completed faster than the lower paying posting. Note that the number of returned HITs in each posting is higher than 50 because some turkers may submit the HIT before the Qualtrics survey terminates but after the AMT posting terminates.
+
+```{r, echo=False}
+smry_025 = summarize_worker_perf(current_task_pilot_data_0.25, allQ)
+smry_010 = summarize_worker_perf(current_task_pilot_data_0.10, allQ)
+
+avg_time_025 = mean(as.numeric(regr_table_pilot[regr_table_pilot$treatment == 0.25,]$time_spent))/60
+avg_time_010= mean(as.numeric(regr_table_pilot[regr_table_pilot$treatment == 0.10,]$time_spent))/60
+
+pilot_summary = data.frame(Name=c("Pilot", "Pilot"), Posting=c(1,2), Treatmet=c("$0.10","$0.25"),
+                           N=c(nrow(worker_perf_pilot_0.10),nrow(worker_perf_pilot_0.25)),
+                           TotalTimeTaken=c("2h 30min","1h 20min"), 
+                           AvgTimePerTaskMin = c(avg_time_010,avg_time_025), 
+                           AccuracyMean=c(smry_010$mean,smry_025$mean), AccuracySE=c(smry_010$se,smry_025$se))
+knitr::kable(pilot_summary, "markdown")
+```
+
+(think about the table a bit more)
+
+
+
 - main
 
 # Results -- Design 2
