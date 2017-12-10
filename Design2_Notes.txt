@@ -1,3 +1,5 @@
+Design2
+
 Treatment: Notified that if the section came with/without a bonus
 
 Assumptions:
@@ -7,11 +9,14 @@ Assumptions:
 
 - cannot simply compare all treatment rounds to control rounds because the probability of being assigned treatment is much higher in the later sessions, when subjects are warmed up to the task already.
 
-
 Attrition:
 Write about or resolve any differential attrition
 
 ---------------------------------------------------------------------
+???
+
+Define compliance, non-compliance
+
 Analysis: (P.157 GG)
 
 Find ITT by Regr
@@ -21,6 +26,7 @@ Examine distribution from randomization inference
 
 Find ITT_D by Regr
 (Use robust se with coftest)
+
 
 Find CACE by Regr
 (Use robust se with coftest)
@@ -33,12 +39,13 @@ Find CACE by 2SLS (GG P.159) Regr (?)
 Find 
 
 ---------------------------------------------------------------------
-Report: 
-Define compliance, non-compliance
 
----------------------------------------------------------------------
-
-Design 1 : Clustered SE
+Design 1 : Clustered SE 
+Ln 299 for the pilot
+For the main design as well
 
 Design 2 : Check attrition, or fill-in missing data for extreme case (p.241 worst case scenario)
 Design 2 : sub group analysis check heterogeneity with interaction effects FE P.392 -->F-test to see if they are all the same. Individual t-test with multiple comparison correction to check if individually significant?
+
+---------------------------------------------------------------------
+

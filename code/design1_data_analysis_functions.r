@@ -7,6 +7,7 @@ library(lmtest)
 library(data.table)
 library(multiwayvcov)
 library(ggplot2)
+library(cowplot)
 #-------------------------------------------------------------------------------------------------
 
 # TWO-SAMPLE T-TEST
@@ -48,4 +49,19 @@ est.ri.ate = function(d, treatment){
   ate = lmtest::coeftest(m1, vcov(m1))[2]
   return(ate)
 } 
+#-------------------------------------------------------------------------------------
+# standard errors
 
+get_ate_se_robustci = function (mod, coef_idx) {
+  ate = mod$coefficients[coef_idx]
+  robust.se = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,2]
+  robust.p = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,4]
+  df = summary(mod)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
+  
+  cat("estimated average causal effect = $", ate,
+      "\nrobust standard error = $", robust.se,
+      "\n95% confidence interval = ", robust.ci,
+      "\np-value = ",robust.p)
+}

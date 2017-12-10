@@ -11,8 +11,8 @@ rm(list = ls())
 
 ```{r, include=FALSE}
 #setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
-#setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
-setwd("C:/Users/chuco/Documents/Repo_Field_Experiment_Human_Image_Classification/code")
+setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
+#setwd("C:/Users/chuco/Documents/Repo_Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
 source(file = "design2_data_transformation_functions.r")
@@ -33,10 +33,6 @@ source(file = "design2_data_analysis_functions.r")
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a sem vitae mi lobortis condimentum. Maecenas rutrum vitae libero in tempor. Fusce tempor mauris nec vulputate luctus. Phasellus et semper nisi, sed luctus erat. Duis eu congue lectus, ac mattis diam. Fusce tristique efficitur lacus, vel vehicula leo mollis id. Proin vel venenatis velit. Sed et semper ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed id mi urna. Integer urna nunc, feugiat sed felis vitae, imperdiet tristique ipsum. Sed pretium eros massa, a sollicitudin diam finibus aliquet.
 
 \centerline{\bfseries Fix section numbers in the introduction}
-
-> Add optional table of contents here
-
-\pagebreak
 
 # Introduction
 
@@ -167,12 +163,6 @@ Main  |Nov 26, 2017 (Sunday) | All day | \$0.22 | \$0.00, \$0.10, \$0.20, \$0.30
 For both experiments, we took specific cautions in our execution protocol. Our pilots results indicated that although the pool size of Amazon turkers is in the order of hundred thousands, several turkers managed to find and submit our HIT for again but for a different pay rate. Additionally, some turkers may check out the HIT, go through the covariate questions, take a look at the dog breed classification questions, leave the HIT at one pay rate and sign up again for another higher pay rate. Therefore, in both designs, we assign turkers with "qualifications" -- labels with which we filter out turkers who have completed our HITs from the pool of turkers who may continue to see our following postings. We also keep a continuously updated list of identification numbers of those turkers who attrited, so to conditionally block them from accessing our Qualtrics survey. Because multiple attempts or preview of the same task under different treatment conditions would have carry-over or spill-over effects on the outcome, we felt that these cautions were necessary. On the other hand, differential attrition of turkers, although not specifically analyzed in design 1 (since our unit of analysis is defined as the returned HIT rather than the turker), was conspicuous in the data. To mitigate the problem that turkers who started in lower pay rate postings tend to attrite more than those who started in higher pay rate postings, we raise the base rate in design 2, in which turkers are our unit of analysis, from \$0.10 to \$0.22. The results section will give describe attrition data in detail.
 
 
-***
-
-A note on supplementary files: A clean, well organized Github repo is available for this project. It includes raw, intermediate and transformed data, along with data transformation, statistical and project management codes. Because of the length of extensiveness of these R functions, we decided to print such functions as a higher level of abstraction and maintain a natural presentation flow of the project. For project evaluation's sake, please refer to the .rmd file for our the hidden snippets, and our Github repo for any other materials. (Available upon request)
-
-***
-
 # Design 1 Results
 
 ## Pilot Study (Design 1)
@@ -225,14 +215,20 @@ knitr::kable(pilot_summary, "markdown")
 
 The overall accuracy distribution is bimodal. One mode occurs between [0.15,0.20] and the other occurs between [0.85,0.95]. The distribution of HITs listed for \$0.10 bias towards the first mode, while that for \$0.25 bias towards the second mode. This is inline with our expectation that turkers are either accomplish with determination or care little (given eight choices for each question, making random choices would yield an accuracy of 0.125 in expectation). The fact that this accuracy distribution is non-normal cautioned us against reliance on OSL asymptotics for standard error estimation. While a larger sample size can increase this reliability, we nevertheless plan to include randomization inference on top of the t-statistic from OLS.  
 
-```{r, echo=FALSE}
-# overall accuracy plot
-hist.design1pilot = ggplot(regr_table_pilot, aes(accuracy, fill=factor(treatment))) +
-  geom_histogram(binwidth = .1) +
-  labs(x="Accuracy in Proportion", y = "count", fill="accuracy") +
-  ggtitle(label="HIT Accuracies in Design 1 Pilot") +
+```{r, echo=FALSE, fig.height=4}
+hist.design1pilot.10 = ggplot(regr_table_pilot[treatment == 0.10,], aes(accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 1 Pilot $0.10") +
   theme_gray()
-hist.design1pilot 
+
+hist.design1pilot.25 = ggplot(regr_table_pilot[treatment == 0.25,], aes(accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 1 Pilot $0.25") +
+  theme_gray()
+
+plot_grid(hist.design1pilot.10,hist.design1pilot.25 )
 ```
 
 ### Covariate Balance (Design 1 Pilot)
@@ -273,7 +269,7 @@ cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_pilot$treatment)
 stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
                      cov_regr_CQ2_3,
                      cov_regr_CQ3_1, cov_regr_CQ3_2, cov_regr_CQ3_3,
-                     type = "text", title = "Covariate Balance Check", style = "default",
+                     type = "text", title = "Covariate Balance Check Design 1 Pilot", style = "default",
                      se = list(se.cov_regr_CQ1_1, se.cov_regr_CQ1_2, se.cov_regr_CQ1_3,
                                se.cov_regr_CQ2_3,
                                se.cov_regr_CQ3_1, se.cov_regr_CQ3_2, se.cov_regr_CQ3_3),
@@ -286,19 +282,21 @@ stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
 
 ### Treatment Effect Estimation (Design 1 Pilot)
 
-We performed a basic power analysis on our pilot data, so we could get an initial feel of the results we would be getting. First, we conducted a Levene test, which showed us that the variances of the \$0.10 outcomes and the \$0.25 outcomes are similar. From there, we ran a two-sample independent t-test, as well as a simple and a full regression with robust standard error. 
+We performed a basic power analysis on our pilot data, so we could get an initial feel of the results we would be getting. First, we conducted a Levene test, which showed us that the variances of the \$0.10 outcomes and the \$0.25 outcomes are significantly different. From there, we ran a two-sample independent Welch's t-test, as well as a simple and a full regression with robust standard error. 
 
-The two-sample independent t-test results, which is equivalent to OLS results with only one variable, shows marginal significance for the treatment effect. The full-regression shows no statistical significance (p-val ~ 0.07) for the treatment effect. These results lead us to believe that there might be statistical significance in the main experiment we planned. Therefore, for in the main experiment for design 1, we decided to raise sample size for each posting from 50 to 100, and further expand our treatments to include \$0.40 and \$0.55.
+The two-sample independent t-test results, which is equivalent to OLS results with only one variable, shows marginal significance for the treatment effect of 0.756 higher accuracy per dollar spent. The full-regression shows no statistical significance (p-val ~ 0.07) for the treatment effect of 0.651 higher accuracy per dollar spent. These results lead us to believe that there might be statistical significance in the main experiment we planned. Therefore, for in the main experiment for design 1, we decided to raise sample size for each posting from 50 to 100, and further expand our treatments to include \$0.40 and \$0.55.
 
 ```{r, echo=F, warning=F}
-car::leveneTest(worker_perf_pilot_0.10$accuracy,worker_perf_pilot_0.25$accuracy,center=median)
+car::leveneTest(regr_table_pilot$accuracy,as.factor(regr_table_pilot$treatment),center=median)
 ```
 
 ```{r, echo=F, warning=F}
 t.test(worker_perf_pilot_0.10$accuracy,
        worker_perf_pilot_0.25$accuracy,
-       alternative = "two.sided", var.equal = TRUE)
+       alternative = "two.sided", var.equal = F)
 ```
+
+**Use Clustered SE here*
 
 ```{r, include=F}
 regr1_simple_pilot = lm(accuracy ~ treatment, data = regr_table_pilot)
@@ -309,7 +307,7 @@ regr2_simple_pilot = lm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3, data = regr_ta
 
 ```{r, echo=F, warning=F}
 stargazer::stargazer(regr1_simple_pilot, regr2_simple_pilot,
-                     type = "text", title = "Covariate Balance Check", style = "default",
+                     type = "text", title = "Design 1 Pilot ATE Estimation", style = "default",
                      se = list(se.regr1_simple_pilot, se.regr2_simple_pilot),
                      star.cutoffs = c(0.05, 0.01, 0.001),
                      column.labels = c("simple","full"),
@@ -317,20 +315,483 @@ stargazer::stargazer(regr1_simple_pilot, regr2_simple_pilot,
                      )
 ```
 
-(Write code here for robust p values and CI)
+```{r, echo=F}
+cat("Simple Model with No Covariates:\n")
+get_ate_se_robustci(regr1_simple_pilot,2)
+cat("\n\nFull Model with Covariates:\n")
+get_ate_se_robustci(regr2_simple_pilot,2)
+```
+
 
 ## Main experiment (Design 1)
 
-By running a pilot study for design 1, we tested the experiment protocol, identified problems in our AMT and Qualtrics workflow and conducted a power analysis on the collected data. During the last weekend of Oct 2017, we published two non-overlapping HIT postings each with 50 HITs available. One at the treatment pay rate of \$0.10 on Saturday and the other at the treatment pay rate of \$0.25 on Sunday. We tried to minimize differences in launching conditions for the two postings so to ensure comparability. 
+We ran the main Design 1 (D1) experiment over the third of fourth weekends of November. In each weekend we published four postings each of 100 available HITs, and cover all four treatment pay rates. On each day, we publish one posting in the morning, and another one in the afternoon. The two postings don't overlap, and we take aforementioned precautions to make sure turkers who had done or seen the task once couldn't do it again. The only difference between the two weekends were the order in which we released the prices (order1 is 0.10, 0.55, 0.25, 0.40; order 2 is 0.40, 0.25, 0.55, 0.10). This allows us to check whether the order of the prices actually makes a difference. 
 
 ### Data (Design 1 Main)
 
+Summary of Design 1 data is provided in the table below. Similar to what we saw in the pilot, available HITs of postings of higher pay rates are claimed much sooner, even though completion time per HIT stayed roughly the same. It is likely due to competition -- turkers want to avoid missing out well paid HITs before they disappear, while poorly paid HITs are less in demand. One can interpret this difference in time for all HITs to be calimed to be a good indicator that the chosen treatment pay rates are varied enough to stimulate differential reactions from the turker workforce. Even so, selection bias cannot be ruled out. For example, only the faster workers, or the ones with the best internet connection, will be able to do the higher paying HITs. 
+
+```{r, include=F}
+# DESIGN 1 ORDER 1
+
+# read in qualtric output csv
+qualtric_data_path_d1o1_0.10 = "../qualtric_data/20171111_qualtric_results_order1_0.10.csv"
+current_task_data_d1o1_0.10 = get_current_task_data(qualtric_data_path_d1o1_0.10)
+qualtric_data_path_d1o1_0.55 = "../qualtric_data/20171111_qualtric_results_order1_0.55.csv"
+current_task_data_d1o1_0.55 = get_current_task_data(qualtric_data_path_d1o1_0.55)
+qualtric_data_path_d1o1_0.40 = "../qualtric_data/20171112_qualtric_results_order1_0.40.csv"
+current_task_data_d1o1_0.40 = get_current_task_data(qualtric_data_path_d1o1_0.40)
+qualtric_data_path_d1o1_0.25 = "../qualtric_data/20171112_qualtric_results_order1_0.25.csv"
+current_task_data_d1o1_0.25 = get_current_task_data(qualtric_data_path_d1o1_0.25)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
+filter = !(current_task_data_d1o1_0.55$worker_id %in% current_task_data_d1o1_0.10$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o1_0.55_weeded = current_task_data_d1o1_0.55[filter, ]
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_d1o1_0.25$worker_id %in% current_task_data_d1o1_0.40$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o1_0.25_weeded = current_task_data_d1o1_0.25[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_d1o1_0.10 = evaluate_question_perf(current_task_data_d1o1_0.10, allQ)
+question_perf_d1o1_0.55 = evaluate_question_perf(current_task_data_d1o1_0.55_weeded, allQ)
+question_perf_d1o1_0.40 = evaluate_question_perf(current_task_data_d1o1_0.40, allQ)
+question_perf_d1o1_0.25 = evaluate_question_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_d1o1_0.10 = evaluate_worker_perf(current_task_data_d1o1_0.10, allQ)
+worker_perf_d1o1_0.55 = evaluate_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+worker_perf_d1o1_0.40 = evaluate_worker_perf(current_task_data_d1o1_0.40, allQ)
+worker_perf_d1o1_0.25 = evaluate_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+# pool the data from different treatments together
+worker_perf_d1o1_0.10$treatment = 0.10
+worker_perf_d1o1_0.55$treatment = 0.55
+worker_perf_d1o1_0.40$treatment = 0.40
+worker_perf_d1o1_0.25$treatment = 0.25
+regr_table_d1o1 = rbind(worker_perf_d1o1_0.10, worker_perf_d1o1_0.25, worker_perf_d1o1_0.40, worker_perf_d1o1_0.55) 
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o1$CQ1 = as.factor(regr_table_d1o1$CQ1)
+regr_table_d1o1$CQ2_3 = as.numeric(regr_table_d1o1$CQ2_3)
+regr_table_d1o1$CQ3 = as.factor(regr_table_d1o1$CQ3)
+
+# POOLING THREE (0.25, 0.40, 0.55) CSV FILES FROM DIFFERENT TREATMENTS
+
+# pool the data from different treatments together
+regr_table_d1o1_exclude0.10 = rbind(worker_perf_d1o1_0.25, worker_perf_d1o1_0.40, worker_perf_d1o1_0.55)
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o1_exclude0.10$CQ1 = as.factor(regr_table_d1o1_exclude0.10$CQ1)
+regr_table_d1o1_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o1_exclude0.10$CQ2_3)
+regr_table_d1o1_exclude0.10$CQ3 = as.factor(regr_table_d1o1_exclude0.10$CQ3)
+```
+
+```{r, include=F}
+# DESIGN 1 ORDER 2
+
+# read in qualtric output csv
+qualtric_data_path_d1o2_0.40 = "../qualtric_data/20171118_qualtric_results_order2_0.40.csv"
+current_task_data_d1o2_0.40 = get_current_task_data(qualtric_data_path_d1o2_0.40)
+qualtric_data_path_d1o2_0.25 = "../qualtric_data/20171118_qualtric_results_order2_0.25.csv"
+current_task_data_d1o2_0.25 = get_current_task_data(qualtric_data_path_d1o2_0.25)
+qualtric_data_path_d1o2_0.55 = "../qualtric_data/20171119_qualtric_results_order2_0.55.csv"
+current_task_data_d1o2_0.55 = get_current_task_data(qualtric_data_path_d1o2_0.55)
+qualtric_data_path_d1o2_0.10 = "../qualtric_data/20171119_qualtric_results_order2_0.10.csv"
+current_task_data_d1o2_0.10 = get_current_task_data(qualtric_data_path_d1o2_0.10)
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.10 task already
+filter = !(current_task_data_d1o2_0.25$worker_id %in% current_task_data_d1o2_0.40$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o2_0.25_weeded = current_task_data_d1o2_0.25[filter, ]
+
+# !!! REMOVE REPEATERS : turks who checked out the 0.40 task already
+filter = !(current_task_data_d1o2_0.10$worker_id %in% current_task_data_d1o2_0.55$worker_id)
+# get number of violaters
+sum_spillover = sum(!filter)
+# weed out the violaters 
+current_task_data_d1o2_0.10_weeded = current_task_data_d1o2_0.10[filter, ]
+
+# evaluate accuracy per question
+# of a particular question, how many people got it right?
+question_perf_d1o2_0.10 = evaluate_question_perf(current_task_data_d1o2_0.10_weeded, allQ)
+question_perf_d1o2_0.55 = evaluate_question_perf(current_task_data_d1o2_0.55, allQ)
+question_perf_d1o2_0.40 = evaluate_question_perf(current_task_data_d1o2_0.40, allQ)
+question_perf_d1o2_0.25 = evaluate_question_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+#evaluate accuracy per worker, return a table per worker
+worker_perf_d1o2_0.10 = evaluate_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
+worker_perf_d1o2_0.55 = evaluate_worker_perf(current_task_data_d1o2_0.55, allQ)
+worker_perf_d1o2_0.40 = evaluate_worker_perf(current_task_data_d1o2_0.40, allQ)
+worker_perf_d1o2_0.25 = evaluate_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+# pool the data from different treatments together
+worker_perf_d1o2_0.10$treatment = 0.10
+worker_perf_d1o2_0.55$treatment = 0.55
+worker_perf_d1o2_0.40$treatment = 0.40
+worker_perf_d1o2_0.25$treatment = 0.25
+regr_table_d1o2 = rbind(worker_perf_d1o2_0.10, worker_perf_d1o2_0.25, worker_perf_d1o2_0.40, worker_perf_d1o2_0.55) 
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o2$CQ1 = as.factor(regr_table_d1o2$CQ1)
+regr_table_d1o2$CQ2_3 = as.numeric(regr_table_d1o2$CQ2_3)
+regr_table_d1o2$CQ3 = as.factor(regr_table_d1o2$CQ3)
+
+# POOLING THREE (0.25, 0.40, 0.55) CSV FILES FROM DIFFERENT TREATMENTS
+
+# pool the data from different treatments together
+regr_table_d1o2_exclude0.10 = rbind(worker_perf_d1o2_0.25, worker_perf_d1o2_0.40, worker_perf_d1o2_0.55)
+
+# our covariates are CQ1, CQ2_3, CQ3
+# converting some data type of some covariates
+regr_table_d1o2_exclude0.10$CQ1 = as.factor(regr_table_d1o2_exclude0.10$CQ1)
+regr_table_d1o2_exclude0.10$CQ2_3 = as.numeric(regr_table_d1o2_exclude0.10$CQ2_3)
+regr_table_d1o2_exclude0.10$CQ3 = as.factor(regr_table_d1o2_exclude0.10$CQ3)
+
+
+# combine regression tables for the two orders
+regr_table_d1o1$order1 = 1
+regr_table_d1o1_exclude0.10 = 1
+regr_table_d1o2$order1 = 0
+regr_table_d1o2_exclude0.10 = 0
+
+regr_table_d1 = rbind(regr_table_d1o1,regr_table_d1o2)
+regr_table_d1_exclude0.10 = rbind(regr_table_d1o1_exclude0.10, regr_table_d1o2_exclude0.10)
+```
+
+```{r, include=F}
+# DESIGN 1 ORDER 1
+
+#stats summary of accuracies over all workers
+smry_010_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
+
+#stats summary of accuracies over all workers
+smry_055_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
+
+#stats summary of accuracies over all workers
+smry_040_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
+
+#stats summary of accuracies over all workers
+smry_025_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
+
+avg_time_025_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.25,]$time_spent))/60
+avg_time_010_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.10,]$time_spent))/60
+avg_time_040_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.40,]$time_spent))/60
+avg_time_055_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.55,]$time_spent))/60
+
+# DESIGN 1 ORDER 2
+
+#stats summary of accuracies over all workers
+smry_010_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
+
+#stats summary of accuracies over all workers
+smry_055_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.55, allQ)
+
+#stats summary of accuracies over all workers
+smry_040_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
+
+#stats summary of accuracies over all workers
+smry_025_d1o2=summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
+
+avg_time_025_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.25,]$time_spent))/60
+avg_time_010_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.10,]$time_spent))/60
+avg_time_040_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.40,]$time_spent))/60
+avg_time_055_d1o2 = mean(as.numeric(regr_table_d1o2[regr_table_d1o2$treatment == 0.55,]$time_spent))/60
+
+```
+
+```{r, echo=F}
+d1_summary = data.frame(
+  
+  Name=c("Order 1","Order 1","Order 1","Order 1","Order 2","Order 2","Order 2","Order 2"), 
+  
+  Treatment=c("$0.10","$0.25", "$0.40", "$0.55","$0.10","$0.25", "$0.40", "$0.55"), 
+  
+  N=c(nrow(worker_perf_d1o1_0.10),nrow(worker_perf_d1o1_0.25),nrow(worker_perf_d1o1_0.40),nrow(worker_perf_d1o1_0.55),
+      
+      nrow(worker_perf_d1o2_0.10),nrow(worker_perf_d1o2_0.25),nrow(worker_perf_d1o2_0.40),nrow(worker_perf_d1o2_0.55)), 
+  
+  TotalTime=c("11h 15min","3h 15min", "0h 40min", "0h 40min","15h 20min","2h 40min", "2h 20min", "3h 10min"), 
+  
+  AvgTimePerTask = c(paste(toString(round(avg_time_010_d1o1,3)),"min",sep=""),
+                     paste(toString(round(avg_time_025_d1o1,3)),"min",sep=""),
+                     paste(toString(round(avg_time_040_d1o1,3)),"min",sep=""),
+                     paste(toString(round(avg_time_055_d1o1,3)),"min",sep=""),
+                     paste(toString(round(avg_time_010_d1o2,3)),"min",sep=""),
+                     paste(toString(round(avg_time_025_d1o2,3)),"min",sep=""),
+                     paste(toString(round(avg_time_040_d1o2,3)),"min",sep=""),
+                     paste(toString(round(avg_time_055_d1o2,3)),"min",sep="")), 
+
+  AccuracyMean=c(round(smry_010_d1o1$mean,3),
+                 round(smry_025_d1o1$mean,3),
+                 round(smry_040_d1o1$mean,3),
+                 round(smry_055_d1o1$mean,3),
+                 round(smry_010_d1o2$mean,3),
+                 round(smry_025_d1o2$mean,3),
+                 round(smry_040_d1o2$mean,3),
+                 round(smry_055_d1o2$mean,3)), 
+  
+  AccuracySd=c(  round(smry_010_d1o1$std,3),
+                 round(smry_025_d1o1$std,3),
+                 round(smry_040_d1o1$std,3),
+                 round(smry_055_d1o1$std,3),
+                 round(smry_010_d1o2$std,3),
+                 round(smry_025_d1o2$std,3),
+                 round(smry_040_d1o2$std,3),
+                 round(smry_055_d1o2$std,3)))
+
+knitr::kable(d1_summary, "markdown")
+```
+
+In terms of average accuracy, the distributions of HIT accuracy are again bimodal and suggest the need for randomization inference for causal effect estimation. Order 1 data shows similar distribution as the pilot, with low paying HITs biased towards the lower mode and high paying HITs biased towards the higher mode. Although order 2 data has a similar overall distribution, differential distribution among HITs of different pay rates is not observed anymore. From the earlier summary table, we observe an abnormality in the accuracy for the two \$0.10 postings -- average accuracy of the first one is roughly one standard deviation lower than the second one.  Therefore, the \$0.10 HITs collected during the first weekend, like the pilot, has a noticeable right skew while the \$0.10 HITs collected during the second weekend follows the overall trend of all HITs. Such a conspicuous difference between outcomes from similar treatments suggests that there is either an order effect, Saturday versus Sunday effect, morning vs afternoon effect, or an effect coming from outside of the experiment system. 
+
+```{r, echo=F, fig.height=4}
+hist.design1_o1 <- ggplot(regr_table_d1o1, aes(accuracy, fill = factor(treatment))) +
+geom_histogram(binwidth = .05) +
+labs(x="HIT Accuracy", y="Count", fill = "Payrate") +
+ggtitle(label = "Design 1 Order 1") +
+theme_gray()
+
+hist.design1_o2 <- ggplot(regr_table_d1o2, aes(accuracy, fill = factor(treatment))) +
+geom_histogram(binwidth = .05) +
+labs(x="HIT Accuracy", y="Count", fill = "Payrate") +
+ggtitle(label = "Design 1 Order 2") +
+theme_gray()
+
+plot_grid(hist.design1_o1,hist.design1_o2 )
+```
+
+
+
+```{r, echo=FALSE, fig.height=4}
+hist.design1pilot.o110 = ggplot(regr_table_d1o1[treatment == 0.10,], aes(accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 1 Order 1 $0.10") +
+  theme_gray()
+
+hist.design1pilot.o210 = ggplot(regr_table_d1o2[treatment == 0.10,], aes(accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 1 Order 2 $0.10") +
+  theme_gray()
+
+plot_grid(hist.design1pilot.o110,hist.design1pilot.o210 )
+```
+
 ### Covariate Balance (Design 1 Main)
+
+The covariate balance check on the combined D1 data doesn't show any statistically significant results for the answers to our covariate questions. The same check on the order levels reveals similar results. This gives us confidence that the covariates are uncorrelated with treatment assignment and suitable as controls. 
+
+```{r, include=F,echo=F}
+# DESIGN 1 COMBINED
+CQ1_1 = regr_table_d1$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1$CQ1 == "around half"
+CQ1_3 = regr_table_d1$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ regr_table_d1$treatment, data = regr_table_d1)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1$CQ3 == "Yes"
+CQ3_2 = regr_table_d1$CQ3 == "No"
+CQ3_3 = regr_table_d1$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
+                     cov_regr_CQ2_3,
+                     cov_regr_CQ3_1, cov_regr_CQ3_2, cov_regr_CQ3_3,
+                     type = "text", title = "Covariate Balance Check Design 1 Overall", style = "default",
+                     se = list(se.cov_regr_CQ1_1, se.cov_regr_CQ1_2, se.cov_regr_CQ1_3,
+                               se.cov_regr_CQ2_3,
+                               se.cov_regr_CQ3_1, se.cov_regr_CQ3_2, se.cov_regr_CQ3_3),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+
+```{r, include=F,echo=F}
+# DESIGN 1 ORDER 1
+
+# Dog friends question
+CQ1_1 = regr_table_d1o1$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1o1$CQ1 == "around half"
+CQ1_3 = regr_table_d1o1$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_d1o1)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1o1$CQ3 == "Yes"
+CQ3_2 = regr_table_d1o1$CQ3 == "No"
+CQ3_3 = regr_table_d1o1$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1o1$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
+                     cov_regr_CQ2_3,
+                     cov_regr_CQ3_1, cov_regr_CQ3_2, cov_regr_CQ3_3,
+                     type = "text", title = "Covariate Balance Check Design 1 Order 1", style = "default",
+                     se = list(se.cov_regr_CQ1_1, se.cov_regr_CQ1_2, se.cov_regr_CQ1_3,
+                               se.cov_regr_CQ2_3,
+                               se.cov_regr_CQ3_1, se.cov_regr_CQ3_2, se.cov_regr_CQ3_3),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+```{r, include=F, echo=F}
+# DESIGN 1 ORDER 2
+
+# Dog friends question
+CQ1_1 = regr_table_d1o2$CQ1 == "a lot less than half"
+CQ1_2 = regr_table_d1o2$CQ1 == "around half"
+CQ1_3 = regr_table_d1o2$CQ1 == "a lot more than half"
+
+cov_regr_CQ1_1= lm(CQ1_1 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_1, vcov(cov_regr_CQ1_1))
+
+cov_regr_CQ1_2= lm(CQ1_2 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_2, vcov(cov_regr_CQ1_2))
+
+cov_regr_CQ1_3= lm(CQ1_3 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ1_3, vcov(cov_regr_CQ1_3))
+
+# Preference to work with images question
+cov_regr_CQ2_3= lm(CQ2_3 ~ treatment, data = regr_table_d1o2)
+lmtest::coeftest(cov_regr_CQ2_3, vcov(cov_regr_CQ2_3))
+
+# Lived with or planned to own a dog
+CQ3_1 = regr_table_d1o2$CQ3 == "Yes"
+CQ3_2 = regr_table_d1o2$CQ3 == "No"
+CQ3_3 = regr_table_d1o2$CQ3 == "Maybe"
+
+cov_regr_CQ3_1= lm(CQ3_1 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_1, vcov(cov_regr_CQ3_1))
+
+cov_regr_CQ3_2= lm(CQ3_2 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_2, vcov(cov_regr_CQ3_2))
+
+cov_regr_CQ3_3= lm(CQ3_3 ~ regr_table_d1o2$treatment)
+lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
+                     cov_regr_CQ2_3,
+                     cov_regr_CQ3_1, cov_regr_CQ3_2, cov_regr_CQ3_3,
+                     type = "text", title = "Covariate Balance Check Design 1 Order 2", style = "default",
+                     se = list(se.cov_regr_CQ1_1, se.cov_regr_CQ1_2, se.cov_regr_CQ1_3,
+                               se.cov_regr_CQ2_3,
+                               se.cov_regr_CQ3_1, se.cov_regr_CQ3_2, se.cov_regr_CQ3_3),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+
+> Definition of covariate variables remains unchanged in all experiments. Please reference the design 1 pilot version.
 
 ### Treatment Effect Estimation (Design 1 Main)
 
+(edit)
+We start off by running a student t-test, doing a pairwise comparison between the accuracies for all treatments. We use either a normal t-test or a Welch two sample t-test, depending on how similar the variances between the outputs for each treatment are. All of the results are statistically significant, apart from the comparison between the 0.25 outcomes and the 0.55 outcomes. 
+
+(make table to summarize this)
 
 
+```{r, echo=F}
+# ATE by T-test
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.55]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.1]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.40]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.40]$accuracy, "two.sided")
+
+est.t.test(regr_table_d1[regr_table_d1$treatment == 0.25]$accuracy,regr_table_d1[regr_table_d1$treatment == 0.55]$accuracy, "two.sided")
+
+```
+
+** Activate this code block again**
+
+```{r, eval = F}
+# t-test summary
+design1_ttest_summary = data.frame(Name=c("$0.10 vs $0.55", 
+                                          "$0.10 vs $0.25",
+                                          "$0.10 vs $0.40",
+                                          "$0.25 vs $0.40",
+                                          "$0.10 vs $0.55"), 
+                           Treatment=c("$0.10",
+                                       "$0.25"),
+                           N=c(nrow(worker_perf_pilot_0.10),
+                               nrow(worker_perf_pilot_0.25)),
+                           TotalTime=c("2h 30min","1h 20min"), 
+                           AvgTimePerTask = c(paste(toString(round(avg_time_010,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_025,3)),"min",sep="")
+                                              ), 
+                           AccuracyMean=c(round(smry_010$mean,3),round(smry_025$mean,3)), 
+                           AccuracySd=c(round(smry_010$std,3),round(smry_025$std,3)))
+
+knitr::kable(design1_ttest_summary, "markdown")
+```
+
+
+
+(weird order 1 $0.10 accuracy)
 
 # Design 2 Results
 
@@ -349,3 +810,10 @@ By running a pilot study for design 1, we tested the experiment protocol, identi
 # Future Lines of investigation
 
 # Conclusion and Bibliography
+
+
+***
+
+A note on supplementary files: A clean, well organized Github repo is available for this project. It includes raw, intermediate and transformed data, along with data transformation, statistical and project management codes. Because of the length of extensiveness of these R functions, we decided to print such functions as a higher level of abstraction and maintain a natural presentation flow of the project. For project evaluation's sake, please refer to the .rmd file for our the hidden snippets, and our Github repo for any other materials. (Available upon request)
+
+***

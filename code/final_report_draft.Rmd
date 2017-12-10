@@ -19,7 +19,7 @@ library(multiwayvcov)
 ```{r}
 # load supporting functions
 # setwd("/home/fred/Field_Experiment_Human_Image_Classification/code")
-setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
+# setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
 # setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/final_project/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
@@ -181,8 +181,6 @@ We ran the real Design 1 (D1) experiment in two parts over two separate weekends
 
 You can see more information about the D1 data in the summary table below. Similar to what we saw in the pilot, the higher priced HITs were completed much more quickly overall, even though workers seem to spend roughly the same amount of time, on average, on an HIT. The faster overall completion of the higher-priced batches is probably due to workers not wanting to miss out on the higher-paid tasks before they disappear, whereas lower-paid tasks are in less demand. One could interpret this difference in time to completion as a good indicator that the treatment levels we have chosen are varied enough to make a difference for workers. Even so, it is important to note that we might still be getting different kinds of workers for the different tasks. For example, only the faster workers, or the ones with the best internet connection, will be able to do the higher paying HITs. 
 ```{r}
-
-# TODO Hide this
 # DESIGN 1 ORDER 1
 
 # read in qualtric output csv
@@ -248,8 +246,6 @@ regr_table_d1o1_exclude0.10$CQ3 = as.factor(regr_table_d1o1_exclude0.10$CQ3)
 ```
 
 ```{r}
-
-# TODO hide this
 # DESIGN 1 ORDER 2
 
 # read in qualtric output csv
@@ -324,31 +320,17 @@ regr_table_d1 = rbind(regr_table_d1o1,regr_table_d1o2)
 regr_table_d1_exclude0.10 = rbind(regr_table_d1o1_exclude0.10, regr_table_d1o2_exclude0.10)
 ```
 
-
 ```{r}
-# TODO Hide this
-
 # DESIGN 1 ORDER 1
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o1_0.10, allQ)
 
 #stats summary of accuracies over all workers
 smry_010_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.10, allQ)
 
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o1_0.55_weeded, allQ)
-
 #stats summary of accuracies over all workers
 smry_055_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.55_weeded, allQ)
 
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o1_0.40, allQ)
-
 #stats summary of accuracies over all workers
 smry_040_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.40, allQ)
-
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o1_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
 smry_025_d1o1 = summarize_worker_perf(current_task_data_d1o1_0.25_weeded, allQ)
@@ -359,26 +341,15 @@ avg_time_040_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment ==
 avg_time_055_d1o1 = mean(as.numeric(regr_table_d1o1[regr_table_d1o1$treatment == 0.55,]$time_spent))/60
 
 # DESIGN 1 ORDER 2
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o2_0.10_weeded, allQ)
 
 #stats summary of accuracies over all workers
 smry_010_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.10_weeded, allQ)
 
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o2_0.55, allQ)
-
 #stats summary of accuracies over all workers
 smry_055_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.55, allQ)
 
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o2_0.40, allQ)
-
 #stats summary of accuracies over all workers
 smry_040_d1o2 = summarize_worker_perf(current_task_data_d1o2_0.40, allQ)
-
-#stats summary of accuracies over all questions
-# summarize_question_accuracy(current_task_data_d1o2_0.25_weeded, allQ)
 
 #stats summary of accuracies over all workers
 smry_025_d1o2=summarize_worker_perf(current_task_data_d1o2_0.25_weeded, allQ)
@@ -419,7 +390,10 @@ qqnorm(regr_table_d1$accuracy)
 
 ## Covariate balance
 
-The covariate balance check on the combined D1 data doesn't show any statistically significant results for the answers to our covariate questions. This means that we shouldn't have any problems with our covariates as they have no relationship with the treatment. Looking at the covariate balance on an order level reveals the same results. You can see the code for this in the hidden section below. 
+The covariate balance check on the combined D1 data doesn't show any statistically significant results for the answers to our covariate questions. The same check on the order levels reveals similar results. This gives us confidence that the covariates are uncorrelated with treatment assignment and suitable as controls. 
+
+
+
 ```{r} 
 
 # TODO Hide this
@@ -534,6 +508,7 @@ lmtest::coeftest(cov_regr_CQ3_3, vcov(cov_regr_CQ3_3))
 ## Estimating ATE
 
 We start off by running a student t-test, doing a pairwise comparison between the accuracies for all treatments. We use either a normal t-test or a Welch two sample t-test, depending on how similar the variances between the outputs for each treatment are. All of the results are statistically significant, apart from the comparison between the 0.25 outcomes and the 0.55 outcomes. 
+
 ```{r}
 # TODO Summarise/Hide some of this
 
