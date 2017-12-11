@@ -8,6 +8,10 @@ library(data.table)
 library(multiwayvcov)
 library(ggplot2)
 library(cowplot)
+
+library(kableExtra)
+
+
 #-------------------------------------------------------------------------------------------------
 
 # TWO-SAMPLE T-TEST
@@ -64,4 +68,17 @@ get_ate_se_robustci = function (mod, coef_idx) {
       "\nrobust standard error = $", robust.se,
       "\n95% confidence interval = ", robust.ci,
       "\np-value = ",robust.p)
+}
+
+
+# fix this
+get_ate_se_clusteredci = function(mod, mod_name,coef_idx) {
+  ate = as.numeric(mod$coefficients[coef_idx])
+  clustered.vcov = cluster.vcov(mod, ~cluster )
+  clustered.se = as.numeric(sqrt(diag(clustered.vcov)))[2]
+  clustered.ci = ate + qnorm(p = c(0.05/2, 1-0.05/2))*clustered.se
+  cat(mod_name,
+      "\nATE estimate =", ate,
+      "\nClustered standard errors =", clustered.se,
+      "\n.95 CI with clustered SE = [", clustered.ci, "]")
 }

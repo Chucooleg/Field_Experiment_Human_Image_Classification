@@ -560,6 +560,7 @@ We ran four linear regression models on the dataset:
 (4) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1$
 
 By running these four models, we aimed to understand how the treatment performs when taking into account the covariates (models 1 and 2), as well as whether the order in which we submitted the tasks actually made a difference (model 3). The final model (4) also looks at heterogeneous treatment effects, or whether receiving a treatment in order 1 is better or worse than receiving the same treatment in order 2. 
+
 ```{r}
 
 # TODO Feel free to add to the analysis interpretation below. 
