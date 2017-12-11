@@ -1,5 +1,3 @@
-source(file = "design1_data_transformation_functions.r")
-
 library(effects)
 library(foreign)
 library(sandwich)
