@@ -640,6 +640,8 @@ n55 = nrow(worker_perf_d1o1_0.55)
 
 rand_ass = function() sample(c(rep(0.1,n10),rep(0.25,n25), rep(0.4,n40), rep(0.55,n55)))
 
+102,103,102,98,102,102,105,103
+
 # INCLUDING ALL four postings
 # treatment = rand_ass()
 ate_d1o1 = est.ri.ate(regr_table_d1o1,regr_table_d1o1$treatment)

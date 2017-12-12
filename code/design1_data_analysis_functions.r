@@ -6,6 +6,7 @@ library(data.table)
 library(multiwayvcov)
 library(ggplot2)
 library(cowplot)
+library(multcomp)
 
 library(kableExtra)
 
@@ -45,12 +46,20 @@ est.regr.covars_order_interact = function(r_table){
 #-------------------------------------------------------------------------------------
 # FOR RANDOMIZATION INFERENCE
 
-est.ri.ate = function(d, treatment){
-  d$treatment_new = treatment
-  m1 = lm(accuracy ~ treatment_new, data =d)
-  ate = lmtest::coeftest(m1, vcov(m1))[2]
+est.ri.ate = function(treatment_n){
+  regr_table_d1$new_treat = treatment_n
+  m1 = lm(accuracy ~ new_treat, data=regr_table_d1)
+  ate = lmtest::coeftest(m1, vcov=multiwayvcov::cluster.vcov(m1, ~cluster))[2]
   return(ate)
 } 
+
+est.ri.ate.control = function(treatment_n){
+  regr_table_d1$new_treat = treatment_n  
+  m1 = lm(accuracy ~ new_treat + CQ1 + CQ2_3 + CQ3 + order1, data =regr_table_d1)
+  ate = lmtest::coeftest(m1, vcov=multiwayvcov::cluster.vcov(m1, ~cluster))[2]
+  return(ate)
+} 
+
 #-------------------------------------------------------------------------------------
 # standard errors
 
@@ -62,21 +71,79 @@ get_ate_se_robustci = function (mod, coef_idx) {
   t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
   robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
   
-  cat("estimated average causal effect = $", ate,
-      "\nrobust standard error = $", robust.se,
+  cat("estimated average causal effect = ", ate,
+      "\nrobust standard error = ", robust.se,
       "\n95% confidence interval = ", robust.ci,
       "\np-value = ",robust.p)
 }
 
 
-# fix this
+
 get_ate_se_clusteredci = function(mod, mod_name,coef_idx) {
   ate = as.numeric(mod$coefficients[coef_idx])
-  clustered.vcov = cluster.vcov(mod, ~cluster )
-  clustered.se = as.numeric(sqrt(diag(clustered.vcov)))[2]
-  clustered.ci = ate + qnorm(p = c(0.05/2, 1-0.05/2))*clustered.se
-  cat(mod_name,
-      "\nATE estimate =", ate,
+  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Std. Error"]
+  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Pr(>|t|)"]
+  df = summary(mod)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
+  cat("\n",mod_name,
+      "\nestimated average causal effect = ", ate,
       "\nClustered standard errors =", clustered.se,
-      "\n.95 CI with clustered SE = [", clustered.ci, "]")
+      "\n.95 CI with clustered SE = [", clustered.ci, "]",
+      "\np-value = ",clustered.p,"\n")
+}
+
+
+# Linear combo only, not prediction
+get_ate_se_clusteredci_LR = function(mod, mod_name,coef_idx) {
+  ate = as.numeric(mod$coefficients[coef_idx])
+  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Std. Error"]
+  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Pr(>|z|)"]
+  df = summary(mod)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
+ # Profile.Lik.Int = suppressWarnings(as.numeric(confint(object = mod, level = 0.95, vcov = multiwayvcov::cluster.vcov(mod, ~cluster), type="vcov")[2,]))
+  #Wald.ci = suppressWarnings(as.numeric(confint.default(object = mod, level = 0.95, vcov = multiwayvcov::cluster.vcov(mod, ~cluster), type="vcov")[2,]))
+  cat("\n",mod_name,
+      "\nestimated linear combination = ", ate,
+      "\nClustered standard errors =", clustered.se,
+      "\np-value = ",clustered.p,
+      "\n.95 CI with clustered SE = [", clustered.ci, "]\n")
+      #"\n.95 Wald CI = [",Wald.ci, "]",
+      #"\n.95 CI with (Profile Likelihood Interval) = [", Profile.Lik.Int ,"]\n")
+}
+
+
+
+
+
+# NEED TO FIX or ABANDON
+get_ate_se_robustci_LR = function (mod, coef_idx) {
+  ate = mod$coefficients[coef_idx]
+  robust.se = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,2]
+  robust.p = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,4]
+  df = summary(mod)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
+  
+  cat("estimated average causal effect = ", ate,
+      "\nrobust standard error = ", robust.se,
+      "\n95% confidence interval = ", robust.ci,
+      "\np-value = ",robust.p)
+}
+
+
+# NEED TO FIX or ABANDON
+get_ate_se_clusteredci_LR = function(mod, mod_name,coef_idx) {
+  ate = as.numeric(mod$coefficients[coef_idx])
+  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Std. Error"]
+  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Pr(>|t|)"]
+  df = summary(mod)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
+  cat("\n",mod_name,
+      "\nestimated average causal effect = ", ate,
+      "\nClustered standard errors =", clustered.se,
+      "\n.95 CI with clustered SE = [", clustered.ci, "]",
+      "\np-value = ",clustered.p,"\n")
 }
