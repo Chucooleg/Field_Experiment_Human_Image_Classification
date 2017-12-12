@@ -5,6 +5,10 @@ library(stargazer)
 library(multiwayvcov)
 library(reshape)
 
+#---------------------------------------------------------------------#
+
+by_HIT.table_pilot = fread("../modeling_data/design2_by_HIT_pilot.csv")
+by_Session.table_pilot = fread("../modeling_data/design2_by_Session_pilot.csv")
 
 #---------------------------------------------------------------------#
 # read in data for analysis

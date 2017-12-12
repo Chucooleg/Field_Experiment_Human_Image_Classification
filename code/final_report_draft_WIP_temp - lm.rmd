@@ -85,7 +85,7 @@ Number|Question | Answer Choices | Intended purpose
 1|What portion of your friends own pets?| a lot less than half, around half, a lot more than half | Does the turker live in a dog owning culture?
 2| Please rank your preferences to work with the following media. | audio,text,images,other | Does the turker have a strong preference for image classification?
 3| Have you ever lived with any dogs in your household? If not, have you ever planned to own a dog? | Yes, Maybe, No | Foes the turker pay attention to dog breeds at all?
-4| On average, how many tasks on Amazon Mechanical Turk do you complete every week? | 0 to 10, 11 to 20, 21 to 30, 31 to 40, 40 or more | How much does the turker depend on Amt as a source of income?
+4| On average, how many tasks on Amazon Mechanical Turk do you complete every week? | 0 to 10, 11 to 20, 21 to 30, 31 to 40, 41 or more | How much does the turker depend on Amt as a source of income?
 5| Do you use Linkedin? (no need to provide any links) | Yes, No, Never heard of Linkedin | Does the turker has college or higher education? Does the turker take career development seriously?
 
 
@@ -1583,15 +1583,185 @@ Therefore, with our best estimate, we fail to reject the null hypothesis that av
 
 ## Pilot Study (Design 2)
 
-By running a pilot study for design 1, we tested the experiment protocol, identified problems in our AMT and Qualtrics workflow and conducted a power analysis on the collected data. During the last weekend of Oct 2017, we published two non-overlapping HIT postings each with 50 HITs available. One at the treatment pay rate of \$0.10 on Saturday and the other at the treatment pay rate of \$0.25 on Sunday. We tried to minimize differences in launching conditions for the two postings so to ensure comparability. 
+Pilot study for design 2 serve similar purpose for its main experiment in design 1, we identified technical problems by testing running our design and performed some preliminary power analysis.On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
 
-Pilot study for design 2 serve similar purpose for its main experiment in design 1. In addition, we specifically look at differential attrition because we saw more turkers dropping out from low paying HITs in design 1. On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
-
-```{r}
-
+```{r, include = F}
+N.pilot =  by_HIT.table_pilot[,.N]
+N.ccc.pilot = by_HIT.table_pilot[group=="CCC",.N]
+N.cct.pilot = by_HIT.table_pilot[group=="CCT",.N]
+N.ctt.pilot = by_HIT.table_pilot[group=="CTT",.N]
+N.ttt.pilot = by_HIT.table_pilot[group=="TTT",.N]
+avg_time_d2.pilot = by_HIT.table_pilot[,mean(total_timespent)]
+avg_time_ccc.pilot = by_HIT.table_pilot[group=="CCC",mean(total_timespent)]
+avg_time_cct.pilot = by_HIT.table_pilot[group=="CCT",mean(total_timespent)]
+avg_time_ctt.pilot = by_HIT.table_pilot[group=="CTT",mean(total_timespent)]
+avg_time_ttt.pilot = by_HIT.table_pilot[group=="TTT",mean(total_timespent)]
+avg_accuracy_d2.pilot = by_HIT.table_pilot[,mean(overall_accuracy)]
+avg_accuracy_ccc.pilot = by_HIT.table_pilot[group=="CCC",mean(overall_accuracy)]
+avg_accuracy_cct.pilot = by_HIT.table_pilot[group=="CCT",mean(overall_accuracy)]
+avg_accuracy_ctt.pilot = by_HIT.table_pilot[group=="CTT",mean(overall_accuracy)]
+avg_accuracy_ttt.pilot = by_HIT.table_pilot[group=="TTT",mean(overall_accuracy)]
+sd_accuracy_d2.pilot = by_HIT.table_pilot[,sd(overall_accuracy)]
+sd_accuracy_ccc.pilot = by_HIT.table_pilot[group=="CCC",sd(overall_accuracy)]
+sd_accuracy_cct.pilot = by_HIT.table_pilot[group=="CCT",sd(overall_accuracy)]
+sd_accuracy_ctt.pilot = by_HIT.table_pilot[group=="CTT",sd(overall_accuracy)]
+sd_accuracy_ttt.pilot = by_HIT.table_pilot[group=="TTT",sd(overall_accuracy)]
 ```
 
+### Data (Design 2 Pilot)
 
+```{r, echo = F}
+d2.pilot_summary = data.frame(Name=c("all Groups","Group CCC","Group CCT","Group CTT","Group TTT" ), 
+                           Treatment=c("/","0.00","$0.05","$0.10","$0.15"),
+                           N=c(N.pilot, N.ccc.pilot, N.cct.pilot, N.ctt.pilot, N.ttt.pilot),
+                           TotalTime=c("20h 55min","/","/","/","/"), 
+                           AvgTimePerTask = c(paste(toString(round(avg_time_d2.pilot,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ccc.pilot,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_cct.pilot,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ctt.pilot,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ttt.pilot,3)),"min",sep="")
+                                              ), 
+                           AccuracyMean=c(round(avg_accuracy_d2.pilot,3),
+                                          round(avg_accuracy_ccc.pilot,3),
+                                          round(avg_accuracy_cct.pilot,3),
+                                          round(avg_accuracy_ctt.pilot,3),
+                                          round(avg_accuracy_ttt.pilot,3)
+                                          ), 
+                           AccuracySd=c(round(sd_accuracy_d2.pilot,3),
+                                        round(sd_accuracy_ccc.pilot,3),
+                                        round(sd_accuracy_cct.pilot,3),
+                                        round(sd_accuracy_ctt.pilot,3),
+                                        round(sd_accuracy_ttt.pilot,3)
+                                        ))
+
+knitr::kable(d2.pilot_summary, "markdown")
+```
+
+(Text about his)
+
+```{r, echo=FALSE, fig.height=6, fig.width=6}
+hist.design2pilot.ccc = ggplot(by_HIT.table_pilot[group=="CCC",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Pilot Group CCC") +
+  theme_gray()
+
+hist.design2pilot.cct = ggplot(by_HIT.table_pilot[group=="CCT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Pilot Group CCT") +
+  theme_gray()
+
+hist.design2pilot.ctt = ggplot(by_HIT.table_pilot[group=="CTT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Pilot Group CTT") +
+  theme_gray()
+
+hist.design2pilot.ttt = ggplot(by_HIT.table_pilot[group=="TTT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Pilot Group TTT") +
+  theme_gray()
+
+plot_grid(hist.design2pilot.ccc ,hist.design2pilot.cct,hist.design2pilot.ctt,hist.design2pilot.ttt)
+```
+
+(Add histogram by round)
+
+### Covariate Balance (Design 2 Pilot)
+
+(text)
+
+```{r, include = F}
+CQ1.1 = by_HIT.table_pilot$CQ1=="a lot less than half"
+CQ1.2 = by_HIT.table_pilot$CQ1=="around half"
+CQ1.3 = by_HIT.table_pilot$CQ1=="a lot more than half"
+CQ2 = as.numeric(by_HIT.table_pilot$CQ2)
+
+CQ3.1 = by_HIT.table_pilot$CQ3=="Yes"
+CQ3.2 = by_HIT.table_pilot$CQ3=="Maybe"
+CQ3.3 = by_HIT.table_pilot$CQ3=="No"
+
+CQ4.1 = by_HIT.table_pilot$CQ4=="0 to 10"
+CQ4.2 = by_HIT.table_pilot$CQ4=="11 to 20"
+CQ4.3 = by_HIT.table_pilot$CQ4=="21 to 30"
+CQ4.4 = by_HIT.table_pilot$CQ4=="31 to 40"
+CQ4.5 = by_HIT.table_pilot$CQ4=="41 or more"
+CQ5.1 = by_HIT.table_pilot$CQ5=="Yes"
+CQ5.2 = by_HIT.table_pilot$CQ5=="No"
+CQ5.3 = by_HIT.table_pilot$CQ5=="Never heard of Linkedin"
+
+cov_check_CQ1.1_d2pilot = lm(CQ1.1~by_HIT.table_pilot$group)
+cov_check_CQ1.2_d2pilot = lm(CQ1.2~by_HIT.table_pilot$group)
+cov_check_CQ1.3_d2pilot =lm(CQ1.3~by_HIT.table_pilot$group)
+
+cov_check_CQ2_d2pilot = lm(CQ2~by_HIT.table_pilot$group)
+
+cov_check_CQ3.1_d2pilot = lm(CQ3.1~by_HIT.table_pilot$group)
+cov_check_CQ3.2_d2pilot = lm(CQ3.2~by_HIT.table_pilot$group)
+cov_check_CQ3.3_d2pilot = lm(CQ3.3~by_HIT.table_pilot$group)
+
+cov_check_CQ4.1_d2pilot = lm(CQ4.1~by_HIT.table_pilot$group)
+cov_check_CQ4.2_d2pilot = lm(CQ4.2~by_HIT.table_pilot$group)
+cov_check_CQ4.3_d2pilot = lm(CQ4.3~by_HIT.table_pilot$group)
+cov_check_CQ4.4_d2pilot = lm(CQ4.4~by_HIT.table_pilot$group)
+cov_check_CQ4.5_d2pilot = lm(CQ4.5~by_HIT.table_pilot$group)
+cov_check_CQ5.1_d2pilot = lm(CQ5.1~by_HIT.table_pilot$group)
+cov_check_CQ5.2_d2pilot = lm(CQ5.2~by_HIT.table_pilot$group)
+cov_check_CQ5.3_d2pilot = lm(CQ5.3~by_HIT.table_pilot$group)
+
+(se.cov_regr_CQ1_1_d2pilot = lmtest::coeftest(cov_check_CQ1.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ1_2_d2pilot = lmtest::coeftest(cov_check_CQ1.2_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ1_3_d2pilot = lmtest::coeftest(cov_check_CQ1.3_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ2_3_d2pilot = lmtest::coeftest(cov_check_CQ2_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_1_d2pilot = lmtest::coeftest(cov_check_CQ3.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_2_d2pilot = lmtest::coeftest(cov_check_CQ3.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_3_d2pilot = lmtest::coeftest(cov_check_CQ3.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+
+(se.cov_regr_CQ4_1_d2pilot = lmtest::coeftest(cov_check_CQ4.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_2_d2pilot = lmtest::coeftest(cov_check_CQ4.2_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_3_d2pilot = lmtest::coeftest(cov_check_CQ4.3_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_4_d2pilot = lmtest::coeftest(cov_check_CQ4.4_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_5_d2pilot = lmtest::coeftest(cov_check_CQ4.5_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+
+(se.cov_regr_CQ5_1_d2pilot = lmtest::coeftest(cov_check_CQ5.1_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ5_2_d2pilot = lmtest::coeftest(cov_check_CQ5.2_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ5_3_d2pilot = lmtest::coeftest(cov_check_CQ5.3_d2pilot, vcov = vcovHC)[ , "Std. Error"])
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(cov_check_CQ1.1_d2pilot, cov_check_CQ1.2_d2pilot, cov_check_CQ1.3_d2pilot ,
+                     cov_check_CQ2_d2pilot,
+                     cov_check_CQ3.1_d2pilot, cov_check_CQ3.2_d2pilot, cov_check_CQ3.3_d2pilot,
+                     type = "text", title = "Covariate Balance Check Design 2 Pilot", style = "default",
+                     se = list(se.cov_regr_CQ1_1_d2pilot, se.cov_regr_CQ1_2_d2pilot, se.cov_regr_CQ1_3_d2pilot,
+                               se.cov_regr_CQ2_3_d2pilot,
+                               se.cov_regr_CQ3_1_d2pilot, se.cov_regr_CQ3_2_d2pilot, se.cov_regr_CQ3_3_d2pilot
+                               ),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(
+                     cov_check_CQ4.1_d2pilot, cov_check_CQ4.2_d2pilot, 
+                     cov_check_CQ4.3_d2pilot, cov_check_CQ4.4_d2pilot, cov_check_CQ4.5_d2pilot,  
+                     cov_check_CQ5.1_d2pilot, cov_check_CQ5.2_d2pilot, cov_check_CQ5.3_d2pilot, 
+                     
+                     type = "text", title = "Covariate Balance Check Design 2 Pilot", style = "default",
+                     se = list(
+                               se.cov_regr_CQ4_1_d2pilot, se.cov_regr_CQ4_2_d2pilot, se.cov_regr_CQ4_3_d2pilot,
+                               se.cov_regr_CQ4_4_d2pilot, se.cov_regr_CQ4_5_d2pilot,
+                               se.cov_regr_CQ5_1_d2pilot, se.cov_regr_CQ5_2_d2pilot, se.cov_regr_CQ5_3_d2pilot
+                               ),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+> CQ1 to CQ3 has the same interpretation as in design 1, CQ4_1 indicates if the turker is in age group 0 to 10, CQ4_2 indicates that of 11 to 20, CQ4_3 indicates that for 21 to 30, CQ4_4 indicates that for 31 to 40, CQ4_5 indicates that for 41 or more, CQ5_1 indicates the turker has a Linkedin account, CQ5_2 indicates the turker has no Linkedin account, CQ5_3 indicates if the turker has never heard of Linkedin
 
 ## Main experiment (Design 2)
 
