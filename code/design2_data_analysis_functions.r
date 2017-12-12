@@ -38,6 +38,9 @@ Y.table.keyed = Y.table.keyed[,c("worker_id","round_accuracy","outcome.key","rou
 #---------------------------------------------------------------------#
 # Fix data type of imported csv 
 
+by_Session.table_pilot$round_accuracy = as.numeric(by_Session.table_pilot$round_accuracy)
+
+
 by_Session.table$group = factor(by_Session.table$group, levels = c("CCC", "CCT", "CTT", "TTT"))
 by_Session.table$round = factor(by_Session.table$round, levels = c("one", "two", "three"))
 by_Session.table$CQ1 = factor(by_Session.table$CQ1, levels = c("a lot less than half", "around half", "a lot more than half"))

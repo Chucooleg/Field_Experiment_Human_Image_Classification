@@ -1586,6 +1586,8 @@ Therefore, with our best estimate, we fail to reject the null hypothesis that av
 Pilot study for design 2 serve similar purpose for its main experiment in design 1, we identified technical problems by testing running our design and performed some preliminary power analysis.On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
 
 ```{r, include = F}
+by_Session.table_pilot$round_accuracy = as.numeric(by_Session.table_pilot$round_accuracy)
+
 N.pilot =  by_HIT.table_pilot[,.N]
 N.ccc.pilot = by_HIT.table_pilot[group=="CCC",.N]
 N.cct.pilot = by_HIT.table_pilot[group=="CCT",.N]
@@ -1639,7 +1641,7 @@ knitr::kable(d2.pilot_summary, "markdown")
 
 (Text about his)
 
-```{r, echo=FALSE, fig.height=6, fig.width=6}
+```{r, echo=FALSE, fig.height=6, fig.width=7}
 hist.design2pilot.ccc = ggplot(by_HIT.table_pilot[group=="CCC",], aes(overall_accuracy)) +
   geom_histogram(binwidth = .05) +
   labs(x="HIT Accuracy", y = "count", fill="accuracy") +
@@ -1667,7 +1669,29 @@ hist.design2pilot.ttt = ggplot(by_HIT.table_pilot[group=="TTT",], aes(overall_ac
 plot_grid(hist.design2pilot.ccc ,hist.design2pilot.cct,hist.design2pilot.ctt,hist.design2pilot.ttt)
 ```
 
-(Add histogram by round)
+```{r, echo=FALSE, fig.height=3, fig.width=7}
+
+hist.design2pilot.r1 = ggplot(by_Session.table_pilot[round=="one",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S1") +
+  theme_gray()
+
+hist.design2pilot.r2 = ggplot(by_Session.table_pilot[round=="two",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S2") +
+  theme_gray()
+
+hist.design2pilot.r3 = ggplot(by_Session.table_pilot[round=="three",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S3") +
+  theme_gray()
+
+
+plot_grid(hist.design2pilot.r1,hist.design2pilot.r2,hist.design2pilot.r3, nrow = 1, ncol=3)
+```
 
 ### Covariate Balance (Design 2 Pilot)
 
@@ -1762,6 +1786,48 @@ stargazer::stargazer(
 ```
 
 > CQ1 to CQ3 has the same interpretation as in design 1, CQ4_1 indicates if the turker is in age group 0 to 10, CQ4_2 indicates that of 11 to 20, CQ4_3 indicates that for 21 to 30, CQ4_4 indicates that for 31 to 40, CQ4_5 indicates that for 41 or more, CQ5_1 indicates the turker has a Linkedin account, CQ5_2 indicates the turker has no Linkedin account, CQ5_3 indicates if the turker has never heard of Linkedin
+
+
+### Treatment Effect Estimation (Design 1 Pilot)
+
+(txt on simple comparison)
+
+(Model specification)
+
+```{r, iunclude=F}
+# Model Overall -- Comparing only by group 
+# (looking at the entire HIT of 48 questions as a whole)
+
+# Without covariates
+# Any effect on Accuracy?
+mod.design2.by_HIT_pilot = lm(overall_accuracy ~ group, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot, vcov=vcovHC(mod.design2.by_HIT_pilot))[ , "Std. Error"])
+# Any effect on Timespent?
+mod.design2.by_HIT_pilot.total_timespent = lm(total_timespent ~ group, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.total_timespent))[ , "Std. Error"])
+# Any effect on Whether screeners are passed?
+mod.design2.by_HIT_pilot.all_screeners_passed = lm(all_screeners_passed ~ group, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.all_screeners_passed))[ , "Std. Error"])
+
+
+# With covariates
+# Any effect on Accuracy?
+mod.design2.by_HIT_pilot.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot.cov, vcov=vcovHC(mod.design2.by_HIT_pilot.cov))[ , "Std. Error"])
+# Any effect on Timespent?
+mod.design2.by_HIT_pilot.cov.total_timespent = lm(total_timespent ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot.cov.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.total_timespent))[ , "Std. Error"])
+# Any effect on Whether screeners are passed?
+mod.design2.by_HIT_pilot.cov.all_screeners_passed = lm(all_screeners_passed ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(lmtest::coeftest(mod.design2.by_HIT_pilot.cov.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.all_screeners_passed))[ , "Std. Error"])
+```
+
+
+```{r, include = F, eval = F}
+(se.design1.LR_mod2 = lmtest::coeftest(design1.LR_mod2, 
+                                       vcov = multiwayvcov::cluster.vcov(design1.LR_mod2, ~cluster))[ , "Std. Error"])
+```
+
 
 ## Main experiment (Design 2)
 
