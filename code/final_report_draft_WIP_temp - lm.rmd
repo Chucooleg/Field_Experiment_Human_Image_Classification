@@ -109,7 +109,7 @@ In design 1, we randomize at the level of HIT postings. Over two weekends in Nov
 
 
  Publish Order | Date | Time Frame | Treatment (Pay Rate) | Available HITs
-----------|-----------|-------------|----------------------
+----------|-----------|-------------|----------------------|--------------
 Pilot | Oct 28, 2017 (Saturday) | Morning | $0.10 | 50
 Pilot | Oct 29, 2017 (Sunday) | Afternoon | $0.25 | 50
 1 | Nov 11, 2017 (Saturday) | Morning | $0.10 | 100
@@ -143,7 +143,7 @@ In design 2, we randomize at the level of turkers instead of postings. On Novemb
 
 
 Name | Date | Time Frame | Base pay rate | Treatments (bonuses) | Available HITs
------|----------|-----------|--------------|----------------------
+-----|----------|-----------|--------------|----------------------|-----------------
 Pilot |Nov 23, 2017 (Thursday) | All day | \$0.10 | \$0.00, \$0.05, \$0.10, \$0.15 | 60
 Main  |Nov 26, 2017 (Sunday) | All day | \$0.22 | \$0.00, \$0.10, \$0.20, \$0.30 | 240
 
@@ -1584,6 +1584,12 @@ Therefore, with our best estimate, we fail to reject the null hypothesis that av
 ## Pilot Study (Design 2)
 
 By running a pilot study for design 1, we tested the experiment protocol, identified problems in our AMT and Qualtrics workflow and conducted a power analysis on the collected data. During the last weekend of Oct 2017, we published two non-overlapping HIT postings each with 50 HITs available. One at the treatment pay rate of \$0.10 on Saturday and the other at the treatment pay rate of \$0.25 on Sunday. We tried to minimize differences in launching conditions for the two postings so to ensure comparability. 
+
+Pilot study for design 2 serve similar purpose for its main experiment in design 1. In addition, we specifically look at differential attrition because we saw more turkers dropping out from low paying HITs in design 1. On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
+
+```{r}
+
+```
 
 
 
