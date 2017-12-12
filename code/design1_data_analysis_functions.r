@@ -81,8 +81,8 @@ get_ate_se_robustci = function (mod, coef_idx) {
 
 get_ate_se_clusteredci = function(mod, mod_name,coef_idx) {
   ate = as.numeric(mod$coefficients[coef_idx])
-  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Std. Error"]
-  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Pr(>|t|)"]
+  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, 2]
+  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, 4]
   df = summary(mod)$df[2]
   t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
   clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
@@ -97,8 +97,8 @@ get_ate_se_clusteredci = function(mod, mod_name,coef_idx) {
 # Linear combo only, not prediction
 get_ate_se_clusteredci_LR = function(mod, mod_name,coef_idx) {
   ate = as.numeric(mod$coefficients[coef_idx])
-  clustered.se = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Std. Error"]
-  clustered.p = lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster))[2, "Pr(>|z|)"]
+  clustered.se = suppressWarnings(lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster)))[2, 2]
+  clustered.p = suppressWarnings(lmtest::coeftest(mod, vcov = multiwayvcov::cluster.vcov(mod, ~cluster)))[2, 4]
   df = summary(mod)$df[2]
   t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
   clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
