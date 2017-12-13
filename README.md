@@ -4,8 +4,8 @@ W241 Final Project
 
 ## Experiment Schedule
 
-Date | Time | Description | Payrate | No. tasks 
----- | ---- | ---- ------ | ------- | ---------
+Date | Time | Description | Payrate | AvailableHITs 
+---- | ---- | ----------- | ------- | ---------
 10/28/2017 | PT 04:17 | Pilot | 0.10 | 50 
 10/29/2017 | PT 05:23 | Pilot | 0.25 | 50 
 11/11/2017 | PT 02:44 | Design 1 Order 1 | 0.10 | 100
