@@ -1,5 +1,5 @@
 ---
-title: 'You Get What You Pay For: Experimental Analysis on the Relationship Between Pay and Work Quality'
+title: 'You Get What You Pay For: Experimental Analysis on the Relationship Between Reward and Work Quality'
 output:
   pdf_document:
     number_sections: true
@@ -54,7 +54,7 @@ The use of online labor markets as an effective and efficient platform for socia
 
 # Research Hypothesis, Identification Strategy
 
-We hypothesis that higher payment per human intelligence task (HIT) on average would lead to higher task performance. To operationalize this construct, we define the treatment variable as pay rate in US dollars, and outcome variable as proportion of image classification questions scored correctly in each returned HIT. In each of the two experimental designs, four different pay rates are randomly assigned to each HIT. Similarly, in each of the two experimental designs, a total of 50 image classifications questions on dog breeds are prompted in each HIT. The four pay rates are chosen between \$0.10 and \$0.55, which correspond to the lower and upper bound we commonly see for similar image classification tasks on the AMT platform. We chose image classification, instead of other common HIT categories such as audio transcription, key point identification, or text responses because the correct answers tend to be unequivocal. To identify the treatment effect, our main approach is to regress task level performance on the assigned pay rate, controlling for other pre-treatment covariates for better precision. The resultant coefficient of assigned pay rate should be an estimate of the average pay rate effect on task level accuracy. We will walk through the motivations, designs, protocols and models for the two designs in the following sections.
+We hypothesis that higher payment per human intelligence task (HIT) on average would lead to higher turker performance or task quality. To operationalize this construct, we define the treatment variable as rewards in US dollars, and outcome variable as proportion of image classification questions scored correctly in each returned HIT. In each of the two experimental designs, four different rewards are randomly assigned to each HIT. In each of the two experimental designs, a total of 50 image classifications questions on dog breeds are prompted in each HIT. The four levels of rewards are chosen between \$0.10 and \$0.55, which correspond to the lower and upper bound we commonly see for similar image classification tasks on the AMT platform. We chose image classification, instead of other common HIT categories such as audio transcription, key point identification, or text responses because the correct answers tend to be unequivocal. To identify the treatment effect, our main approach is to regress task level performance on the assigned reward, controlling for other pre-treatment covariates for better precision. The resultant coefficient of assigned reward should be an estimate of the average treatment effect on turker performance or task quality. We will walk through the motivations, designs, protocols and models for the two designs in the following sections.
 
 
 
@@ -89,8 +89,9 @@ Number|Question | Answer Choices | Intended purpose
 5| Do you use Linkedin? (no need to provide any links) | Yes, No, Never heard of Linkedin | Does the turker has college or higher education? Does the turker take career development seriously?
 
 
-Then, an external web link for dog breed references is provided, followed by 48 classification questions in multiple-choice format on the Qualtrics form. For the design of these classification questions, we chose eight dog breeds with a balance in size and hairy density (footnote).  Even numbered questions are harder and odd numbered questions are easier. A pilot was used to identify and filter out questions which all turkers scored correctly or incorrectly. The sequence of questions is randomized and show a balance of even and odd numbered questions even when we split the question set into three batches. Screener questions of cat images are mixed-in to help us identify those turkers who were not paying much attention to the task. All images come from the Stanford Dogs Dataset (footnote).
+Then, an external web link for dog breed references is provided, followed by 48 classification questions in multiple-choice format on the Qualtrics form. For the design of these classification questions, we chose eight dog breeds with a balance in size and hairy density (footnote).  Even numbered questions are harder and odd numbered questions are easier. A pilot was used to identify and filter out questions which all turkers scored correctly or incorrectly. The sequence of questions is randomized and show a balance of even and odd numbered questions even when we split the question set into three batches. Screener questions of cat images are mixed-in to help us identify those turkers who were not paying much attention to the task. All images come from the Stanford Dogs Dataset (footnote). Below is a print screen of the dog classication task page. For each question, eight different dog breed choices in additional to one "Not A Dog" choice as screener.
 
+![](../Images/qualtric_task.jpg)
 
 However, this simple mechanism poses a threat on the unbiasedness of our estimate. Since turkers self-select into HITs, HITs of different pay rates tend to attract different kinds of turkers. From our prior internet research, turkers tend to be strategic with how their time and expectation matches with pay rate, allotted time and nature of the posted HITs. If we randomize treatment pay rate at the posting level, we would be comparing groups of turkers with different attributes. Therefore, we came up with two experiment designs which branches from the basic mechanism described above. 
 
@@ -101,7 +102,7 @@ Design 1 is a traditional between-subject design, we define its unit of analysis
 Design 2 is a stepped-wedge design, we define its unit of analysis as a turker. Meaning, we place ourselves in the perspective of an economist, who studies the effect of incentives on labor productivity. Our primary goal is to estimate how increments of payment motivates a turker to perform better. With this motivation, unlike design 1, we care about comparability of turker attributes and want to ensure that treatment groups on average comprise of turkers of similar motivations and backgrounds. As such, selection bias and attrition are large concerns. In the following paragraphs we walk through each design in terms of level of randomization, treatments and execution protocol. 
 
 
-In design 1, we randomize at the level of HIT postings. Over two weekends in November 2017, we released eight HIT postings, that is two for each of the four different pay rates. It is a traditional between subject design with randomization at the cluster level. Since it would not be possible randomly post HITs one at a time, we posted them in batches of 100 HITs, each batch correspond to a single pay rate. We manually shuffle the publish order of postings to minimize publish order and time of day effects. The four pay rates are chosen according to the typical minimum and maximum of other HITs alike. Time frame for the eight postings do not overlap with each other. Design 1 details are summarized below:
+In design 1, we randomize at the level of HIT postings. Over two weekends in November 2017, we released eight HIT postings, that is two for each of the four different pay rates. It is a traditional between subject design with randomization at the cluster level. Since it would not be possible randomly post HITs one at a time, we posted them in batches of 100 HITs, each batch correspond to a single pay rate. We manually shuffle the publish order of postings to minimize publish order and time of day effects. The four pay rates are chosen according to the typical minimum and maximum of other HITs alike. Time frame for the eight postings do not overlap with each other. Note that in design 1, the treatment variable is defined as HIT pay rate displayed on the AMT platform, and the outcome variable is defined as returned HIT accuracy. Design 1 details are summarized below:
 
 
 \bigskip
@@ -135,7 +136,7 @@ Pilot | Oct 29, 2017 (Sunday) | Afternoon | $0.25 | 50
 
 
 
-In design 2, we randomize at the level of turkers instead of postings. On November 26 2017 (Sunday), we released one HIT posting of 240 available HITs and baseline rate of \$0.22. It is a typical stepped-wedge design with randomization at the turkers level. Turkers would sign up for the HIT for the same baseline rate, and then randomized with equal probability into one of four treatment groups after they submitted their identification number and aptitude question answers on the Qualtrics survey form. The treatment group differs by the amount of surprise bonuses (up until this point the turker has no knowledge that this task may come with any bonuses). Here, the 48 dog breed classification questions from design 1 are split into three sesssions of 16 questions. The overall question sequence is the same as that in design 1, and the three sessions share a balance of difficulty and dog breeds. Each session is associated with a bonus assignment condition of either \$0.10 or nothing with no mention of bonus condition at all. We chose the baserate as \$0.22 rather than \$0.10 to minimize attrition and set the total available HITs to be 240 so to stay within experiment budget. Design 1 details are summarized below: 
+In design 2, we randomize at the level of turkers instead of postings. On November 26 2017 (Sunday), we released one HIT posting of 240 available HITs and baseline rate of \$0.22. It is a typical stepped-wedge design with randomization at the turkers level. Turkers would sign up for the HIT for the same baseline rate, and then randomized with equal probability into one of four treatment groups after they submitted their identification number and aptitude question answers on the Qualtrics survey form. The treatment group differs by the amount of surprise bonuses (up until this point the turker has no knowledge that this task may come with any bonuses). Here, the 48 dog breed classification questions from design 1 are split into three sesssions of 16 questions. The overall question sequence is the same as that in design 1, and the three sessions share a balance of difficulty and dog breeds. Each session is associated with a bonus assignment condition of either \$0.10 or nothing with no mention of bonus condition at all. We chose the baserate as \$0.22 rather than \$0.10 to minimize attrition and set the total available HITs to be 240 so to stay within experiment budget. Note that in design 2, the treatment variable is defined as bonus rates that are assigned within the Qaultrics survey and not displayed on the AMT platform, and the outcome variable is defined as the turkers' performance. Design 2 details are summarized below: 
 
 
 \bigskip
@@ -284,6 +285,7 @@ stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
 
 > CQ1_1 indicates if the turker has a lot less than half of friends who own pets, CQ1_2 indicates if the turker has around half of friends who own pets, CQ1_3 indicates if the turker has a lot more than half of friends who own pets, CQ2_3 ranks turkers' preference to work with images, CQ3_1 indicates that the turker has lived with or planned to own a dog, CQ3_2 indicates that the turker may have planned to own a dog, CQ3_3 indicates that the turker has never lived with or planned to own a dog
 
+
 ### Treatment Effect Estimation (Design 1 Pilot)
 
 We performed a basic power analysis on our pilot data, so we could get an initial feel of the results we would be getting. First, we conducted a Levene test, which showed us that the variances of the \$0.10 outcomes and the \$0.25 outcomes are significantly different. From there, we ran a two-sample independent Welch's t-test, as well as a simple and a full regression with robust standard error. Below are the two models we use to estimate ATE in the pilot:
@@ -324,6 +326,8 @@ stargazer::stargazer(regr1_simple_pilot, regr2_simple_pilot,
                      )
 ```
 
+> Robust Standard Errors are applied
+
 ```{r, echo=F}
 cat("Simple Model with No Covariates:\n")
 get_ate_se_robustci(regr1_simple_pilot,2)
@@ -334,7 +338,7 @@ get_ate_se_robustci(regr2_simple_pilot,2)
 
 ## Main experiment (Design 1)
 
-We ran the main Design 1 (D1) experiment over the third of fourth weekends of November. In each weekend we published four postings each of 100 available HITs, and cover all four treatment pay rates. On each day, we publish one posting in the morning, and another one in the afternoon. The two postings don't overlap, and we take aforementioned precautions to make sure turkers who had done or seen the task once couldn't do it again. The only difference between the two weekends were the publish orders of HIT postings (publish order1 is 0.10, 0.55, 0.25, 0.40; publish order 2 is 0.40, 0.25, 0.55, 0.10).
+We ran the main Design 1 (D1) experiment over the second and third weekends of November. In each weekend we published four postings each of 100 available HITs, and cover all four treatment pay rates. On each day, we publish one posting in the morning, and another one in the afternoon. The two postings don't overlap, and we take aforementioned precautions to make sure turkers who had done or seen the task once couldn't do it again. The only difference between the two weekends were the publish orders of HIT postings (publish order1 is 0.10, 0.55, 0.25, 0.40; publish order 2 is 0.40, 0.25, 0.55, 0.10).
 
 
 ### Data (Design 1 Main)
@@ -702,6 +706,7 @@ stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
                      )
 ```
 
+
 ```{r, include=F, echo=F}
 # DESIGN 1 ORDER 2
 
@@ -750,7 +755,6 @@ stargazer::stargazer(cov_regr_CQ1_1, cov_regr_CQ1_2, cov_regr_CQ1_3,
                      model.names = F
                      )
 ```
-
 
 > Definition of covariate variables remains unchanged in all experiments. Please reference the design 1 pilot version.
 
@@ -1076,7 +1080,7 @@ We construct seven linear regression models on the dataset, their specifications
 
 (5) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1 +\theta_{7}*treatment^2$
 
-(6) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1 +\theta_{8}*treatment^2*cq1 + +\theta_{9}*treatment^2*cq1 + +\theta_{10}*treatment^2*cq1$
+(6) $accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1 \\ +\theta_{8}*treatment^2*cq1 + +\theta_{9}*treatment^2*cq1 + +\theta_{10}*treatment^2*cq1$
 
 (7) $time\ spent = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1$
 
@@ -1135,7 +1139,9 @@ design1.tab = stargazer::stargazer(design1.regr_mod1,
 
 ![](../Images/D1_Reger_LM.jpg)
 
->Because HITs were assigned with different pay rates in groups (per posting published on AMT platform), we use clustered standard errors for inferences.   
+> Clustered Standard Errors are applied
+
+> Because HITs were assigned with different pay rates in groups (per posting published on AMT platform), we use clustered standard errors for inferences.   
 
 Model 1, 2, 3 and 6 estimated no significant treatment effects. Model 3 is our most precise guess for the ATE using pooled data without further assumption of heterogeneous treatment effects, nor non-linearity. It estimates that for the pooled publish order 1 and publish order 2 data combined, for every additional dollar spent on an HIT, model 3 estimates an increment in accuracy of 0.286. But because of our wide .95 uncertainty range between -0.296 and 0.869, we cannot be sure if this increment is significantly different than zero. In fact, paying more may even have a= negative impact on accuracy.
 
@@ -1442,6 +1448,7 @@ design1.tab.LR = stargazer::stargazer(design1.LR_mod1,
 
 ![](../Images/D1_Logistic.png)
 
+> Clustered Standard Errors are applied
 
 Similar to our linear regression models, although a logit function is now applied to our outcome variable, the coefficients that are not significant in the linear regression models are still not significant in the logistic regression models, while those that are significant in the linear regression models remain significant in the logistic regression models. Here, we focus on interpretating model 3.1 and model 4.1 only. Because the model 3.1 specification would more appropriately answer our question of ATE on pooled data (more general), without far-fetched assumption of non-linearity nor heterogeneous treatment effects that are based on our prior research hypothesis, the model 4.1 specification let us investiagte the conspicuous abnormality observed in the differential outcome distribution in publish order 1 versus publish order 2, again without further assumption of non-linearity nor other heterogeneous treatment effects. Also, recall the interpretation with the linear models, the ATE estimated by linear model 3 was largely insignificant, while the ATE estimated by linear model 4 on publish order 1 data was the only significant effect after Bonferroni adjusted cut-off was applied. 
 
@@ -1571,7 +1578,7 @@ curve(expr = predict(design1.LR_mod4,
 legend(x = 0.8, y = 0.2, legend = c("Order 1", "Order 2"), lty = c("solid", "solid"), col = c("red", "blue"), bty = "n")
 ```
 
-## Design 1 Conclusions
+## Design 1 Conclusion
 
 To provide an overview for the design 1 results, the estimated effect of pay rate on HIT accuracy is insignificant when all data is pooled together. When publishing order is accounted for, we observe significant heterogeneous treatment effect and baseline difference. The same significance pattern is observed for both linear and logistic regression models. Randomization inference, by simulating the sampling distribution under the sharp-null, reinforces the linear regression result that the estimated ATE is insignificant with a more conservative p-value. Lastly, time spent per HIT is considered as a secondary outcome. The corresponding ATE is estimated to be negative but both statistically and practically insignificant. When publishing order is accounted for, we again observe statistically significant but practically insignificant heterogeneous treatment effect and baseline difference.
 
@@ -1581,14 +1588,22 @@ Therefore, with our best estimate, we fail to reject the null hypothesis that av
 
 # Design 2 Results
 
+In design 2, all turkers begin by signing up for the same HIT base rate on the AMT platform with no knowledge that bonuses will be assigned to some of them. Then turkers are randomized into one of these four groups with equal probability. The randomization procedure only guarantees this probability for each new turker who sign up the HIT is the same, but not balanced assignment across all four groups. This process is similar to flipping a tetrahedral dice for each turker. To clarify, below are the definition of different group names, corresponding to the three sequentual sessions, each consist of 16 dog breed classification questions and one cat screener question.
+
++ Group CCC : Turkers in this group do not receive bonuses in any sessions
++ Group CCT : Turkers in this group only receive bonuses in the third session
++ Group CTT : Turkers in this group only receive bonuses in the second and third sessions
++ Group TTT : Turkers in this group receive bonsues in all three sessions
+
+
 ## Pilot Study (Design 2)
 
-Pilot study for design 2 serve similar purpose for its main experiment in design 1, we identified technical problems by testing running our design and performed some preliminary power analysis.On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
+Pilot study for design 2 serve similar purpose for its main experiment in design 1, we identified technical problems by testing running our design and performed some preliminary power analysis.On Sunday, November 26 2017, we published one HIT posting of base rate \$0.10 with 60 HITs available, each treatment session is attached with a bonus rate of \$0.05. Our randomization procedure worked out using built-in functionalities in Qualtric as expected, giving us around 15 responses in each treatment group.
 
 ```{r, include = F}
 by_Session.table_pilot$round_accuracy = as.numeric(by_Session.table_pilot$round_accuracy)
 
-N.pilot =  by_HIT.table_pilot[,.N]
+N.d2.pilot =  by_HIT.table_pilot[,.N]
 N.ccc.pilot = by_HIT.table_pilot[group=="CCC",.N]
 N.cct.pilot = by_HIT.table_pilot[group=="CCT",.N]
 N.ctt.pilot = by_HIT.table_pilot[group=="CTT",.N]
@@ -1612,36 +1627,65 @@ sd_accuracy_ttt.pilot = by_HIT.table_pilot[group=="TTT",sd(overall_accuracy)]
 
 ### Data (Design 2 Pilot)
 
+We observe 12 attriters, those refer to turkers who viewed by left the task in the middle. Their unobserved outcome is in roughly 1:5 ratio to the observed outcomes.
+
 ```{r, echo = F}
-d2.pilot_summary = data.frame(Name=c("all Groups","Group CCC","Group CCT","Group CTT","Group TTT" ), 
-                           Treatment=c("/","0.00","$0.05","$0.10","$0.15"),
-                           N=c(N.pilot, N.ccc.pilot, N.cct.pilot, N.ctt.pilot, N.ttt.pilot),
-                           TotalTime=c("20h 55min","/","/","/","/"), 
-                           AvgTimePerTask = c(paste(toString(round(avg_time_d2.pilot,3)),"min",sep=""),
-                                              paste(toString(round(avg_time_ccc.pilot,3)),"min",sep=""),
-                                              paste(toString(round(avg_time_cct.pilot,3)),"min",sep=""),
-                                              paste(toString(round(avg_time_ctt.pilot,3)),"min",sep=""),
-                                              paste(toString(round(avg_time_ttt.pilot,3)),"min",sep="")
+d2.pilot_summary = data.frame(Group=c("All","CCC","CCT","CTT","TTT","Attritiers" ), 
+                           Treatment=c("/","0.00","$0.05","$0.10","$0.15",""),
+                           N=c(N.d2.pilot, N.ccc.pilot, N.cct.pilot, N.ctt.pilot, N.ttt.pilot,12),
+                           TotalTime=c("20h 55min","/","/","/","/","/"), 
+                           AvgTimePerTask = c(paste(toString(round(avg_time_d2.pilot/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ccc.pilot/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_cct.pilot/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ctt.pilot/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ttt.pilot/60,3)),"min",sep=""),
+                                              "/"
                                               ), 
                            AccuracyMean=c(round(avg_accuracy_d2.pilot,3),
                                           round(avg_accuracy_ccc.pilot,3),
                                           round(avg_accuracy_cct.pilot,3),
                                           round(avg_accuracy_ctt.pilot,3),
-                                          round(avg_accuracy_ttt.pilot,3)
+                                          round(avg_accuracy_ttt.pilot,3),
+                                          "/"
                                           ), 
                            AccuracySd=c(round(sd_accuracy_d2.pilot,3),
                                         round(sd_accuracy_ccc.pilot,3),
                                         round(sd_accuracy_cct.pilot,3),
                                         round(sd_accuracy_ctt.pilot,3),
-                                        round(sd_accuracy_ttt.pilot,3)
+                                        round(sd_accuracy_ttt.pilot,3),
+                                        "/"
                                         ))
 
 knitr::kable(d2.pilot_summary, "markdown")
 ```
 
-(Text about his)
+Distribution of accuracy by session, or by treatment group are similarly right skewed. The bimodal distribution we observed in design 1 is much milder here.
 
-```{r, echo=FALSE, fig.height=6, fig.width=7}
+```{r, echo=FALSE, fig.height=3, fig.width=7,warning=F}
+
+hist.design2pilot.r1 = ggplot(by_Session.table_pilot[round=="one",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S1") +
+  theme_gray()
+
+hist.design2pilot.r2 = ggplot(by_Session.table_pilot[round=="two",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S2") +
+  theme_gray()
+
+hist.design2pilot.r3 = ggplot(by_Session.table_pilot[round=="three",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Pilot S3") +
+  theme_gray()
+
+
+plot_grid(hist.design2pilot.r1,hist.design2pilot.r2,hist.design2pilot.r3, nrow = 1, ncol=3)
+```
+
+```{r, echo=FALSE, fig.height=6, fig.width=7,warning=F}
 hist.design2pilot.ccc = ggplot(by_HIT.table_pilot[group=="CCC",], aes(overall_accuracy)) +
   geom_histogram(binwidth = .05) +
   labs(x="HIT Accuracy", y = "count", fill="accuracy") +
@@ -1669,33 +1713,10 @@ hist.design2pilot.ttt = ggplot(by_HIT.table_pilot[group=="TTT",], aes(overall_ac
 plot_grid(hist.design2pilot.ccc ,hist.design2pilot.cct,hist.design2pilot.ctt,hist.design2pilot.ttt)
 ```
 
-```{r, echo=FALSE, fig.height=3, fig.width=7}
-
-hist.design2pilot.r1 = ggplot(by_Session.table_pilot[round=="one",], aes(round_accuracy)) +
-  geom_histogram(binwidth = .05) +
-  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
-  ggtitle(label="Design2 Pilot S1") +
-  theme_gray()
-
-hist.design2pilot.r2 = ggplot(by_Session.table_pilot[round=="two",], aes(round_accuracy)) +
-  geom_histogram(binwidth = .05) +
-  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
-  ggtitle(label="Design2 Pilot S2") +
-  theme_gray()
-
-hist.design2pilot.r3 = ggplot(by_Session.table_pilot[round=="three",], aes(round_accuracy)) +
-  geom_histogram(binwidth = .05) +
-  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
-  ggtitle(label="Design2 Pilot S3") +
-  theme_gray()
-
-
-plot_grid(hist.design2pilot.r1,hist.design2pilot.r2,hist.design2pilot.r3, nrow = 1, ncol=3)
-```
 
 ### Covariate Balance (Design 2 Pilot)
 
-(text)
+In terms of covariate balance, none of the treatment groups manage to predit the covariates, or in this case, the responses to any of our aptitude questions. Note that in design 2, because treatment assignment only happens after a turker has completed and submitted the aptitude questions, all five responses can be use as convariate controls for better precision.
 
 ```{r, include = F}
 CQ1.1 = by_HIT.table_pilot$CQ1=="a lot less than half"
@@ -1788,66 +1809,686 @@ stargazer::stargazer(
 > CQ1 to CQ3 has the same interpretation as in design 1, CQ4_1 indicates if the turker is in age group 0 to 10, CQ4_2 indicates that of 11 to 20, CQ4_3 indicates that for 21 to 30, CQ4_4 indicates that for 31 to 40, CQ4_5 indicates that for 41 or more, CQ5_1 indicates the turker has a Linkedin account, CQ5_2 indicates the turker has no Linkedin account, CQ5_3 indicates if the turker has never heard of Linkedin
 
 
-### Treatment Effect Estimation (Design 1 Pilot)
+### Treatment Effect Estimation (Design 2 Pilot)
 
-(txt on simple comparison)
+For the ATE estimation in this pilot, we keep our analysis simple. That is, we only compare overall accuracies, total time spent per task and screeners accuracies across the four treatment groups. Granularity between the three different sessions is not investigated. The model specifications are listed here.
 
-(Model specification)
+(simple) $overall\ accuracy = \theta_{0} + \theta_{1}*treatment$
 
-```{r, iunclude=F}
+(full) $overall\ accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
+
+(simple) $total\ timespent = \theta_{0} + \theta_{1}*treatment$
+
+(full) $total\ timespent = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
+
+(simple) $all\ screeners\ passed = \theta_{0} + \theta_{1}*treatment$
+
+(full) $all\ screeners\ passed = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
+
+The regression table below shows that most estimated coefficients are not significant. For many treatment group related coefficients, the size of standard error is very similar to that of the point estimate itself. Judging by the overall results of design 2 pilot, we decided to raise our HIT base rate from \$0.10 to \$0.22, and our bonus rate from \$0.05 to \$0.10 for the main experiment.
+
+```{r, iunclude=F, echo=F, warning=F}
 # Model Overall -- Comparing only by group 
 # (looking at the entire HIT of 48 questions as a whole)
 
 # Without covariates
 # Any effect on Accuracy?
 mod.design2.by_HIT_pilot = lm(overall_accuracy ~ group, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot, vcov=vcovHC(mod.design2.by_HIT_pilot))[ , "Std. Error"])
+(se.design2.by_HIT_pilot = lmtest::coeftest(mod.design2.by_HIT_pilot, vcov=vcovHC(mod.design2.by_HIT_pilot, type = "HC1"))[ , "Std. Error"])
 # Any effect on Timespent?
 mod.design2.by_HIT_pilot.total_timespent = lm(total_timespent ~ group, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.total_timespent))[ , "Std. Error"])
+(se.design2.by_HIT_pilot.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.total_timespent, type = "HC1"))[ , "Std. Error"])
 # Any effect on Whether screeners are passed?
 mod.design2.by_HIT_pilot.all_screeners_passed = lm(all_screeners_passed ~ group, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.all_screeners_passed))[ , "Std. Error"])
+(se.design2.by_HIT_pilot.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
 
 
 # With covariates
 # Any effect on Accuracy?
 mod.design2.by_HIT_pilot.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot.cov, vcov=vcovHC(mod.design2.by_HIT_pilot.cov))[ , "Std. Error"])
+(se.design2.by_HIT_pilot.cov = lmtest::coeftest(mod.design2.by_HIT_pilot.cov, 
+                                                vcov=vcovHC(mod.design2.by_HIT_pilot.cov, type = "HC1"))[,"Std. Error"])
 # Any effect on Timespent?
 mod.design2.by_HIT_pilot.cov.total_timespent = lm(total_timespent ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot.cov.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.total_timespent))[ , "Std. Error"])
+(se.design2.by_HIT_pilot.cov.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.total_timespent, type = "HC1"))[ , "Std. Error"])
+
 # Any effect on Whether screeners are passed?
 mod.design2.by_HIT_pilot.cov.all_screeners_passed = lm(all_screeners_passed ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(lmtest::coeftest(mod.design2.by_HIT_pilot.cov.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.all_screeners_passed))[ , "Std. Error"])
+(se.design2.by_HIT_pilot.cov.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
 ```
 
+```{r, echo = F}
+stargazer::stargazer(mod.design2.by_HIT_pilot, mod.design2.by_HIT_pilot.cov,
+                     mod.design2.by_HIT_pilot.total_timespent, mod.design2.by_HIT_pilot.cov.total_timespent,
+                     mod.design2.by_HIT_pilot.all_screeners_passed, mod.design2.by_HIT_pilot.cov.all_screeners_passed, 
+                     type = "text", title = "Design 2 Pilot ATE Estimation", style = "default",
+                     se = list(se.design2.by_HIT_pilot, se.design2.by_HIT_pilot.cov,
+                               se.design2.by_HIT_pilot.total_timespent, se.design2.by_HIT_pilot.cov.total_timespent,
+                               se.design2.by_HIT_pilot.all_screeners_passed,se.design2.by_HIT_pilot.cov.all_screeners_passed),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     column.labels = c("simple","full","simple","full","simple","full"),
+                     model.names = T
+                     )
+```
 
-```{r, include = F, eval = F}
-(se.design1.LR_mod2 = lmtest::coeftest(design1.LR_mod2, 
-                                       vcov = multiwayvcov::cluster.vcov(design1.LR_mod2, ~cluster))[ , "Std. Error"])
+> Rboust Standard Errors are applied
+
+
+```{r, echo=F}
+cat("\nDesign 2 Pilot, Simple Model : Effect of being in group CCT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot,2)
+cat("\nDesign 2 Pilot, Simple Model : Effect of being in group CTT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot,3)
+cat("\nDesign 2 Pilot, Simple Model : Effect of being in group TTT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot,4)
+
+
+cat("\nDesign 2 Pilot, Full Model : Effect of being in group CCT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot.cov,2)
+cat("\nDesign 2 Pilot, Full Model : Effect of being in group CTT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot.cov,3)
+cat("\nDesign 2 Pilot, Full Model : Effect of being in group TTT rather than CCC on accuracy")
+get_ate_se_robustci(mod.design2.by_HIT_pilot.cov,4)
 ```
 
 
 ## Main experiment (Design 2)
 
+We ran the main Design 2 (D2) experiment on Sunday November 26 2017. We publised one posting of base rate \$0.22 with 240 HITs available, each session is attached with a bonus rate of \$0.10. 
+
+```{r, include = F}
+by_Session.table$round_accuracy = as.numeric(by_Session.table$round_accuracy)
+
+N.d2 =  by_HIT.table[observed == 1,.N]
+N.ccc= by_HIT.table[group=="CCC"& observed == 1,.N]
+N.cct = by_HIT.table[group=="CCT"& observed == 1,.N]
+N.ctt = by_HIT.table[group=="CTT"& observed == 1,.N]
+N.ttt = by_HIT.table[group=="TTT"& observed == 1,.N]
+avg_time_d2 = by_HIT.table[observed == 1,mean(total_timespent)]
+avg_time_ccc = by_HIT.table[group=="CCC" & observed == 1,mean(total_timespent)]
+avg_time_cct = by_HIT.table[group=="CCT"& observed == 1,mean(total_timespent)]
+avg_time_ctt = by_HIT.table[group=="CTT"& observed == 1,mean(total_timespent)]
+avg_time_ttt = by_HIT.table[group=="TTT"& observed == 1,mean(total_timespent)]
+avg_accuracy_d2 = by_HIT.table[observed == 1,mean(overall_accuracy)]
+avg_accuracy_ccc = by_HIT.table[group=="CCC"& observed == 1,mean(overall_accuracy)]
+avg_accuracy_cct = by_HIT.table[group=="CCT"& observed == 1,mean(overall_accuracy)]
+avg_accuracy_ctt = by_HIT.table[group=="CTT"& observed == 1,mean(overall_accuracy)]
+avg_accuracy_ttt = by_HIT.table[group=="TTT"& observed == 1,mean(overall_accuracy)]
+sd_accuracy_d2 = by_HIT.table[observed == 1,sd(overall_accuracy)]
+sd_accuracy_ccc = by_HIT.table[group=="CCC"& observed == 1,sd(overall_accuracy)]
+sd_accuracy_cct = by_HIT.table[group=="CCT"& observed == 1,sd(overall_accuracy)]
+sd_accuracy_ctt = by_HIT.table[group=="CTT"& observed == 1,sd(overall_accuracy)]
+sd_accuracy_ttt = by_HIT.table[group=="TTT"& observed == 1,sd(overall_accuracy)]
+```
+
+
 ### Data (Design 2 Main)
+
+The main experiment, because of the higher base rate, took less than half of the time in the pilot for all HITs to be claimed. We observe 49 attriters, which correspond to roughly 1:5 observed outcomes to unobserved outcomes again. At a first glance, the accuracy of each treatment group don't differ noticeably.
+
+```{r, echo = F, warning=F}
+d2.summary = data.frame(Group=c("All","CCC","CCT","CTT","TTT","Attritiers" ), 
+                           Treatment=c("/","0.00","$0.05","$0.10","$0.15",""),
+                           N=c(N.d2, N.ccc, N.cct, N.ctt, N.ttt,49),
+                           TotalTime=c("10h 2min","/","/","/","/","/"), 
+                           AvgTimePerTask = c(paste(toString(round(avg_time_d2/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ccc/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_cct/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ctt/60,3)),"min",sep=""),
+                                              paste(toString(round(avg_time_ttt/60,3)),"min",sep=""),
+                                              "/"
+                                              ), 
+                           AccuracyMean=c(round(avg_accuracy_d2,3),
+                                          round(avg_accuracy_ccc,3),
+                                          round(avg_accuracy_cct,3),
+                                          round(avg_accuracy_ctt,3),
+                                          round(avg_accuracy_ttt,3),
+                                          "/"
+                                          ), 
+                           AccuracySd=c(round(sd_accuracy_d2,3),
+                                        round(sd_accuracy_ccc,3),
+                                        round(sd_accuracy_cct,3),
+                                        round(sd_accuracy_ctt,3),
+                                        round(sd_accuracy_ttt,3),
+                                        "/"
+                                        ))
+
+knitr::kable(d2.summary, "markdown")
+```
+
+The distribution of accuracy by group or by session is again right skewed and very similar to that observed in the pilot.
+
+```{r, echo=FALSE, fig.height=3, fig.width=7,warning=F}
+
+hist.design2.r1 = ggplot(by_Session.table[round=="one",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Main S1") +
+  theme_gray()
+
+hist.design2.r2 = ggplot(by_Session.table[round=="two",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Main S2") +
+  theme_gray()
+
+hist.design2.r3 = ggplot(by_Session.table[round=="three",], aes(round_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design2 Main S3") +
+  theme_gray()
+
+
+plot_grid(hist.design2.r1,hist.design2.r2,hist.design2.r3, nrow = 1, ncol=3)
+```
+
+```{r, echo=FALSE, fig.height=6, fig.width=7, warning=F}
+hist.design2.ccc = ggplot(by_HIT.table[group=="CCC",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Main Group CCC") +
+  theme_gray()
+
+hist.design2.cct = ggplot(by_HIT.table[group=="CCT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Main Group CCT") +
+  theme_gray()
+
+hist.design2.ctt = ggplot(by_HIT.table[group=="CTT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Main Group CTT") +
+  theme_gray()
+
+hist.design2.ttt = ggplot(by_HIT.table[group=="TTT",], aes(overall_accuracy)) +
+  geom_histogram(binwidth = .05) +
+  labs(x="HIT Accuracy", y = "count", fill="accuracy") +
+  ggtitle(label="Design 2 Main Group TTT") +
+  theme_gray()
+
+plot_grid(hist.design2.ccc ,hist.design2.cct,hist.design2.ctt,hist.design2.ttt)
+```
+
+### Differential Attrition (Design 2 Main)
+
+During the execution of design 1, we saw that more turkers who signed up for lower pay HITs tend to view the HITs but not complete them. While it was not a problem of design 1 because our unit of analysis was defined as a returned HIT, Design 2 is very sensitive to attrition. Here the unit of analysis is defined as a single turker. Therefore, turkers who viewed but left the HITs in the middle are counted as attriters. We also saw a roughly 1:5 attriters(outcome not observed) to completers(outcome observed) ratio in both the design 2 pilot and main experiment data. Below, we regress whether outcome is observable on treatment group assignment and in additional look for differential attrition using all the covariates we have. The regression results suggests that treatment group assignment is not a significant predictor of attrition. But if we look among the covariates, 4 out of 5 of the significant coefficients belong to terms or interaction terms that involves "CQ1a lot more than half". 
+
+
+Specifically in model 2, when treatment groups are not included, turkers are 13.3% less likely to attrit if a lot more than half of their friends own dogs compared to having less of half of their friends own dogs. They are 20.1% less likely to attrit if they have lived with a dog before or seriously considered owning a dog, compared to answering no to either. In layman's term, more exposures to or life experiences with dog may be positively associated with how comfortable the turkers feel about the task. On the other hand, model 3 estimates that turkers assigned in group CCC are 44.6% less likely to attrit if a lot more than half of their friends own dogs and 30.5% less likely to attrit if around half of their friends own dogs, compared to having a lot less than half of their friends own dogs. Model 3 also estimates that for those who have half of their friends being dog owners, being assigned to group CCT makes them 64.3% more likely to attrit and being assigned to group TTT makes them 39.6% more likely to attrit. In layman's term, more regular exposures to dogs is associated with a turker being less likely to attrit if no bonuses are assigned. But the opposite happens when bonuses are assigned. This differential attrition interpretation is a little peculiar to us. Nevertheless, differential attrition remains at threat to unbiasedness of design 2 and we will discuss improvements for future line of investigation in section 7.
+
+
+```{r, include=F}
+by_HIT.table$attrited = as.numeric(by_HIT.table$observed == 0)
+attrition_by_group = lm(attrited~group,data=by_HIT.table)
+#summary(attrition_by_group) #nothing significant
+attrition_by_CQ = lm(attrited~CQ1 + CQ2 + CQ3 + CQ4 + CQ5,data=by_HIT.table)
+#summary(attrition_by_CQ) #violations mostly related to CQ1
+attrition_by_group_CQ = lm(attrited~group*CQ1 + group*CQ2 + group*CQ3 + group*CQ4 + group*CQ5,data=by_HIT.table)
+#summary(attrition_by_group_CQ) #violations mostly related to CQ1
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(attrition_by_group, attrition_by_CQ, attrition_by_group_CQ,
+                     type = "text", title = "Differential Attrition Check Design 2 Main", style = "default",
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
 
 ### Covariate Balance (Design 2 Main)
 
+In terms of covariate balance, none of the treatment groups manage to predit the covariates, or in this case, the responses to any of our aptitude questions. The results are similar to that observed in the pilot.
+
+```{r, include = F}
+CQ1.1 = by_HIT.table$CQ1=="a lot less than half"
+CQ1.2 = by_HIT.table$CQ1=="around half"
+CQ1.3 = by_HIT.table$CQ1=="a lot more than half"
+CQ2 = as.numeric(by_HIT.table$CQ2)
+
+CQ3.1 = by_HIT.table$CQ3=="Yes"
+CQ3.2 = by_HIT.table$CQ3=="Maybe"
+CQ3.3 = by_HIT.table$CQ3=="No"
+
+CQ4.1 = by_HIT.table$CQ4=="0 to 10"
+CQ4.2 = by_HIT.table$CQ4=="11 to 20"
+CQ4.3 = by_HIT.table$CQ4=="21 to 30"
+CQ4.4 = by_HIT.table$CQ4=="31 to 40"
+CQ4.5 = by_HIT.table$CQ4=="41 or more"
+CQ5.1 = by_HIT.table$CQ5=="Yes"
+CQ5.2 = by_HIT.table$CQ5=="No"
+CQ5.3 = by_HIT.table$CQ5=="Never heard of Linkedin"
+
+cov_check_CQ1.1_d2 = lm(CQ1.1~by_HIT.table$group)
+cov_check_CQ1.2_d2 = lm(CQ1.2~by_HIT.table$group)
+cov_check_CQ1.3_d2 =lm(CQ1.3~by_HIT.table$group)
+
+cov_check_CQ2_d2 = lm(CQ2~by_HIT.table$group)
+
+cov_check_CQ3.1_d2 = lm(CQ3.1~by_HIT.table$group)
+cov_check_CQ3.2_d2 = lm(CQ3.2~by_HIT.table$group)
+cov_check_CQ3.3_d2 = lm(CQ3.3~by_HIT.table$group)
+
+cov_check_CQ4.1_d2 = lm(CQ4.1~by_HIT.table$group)
+cov_check_CQ4.2_d2 = lm(CQ4.2~by_HIT.table$group)
+cov_check_CQ4.3_d2 = lm(CQ4.3~by_HIT.table$group)
+cov_check_CQ4.4_d2 = lm(CQ4.4~by_HIT.table$group)
+cov_check_CQ4.5_d2 = lm(CQ4.5~by_HIT.table$group)
+cov_check_CQ5.1_d2 = lm(CQ5.1~by_HIT.table$group)
+cov_check_CQ5.2_d2 = lm(CQ5.2~by_HIT.table$group)
+cov_check_CQ5.3_d2 = lm(CQ5.3~by_HIT.table$group)
+
+(se.cov_regr_CQ1_1_d2 = lmtest::coeftest(cov_check_CQ1.1_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ1_2_d2 = lmtest::coeftest(cov_check_CQ1.2_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ1_3_d2 = lmtest::coeftest(cov_check_CQ1.3_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ2_3_d2 = lmtest::coeftest(cov_check_CQ2_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_1_d2 = lmtest::coeftest(cov_check_CQ3.1_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_2_d2 = lmtest::coeftest(cov_check_CQ3.1_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ3_3_d2 = lmtest::coeftest(cov_check_CQ3.1_d2, vcov = vcovHC)[ , "Std. Error"])
+
+(se.cov_regr_CQ4_1_d2 = lmtest::coeftest(cov_check_CQ4.1_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_2_d2 = lmtest::coeftest(cov_check_CQ4.2_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_3_d2 = lmtest::coeftest(cov_check_CQ4.3_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_4_d2 = lmtest::coeftest(cov_check_CQ4.4_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ4_5_d2 = lmtest::coeftest(cov_check_CQ4.5_d2, vcov = vcovHC)[ , "Std. Error"])
+
+(se.cov_regr_CQ5_1_d2 = lmtest::coeftest(cov_check_CQ5.1_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ5_2_d2 = lmtest::coeftest(cov_check_CQ5.2_d2, vcov = vcovHC)[ , "Std. Error"])
+(se.cov_regr_CQ5_3_d2 = lmtest::coeftest(cov_check_CQ5.3_d2, vcov = vcovHC)[ , "Std. Error"])
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(cov_check_CQ1.1_d2, cov_check_CQ1.2_d2, cov_check_CQ1.3_d2,
+                     cov_check_CQ2_d2,
+                     cov_check_CQ3.1_d2, cov_check_CQ3.2_d2, cov_check_CQ3.3_d2,
+                     type = "text", title = "Covariate Balance Check Design 2 Main", style = "default",
+                     se = list(se.cov_regr_CQ1_1_d2, se.cov_regr_CQ1_2_d2, se.cov_regr_CQ1_3_d2,
+                               se.cov_regr_CQ2_3_d2,
+                               se.cov_regr_CQ3_1_d2, se.cov_regr_CQ3_2_d2, se.cov_regr_CQ3_3_d2
+                               ),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+```{r, echo=F, warning=F}
+stargazer::stargazer(
+                     cov_check_CQ4.1_d2, cov_check_CQ4.2_d2, 
+                     cov_check_CQ4.3_d2, cov_check_CQ4.4_d2, cov_check_CQ4.5_d2,  
+                     cov_check_CQ5.1_d2, cov_check_CQ5.2_d2, cov_check_CQ5.3_d2, 
+                     
+                     type = "text", title = "Covariate Balance Check Design 2 Main", style = "default",
+                     se = list(
+                               se.cov_regr_CQ4_1_d2, se.cov_regr_CQ4_2_d2, se.cov_regr_CQ4_3_d2,
+                               se.cov_regr_CQ4_4_d2, se.cov_regr_CQ4_5_d2,
+                               se.cov_regr_CQ5_1_d2, se.cov_regr_CQ5_2_d2, se.cov_regr_CQ5_3_d2
+                               ),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     model.names = F
+                     )
+```
+
+> Definition of covariate variables remains unchanged in all experiments. Please reference the design 2 pilot version.
+
+
 ### Treatment Effect Estimation (Design 2 Main)
 
+In this subsection, we use three different approaches to estimate the effect of receiving bonuses on a turker performance.
 
-- Design 1 and 2 comparison
+#### Between Groups Comparison (Design 2 Main)
 
-
-# Limitations and Future Lines of investigation
-
-# Conclusion and Bibliography
+In the first approach, we pool data from all the sessions together and simply observe the effect of belonging to different groups. The following regression models are constructed with the specifications listed below. Model 1 looks at the effect of being assigned to a different treatment group on the overall HIT accuracy. Model 2 further controls for the responses to the aptitude questions as covariates for better precision. Model 3 and 4 are similar to model 1 and 2, but applied logistic instead of linear regression to better approximate the distribution of accuracy values. Model 5 and 6 are similar to model 1 and 2, but switched out the outcome variable as time spent instead. We separately estimated two models using screener(cat questions) results as outcome, the result was again insignicant therefore not included here.
 
 
-***
+(1) $overall\ accuracy = \theta_{0} + \theta_{1}*treatment$
 
-A note on supplementary files: A clean, well organized Github repo is available for this project. It includes raw, intermediate and transformed data, along with data transformation, statistical and project management codes. Because of the length of extensiveness of these R functions, we decided to print such functions as a higher level of abstraction and maintain a natural presentation flow of the project. For project evaluation's sake, please refer to the .rmd file for our the hidden snippets, and our Github repo for any other materials. (Available upon request)
+(2) $overall\ accuracy = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
 
-***
+(3) $logit(overall\ accuracy) = \theta_{0} + \theta_{1}*treatment$
+
+(4) $logit(overall\ accuracy) = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
+
+(5) $total\ time\ spent = \theta_{0} + \theta_{1}*treatment$
+
+(6) $total\ time\ spent = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
+
+
+
+
+```{r, echo = F}
+stargazer::stargazer(mod.design2.by_HIT, mod.design2.by_HIT.cov,
+                     glm.mod.design2.by_HIT, glm.mod.design2.by_HIT.cov,
+                     mod.design2.by_HIT.total_timespent, mod.design2.by_HIT.cov.total_timespent,
+                     type = "text", title = "Design 2 Main experiment ATE Estimation", style = "default",
+                     se = list(se.design2.by_HIT, se.design2.by_HIT.cov,
+                               se.glm.design2.by_HIT, se.glm.design2.by_HIT.cov,
+                               se.design2.by_HIT.total_timespent, se.design2.by_HIT.cov.total_timespent),
+                     star.cutoffs = c(0.05, 0.01, 0.001),
+                     column.labels = c("simple","full","simple","full","simple","full"),
+                     model.names = T
+                     )
+```
+
+> Rboust Standard Errors are applied
+
+Looing at results from linear models 1 to 4, being assigned to any of the treatment groups rather than group CCC does not make any statistical differences in the overall accuracy. For the linear models 1 and 2, the magnitude of estimated effects are in the order of less than five percentage points, suggesting no practical significance either. In fact, most estimated effects are mildly negative. All the corresponding robust confidence levels cover zero.
+
+```{r, echo=F}
+cat("\nModel 1: simple: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT,2)
+cat("\nModel 2: covariate controls: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT.cov,2)
+
+cat("\nModel 1: simple: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT,3)
+cat("\nModel 2: covariate controls: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT.cov,3)
+
+cat("\nModel 1: simple: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT,4)
+cat("\nModel 2: covariate controls: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci(mod.design2.by_HIT.cov,4)
+```
+
+
+Results from logistic models 3 and 4 agrees with model 1 and 2, being assigned to any of the treatment groups rather than group CCC does not change the odds of achieving full accuracy to significantly higher or lower. The point estimates in model 3 suggests that being in any group rather than CCC actually decreases the odds of achieving full accuracy. The signs are flipped in model 4 for group CCT and TTT but the corresponding point estimates are very small in magnitude (no practical significance).
+
+```{r, echo=F}
+cat("\nModel 3: simple: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT,2)
+cat("\nModel 4: covariate controls: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT.cov,2)
+
+cat("\nModel 3: simple: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT,3)
+cat("\nModel 4: covariate controls: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT.cov,3)
+
+cat("\nModel 3: simple: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT,4)
+cat("\nModel 4: covariate controls: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci_LR_d2(glm.mod.design2.by_HIT.cov,4)
+```
+
+Results from linear models 5 and 6 suggest no significant effects on time spent for being assigned to any group other than group CCC. 
+
+
+```{r, echo=F}
+cat("\nModel 5: simple: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.total_timespent,2)
+cat("\nModel 6: covariate controls: ATE being in group CCT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.cov.total_timespent,2)
+
+cat("\nModel 5: simple: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.total_timespent,3)
+cat("\nModel 6: covariate controls: ATE being in group CTT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.cov.total_timespent,3)
+
+cat("\nModel 5: simple: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.total_timespent,4)
+cat("\nModel 6: covariate controls: ATE being in group TTT rather than group CCC:")
+get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.cov.total_timespent,4)
+```
+
+#### Group and Session Specific comparisons (Design 2 Main)
+
+In this second approach, we take advantage of the group and session specific data the we have. This provides us more granularity for analysis. For example we can look at how outcomes changes from one session to another with or without treatment, how turkers' performance may build-up or deplete from one session to another, or effect of receiving treatment in a specific session. This is our specified model in the form we specify and the form which R outputs. Mathematically they are exactly he same model. We separately estimated a version with covariates control, because the estimates remained the same, and the corresponding standard errors and p-values only changed marginally, we do not include it in this report in order to more clearly explain the mechanism of this estimation approach. The corresponding model and code reside on our repo. 
+
+(7 ) $logit(accuracy) = \beta_{intercept} + \beta_{GS}group*session$ (Compressed Form)
+
+(7.1 ) $logit(accuracy) = \beta_{1} + \beta_{2}*groupCCT + \beta_{3}*groupCTT + \beta_{4}*groupTTT + \beta_{5}*session2 + \\ \beta_{6}*session3 + \beta_{7}groupCCT:session2 + \beta_{8}groupCTT:session2+ \beta_{9}groupTTT:session2 + \\ \beta_{10}groupCCT*session3 + \beta_{11}groupCTT*session3 + \beta_{12}groupTTT*session3$ (Expanded Form)
+
+
+```{r, echo = F}
+mod.design2.by_Session = lm(round_accuracy ~ group * round,data=by_Session.table)
+coeftest(mod.design2.by_Session, vcov=vcovHC(mod.design2.by_Session))
+```
+
+> Rboust Standard Errors are applied
+
+From the regression output, we see that none of the coefficients we estimated are significant. Nevertheless, we proceed with the intended approach to demonstrate the exercise. Using the coefficients in the estimated form and our design graph, we can make between group, between session, difference-in-differences and overall comparisons. Figure 6 best explains this concept.
+
+![](../Images/Design_2_Graph.jpg)
+
+To arriving at the specific comparisons with estimated coefficients from the regression model, we derive each comparison as a combination of the estimated coefficients. The relationships are listed below.
+
+
+Notation | Meaning | Linear Combination
+---------|---------------------------------|------------------------------------
+CCC S2-S1 | effect of being in round two rather than round one in group CCC | b_5
+CCC S3-S1 | effect of being in round three rather than round one in group CCC | b_6
+CCC S3-S2 | effect of being in round three rather than round two in group CCC | b_6 - b_5
+CCT S2-S1 | effect of being in round two rather than round one in group CCT | b_5 + b_7 
+CCT S3-S1 | effect of being in round three rather than round one in group CCT | b_6 + b_10
+CCT S3-S2 | effect of being in round three rather than round two in group CCT | b_6 - b_5 + b_10 - b_7
+CTT S2-S1 | effect of being in round two rather than round one in group CTT | b_5 + b_8
+CTT S3-S1 | effect of being in round three rather than round one in group CTT | b_6 + b_11
+CTT S3-S2 | effect of being in round three rather than round two in group CTT | b_6 - b_5 + b_11 - b_8
+TTT S2-S1 | effect of being in round two rather than round one in group TTT | b_5 + b_9
+TTT S3-S1 | effect of being in round three rather than round one in group TTT | b_6 + b_12
+TTT S3-S2 | effect of being in round three rather than round two in group TTT | b_6 - b_5 + b_12 - b_9
+T-C S1 | effect of receiving treatment in Round one | b_4 - (b_3 + b_2)/3
+T-C S2 | effect of receiving treatment in Round two (regardless of round one status) | (-b_2 + b_3 + b_4 - b_7 + b_8 + b_9)/2
+T-C S3 | effect of receiving treatment in Round three (regardless of round one or two status) | (b_4 + b_12) - (b_2 + b_3 + b_10 + b_11)/3
+TTT-CCC | effect of being in a group TTT that receive all three rounds of treatment rather than all control group CCC | b_4 + (b_9 + b_12)/3
+(T)-CCC | effect of being in any treatment groups rather than all control group CCC |(b_2 + b_3 + b_4)/3 + (b_7 + b_8 + b_9 + b_10 + b_11 + b_12)/9
+D_in_D S3 | effect on Round 3, of Receiving Treatment in Round 3 but not earlier | b_10 - b_7
+D_in_D S2 | effect on Round 2, of Receiving Treatment in Round 2 but not earlier | - (1/2)*b_7 + b_8
+
+
+Using general linear hypothesis, we estimate the point estimate, standard error and p-values for the above listed comparisons. As we have expected, none of the between-group, between-session, difference-in-differences, or overall comparisons are significant. Robust standard errors are applied.
+
+```{r, echo=F}
+summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
+             linfct=rbind(
+               "CCC S2-S1"=c(0,0,0,0,1,0,0,0,0,0, 0, 0),
+               "CCC S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 0, 0),
+               "CCC S3-S2"=c(0,0,0,0,-1,1,0,0,0,0, 0, 0),
+               "CCT S2-S1"=c(0,0,0,0,1,0,1,0,0,0, 0, 0),
+               "CCT S3-S1"=c(0,0,0,0,0,1,0,0,0,1, 0, 0),
+               "CCT S3-S2"=c(0,0,0,0,-1,1,-1,0,0,1, 0, 0),
+               "CTT S2-S1"=c(0,0,0,0,1,0,0,1,0,0, 0, 0),
+               "CTT S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 1, 0),
+               "CTT S3-S2"=c(0,0,0,0,-1,1,0,-1,0,0, 1, 0),
+               "TTT S2-S1"=c(0,0,0,0,1,0,0,0,1,0, 0, 0),
+               "TTT S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 0, 1),
+               "TTT S3-S2"=c(0,0,0,0,-1,1,0,0,-1,0, 0, 1),
+               "T-C S1"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,0, 0, 0),
+               "T-C S2"=c(0,(-1/2),(1/2),(1/2),0,0,(-1/2),(1/2),(1/2),0, 0, 0),
+               "T-C S3"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,(-1/3), (-1/3), 1),
+               "TTT-CCC"=c(0,0,0,1,0,0,0,0,1/3,0, 0, 1/3),
+               "(T)-CCC"=c(0,1/3,1/3,1/3,0,0,1/9,1/9,1/9,1/9, 1/9, 1/9),
+               "D_in_D S3"=c(0,0,0,0,0,0,-1,0,0,1, 0, 0),
+               "D_in_D S2"=c(0,0,0,0,0,0,-1/2,1,0,0, 0, 0)
+             )))
+```
+
+> Rboust Standard Errors are applied
+
+#### Intermediate and Lagged Effects (Design 2 Main)
+
+Finally, in this last approach, we want to derive a more summarizing effect of receiving bonus on accuracy for any one session. This exact mechanism is referenced from *Chapter 8.5 Field Experiment by Gerber and Green).To that end, we first state two substantive assumptions. Invoking the no anticipation assumption allow us to ignore treatments that are allocated after the current period. We also ignore treatments that were allocated two sessions prior, which is equivalent to assuming that bonuses' effects wask out entirely after two sessions. We redefine the potential outcomes as follow:
+
++ **Y_00** (untreated during preceding and current session)
++ **Y_01** (untreated during preceding session but treated during current session)
++ **Y_11** (treated during preceding and current session)
+
+The truncated tables below shows the randomly assigned treatment condition and observed outcomes for 5 of the 243 subjects under the new outcome definition.
+
+```{r,echo=F}
+head("Treatment Condition Table:")
+knitr::kable(head(assigned_treatment_condition_table,5), "markdown")
+head("Observed Outcomes Table:")
+knitr::kable(head(observed_outcomes_table, 5), "markdown")
+
+```
+
+Note that we cannot naively compare average outcomes of treated sessions to the average outcomes of the untreated sessions. This approach is biased because it ignores the fact that the probability of assignment to treatment varies from session to session because individuals are much more likely to be assigned to bonuses in the final week than in the first week. It is also prone to biase because it ignores lagged effects, treating Y_11 and Y_01 as though they were identical.Instead we begin by calculating the probability of begin assigned to each treatment during each session. These probabilities are displayed below.
+
+```{r, echo=F}
+design2.prob.table = data.table(Treatment_Condition = c("Pr(00)","Pr(01)","Pr(11)"),
+                                Week_1 = c(0.75, 0.25, 0),
+                                Week_2 = c(0.50, 0.25, 0.25),
+                                Week_3 = c(0.25, 0.25, 0.50))
+
+knitr::kable(design2.prob.table, "markdown")
+```
+
+Then, in order to obtain unbiased treatment effects, we apply inverse weights. Treated units are weighted by the inverse of the probability of being treated; control units are weighted by the inverse of the probability of being in control. According to the above probability table, calculation of the immediate effect is as follows: (programming code in .rmd file)
+
+$$\hat{E}[Y_{01} - Y_{00}] = \frac{ \frac{\sum_{S1} Y_{01}}{0.25} + \frac{\sum_{S2} Y_{01}}{0.25} + \frac{\sum_{S3} Y_{01}}{0.25} }{\frac{64}{0.25}+\frac{60}{0.25} +\frac{60}{0.25}} - \frac{ \frac{\sum_{S1} Y_{00}}{0.75} + \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} }{\frac{179}{0.75}+\frac{119}{0.50} +\frac{61}{0.25}}$$
+
+```{r,echo=F}
+# sum S1 Y_01 
+Y01_S1 = by_Session.table[round=="one" & group=="TTT",round_accuracy]
+# sum S2 Y_01
+Y01_S2 = by_Session.table[round=="two" & group=="CTT",round_accuracy]
+# sum S3 Y_01
+Y01_S3 = by_Session.table[round=="three" & group=="CTT",round_accuracy]
+
+# sum S1 Y_00
+Y00_S1 = by_Session.table[round=="one" & group!="TTT",round_accuracy]
+# sum S2 Y_00
+Y00_S2 = by_Session.table[round=="two" & (group=="CCT" | group=="CCC"),round_accuracy]
+# sum S3 Y_00
+Y00_S3 = by_Session.table[round=="three" & group=="CCC",round_accuracy]
+
+E_Y01 = (sum(Y01_S1)/0.25 + sum(Y01_S2)/0.25 + sum(Y01_S3)/0.25) / 
+  (length(Y01_S1)/0.25 + length(Y01_S2)/0.25  + length(Y01_S3)/0.25 )
+
+E_Y00.1 = (sum(Y00_S1)/0.75 + sum(Y00_S2)/0.50+ sum(Y00_S3)/0.25) /
+  (length(Y00_S1)/0.75 + length(Y00_S2)/0.50+ length(Y00_S3)/0.25)
+
+E_Y01_Y00 = E_Y01 - E_Y00.1 
+
+cat("\nEstimated Combined Immediate Effect:", E_Y01_Y00)
+```
+
+In order to estimate effects for combined immediate and lag effect, we restrict our attention to the second and third sessions, because this type of treatment cannot occur in the first week. (programming code in .rmd file)
+
+$$\hat{E}[Y_{11} - Y_{00}] = \frac{ \frac{\sum_{S2} Y_{11}}{0.25} + \frac{\sum_{S3} Y_{11}}{0.50} }{\frac{64}{0.25}+\frac{124}{0.50}} - \frac{ \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} + }{\frac{119}{0.50}+\frac{61}{0.25}}$$
+
+```{r, echo=F}
+# sum S1 Y_11
+# non-existent
+# sum S2 Y_11
+Y11_S2 = by_Session.table[round=="two" & group=="TTT",round_accuracy]
+# sum S3 Y_11
+Y11_S3 = by_Session.table[round=="three" & (group=="TTT" | group=="CTT"),round_accuracy]
+
+E_Y11 = (sum(Y11_S2)/0.25 + sum(Y11_S3)/0.50) /
+  (length(Y11_S2)/0.25 + length(Y11_S3)/0.50)
+  
+E_Y00.2 = (sum(Y00_S2)/0.50 + sum(Y00_S3)/0.25) /
+  (length(Y00_S2)/0.50 + length(Y00_S3)/0.25)
+
+E_Y11_Y00 = E_Y11 - E_Y00.2
+
+cat("\nEstimated Combined Immediate and Lagged Effect:", E_Y11_Y00)
+```
+
+Our point estimates are mildly negative, this result works against our research hypothesis and suggest that the session accuracy drops by a little below 3 percentage points if the turker was given a bonus for that session. These estimates are also very small in magnitude and may not be significant at all. To estimate the standard errors, we first look at the observed schedule of outcomes for this experiment. The tables below shows the schedule for the same five turkers.
+
+```{r, echo=F}
+# outcome table as is
+cat("Observed Y00 Table:")
+knitr::kable(head(Y00.table,5), "markdown")
+cat("Observed Y01 Table:")
+knitr::kable(head(Y01.table,5), "markdown")
+cat("Observed Y11 Table:")
+knitr::kable(head(Y11.table,5), "markdown")
+
+```
+
+Then, we fill in the implied hypothetical schedule of potential outcomes under the assumption of constant treatment effects.
+
+```{r, echo=F}
+cat("\nHypothetical Y01 Table:")
+knitr::kable(head(Y00.table.filled,5), "markdown")
+cat("\nHypothetical Y01 Table:")
+knitr::kable(head(Y01.table.filled,5), "markdown")
+cat("\nHypothetical Y01 Table:")
+knitr::kable(head(Y11.table.filled,5), "markdown")
+```
+
+Finally, we simulate the sampling distribution by shuffling the treatment group assignment the turkers, keeping the number of turkers originally assigned to each group the same. With the sampling distributions, we take the 0.05 and 0.975 quantiles to construct our confidence intervals. As we have expected, neither immediate treatment effect nor combined immediate treatment effect is statistically significant. The associated confidence intervals both cover zero. (programming code in .rmd file and repo)
+
+```{r, include=F}
+ATEs_0100.hat = c()
+ATEs_1100.hat = c()
+treatments = c(rep("CCC",61), rep("CCT",58), rep("CTT",60), rep("TTT",64))
+
+# write function to wrap below
+for (i in 1:1000) {
+  treat = sample(x=treatments,size=length(treatments),replace = F)
+  # create simulated schedule
+  sim.outcomes = create_simulated_schedule(sim.outcomes.template, treat) 
+  # estimate ATE from simulated schedule
+  estimates = est.ATE_from_simoutcomes(sim.outcomes)
+  ATEs_1100.hat = c(ATEs_1100.hat, estimates[[2]])
+  ATEs_0100.hat = c(ATEs_0100.hat, estimates[[1]])
+}
+```
+
+```{r, echo=F}
+cat("\nFirst 50 simulated values of E[Y01-Y00]--immediate treatment effect:\n")
+ATEs_0100.hat[1:50]
+cat("\nFirst 50 simulated values of E[Y11-Y00]--combined immediate and lagged treatment effect:\n")
+ATEs_1100.hat[1:50]
+```
+
+
+```{r, echo=F, warning=F}
+hist.ATEs_0100.hat = qplot(ATEs_0100.hat, geom = "histogram") +
+  geom_vline(aes(xintercept = E_Y01_Y00), colour="red") + 
+  geom_histogram(binwidth = .005) +
+  labs(x="Simulated E[Y01-Y00]", y = "count", fill="accuracy") +
+  ggtitle(label="Sampling distribution (constant ATE) \nDesign 2 Immediate ATE") +
+  scale_x_continuous(limits = c(-0.15, 0.15)) + 
+  theme_gray()
+
+hist.ATEs_1100.hat =  qplot(ATEs_1100.hat, geom = "histogram") +
+  geom_vline(aes(xintercept = E_Y11_Y00), colour="red") + 
+  geom_histogram(binwidth = .005) +
+  labs(x="Simulated E[Y11-Y00]", y = "count", fill="accuracy") +
+  ggtitle(label="\nDesign 2 Lagged+Immediate ATE") +
+  scale_x_continuous(limits = c(-0.15, 0.15)) + 
+  theme_gray()
+
+plot_grid(hist.ATEs_0100.hat,hist.ATEs_1100.hat) 
+```
+
+```{r,echo=F}
+cat("\nEstimated Confidence Interval of E[Y01-Y00]--immediate treatment effect:")
+quantile(ATEs_0100.hat, c(0.025, 0.975))
+cat("\nEstimated Confidence Interval of E[Y11-Y00]--combined immediate and lagged treatment effect:")
+quantile(ATEs_1100.hat, c(0.025, 0.975))
+```
+
+
+## Design 2 conclusion
+
+To provide an overview for the design 2 results, the estimated effect of bonuses on a turker performance is statistically and practically insignificant in all three of our estimation approaches. We looked at the overall bonus effects by comparing different treatment groups using linear and logistic regression, investigated more granular bonus effects both by group and by session by taking full advantage of a stepped-wedge design, and we estimated both immediate, lagged and their combined effect by invoking the no-anticipation assumption and assuming no within-subject spill-over effect from more than one session. All inference approaches failed to reject the null hypothesis that bonus has zero effect on a turker's performance. On the other hand, bonuses' negative effect on the average time spent on an HIT is significant, but counter-intuitive. Our linear model suggested that being assigned to receive bonus only in the third session or all sessions tend to shorten turkers' time spent by two to three minutes. Finally, we observed differential attrition based on covariates related to turkers' prior exposure or life experience with dogs. This remains a threat to the unbiasedness of our estimated treatment effect. We will discuss potential solutions for a future experiment in section 7.
+
+
+# Limitations and Future Lines of Investigation 
+
+As mentioned in our design 1 conclusion, something related to our publishing orders affected the outcomes. It is unlikely but possible that the issue is related to the weekend/time of day the experiment was conducted, as well as (but unlikely) running out of turks after our first publish order. To improve on these issues, we would suggest an extension of the experiment schedule table found in page 4 of this report, with at least two more publish orderings, to fully randomize our treatment by day of the weekend and time of day. We would also like to stay away from long holiday weekends; our first ordering occurred on Veteran's day weekend and this may have been or contributed to the discrepancy in the $0.10 treatment we saw between the orderings. These additional rounds may also increase our sample size.
+
+
+A common way to mitigate threat of attrition for design 2, is to perform a second round of experiment which randomly re-sample the attriters. That is, re-invite those turkers to complete the HIT they started. Through the Qualtrics platform, we keep a list of turkers' identification numbers from those who did not complete their HITs. We will assign them the exact same base rate, same bonus conditions and same survey form over another weekend. However, we can only recover as many as possible and full re-participation is not guaranteed. Once completed, we will attach their data back on our existing design 2 data and conduct the same inference procedure to detect any differences in our estimations.
+
+
+Regarding generalizability, we have different concerns for the two experimental setups. First, in design 1, because of the abnormalities we observed from the data collected over the veteran's day weekend, we are not certain if the corresponding results can be generalized to other weekends in general. Second, in design 2, because we assign treatment as bonuses, we are not certain if the same results can apply to assigning base rates directly. In each experimental design, we attempted four different pay rates bounded by \$0.10 and \$0.55. If the upper bound can be expanded to \$0.80 the result may be different since turkers may fear higher chances of getting their work rejected by the requestors. Overall, we are not certain if an experiment conducted on the AMT platform can generalize to the labor market at large, because at the pay rates we see on the AMT platform, the full-time income cannot even add up to the minimum wage in California (\$10.75 per hour in December 2017). Lastly, our task design is a very specific image classification task related to dog breeds. There are a much wider variety of tasks on the AMT platform which our task cannot represent. Needless to say, in the real world the labor market is full of demands and supplies of a much, much wider range of skills. 
+
+
+# Conclusion
+
+To conclude the project as a whole, the two experimental designs we attempted both estimated insignificant treatment effect related to payment. Design 1 looks at whether higher pay rate as published on the AMT platform increases quality of returned HIT for employers, and design 2 looks at whether assigning bonuses within each HIT provides more incentives for turkers to perform better. The two design2 tackle our research question -- whether higher rewards have an effect on labor productivity,  from similar but different perspectives. We discussed ways to improve the short-coming of each of our experimental designs, they mostly involve extending the experiment schedule to create more clusters of observations for our traditional between-subject design, and collect more responses from prior attriters to mitigate the threat of attrition for our stepped-wedge design. We also expressed doubts on the generalizability of our project, because the mechanism of the AMT platform and nature of our designed task are very specific. Results may not generalize well.
+
+
+Finally, we find our results in-line with prior research projects mentioned in section 2, which suggested that higher financial incentives increases the quantity, but not quality of the work done by workers. In executing both of our experimental designs, we observed that for HIT postings attached with similar quantity of available HITs, those that are posted at a higher reward rate on the AMT platform tend to take much shorted time to finish. In addition, we didn't estimate any significant monetary effect on labor performance or returned task quality.
+
+
+
+****

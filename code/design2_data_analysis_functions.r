@@ -41,6 +41,18 @@ Y.table.keyed = Y.table.keyed[,c("worker_id","round_accuracy","outcome.key","rou
 by_Session.table_pilot$round_accuracy = as.numeric(by_Session.table_pilot$round_accuracy)
 
 
+
+by_HIT.table_pilot$group = factor(by_HIT.table_pilot$group, levels = c("CCC", "CCT", "CTT", "TTT"))
+by_HIT.table_pilot$CQ1 = factor(by_HIT.table_pilot$CQ1, levels = c("a lot less than half", "around half", "a lot more than half"))
+by_HIT.table_pilot$CQ2 = as.numeric(by_HIT.table_pilot$CQ2)
+by_HIT.table_pilot$CQ3 = factor(by_HIT.table_pilot$CQ3, levels = c("No", "Maybe", "Yes"))
+by_HIT.table_pilot$CQ4 = factor(by_HIT.table_pilot$CQ4, levels = c("0 to 10", "11 to 20", "21 to 30", "31 to 40", "41 or more"))
+by_HIT.table_pilot$CQ5 = factor(by_HIT.table_pilot$CQ5, levels = c("Never heard of Linkedin", "No", "Yes"))
+
+
+
+
+
 by_Session.table$group = factor(by_Session.table$group, levels = c("CCC", "CCT", "CTT", "TTT"))
 by_Session.table$round = factor(by_Session.table$round, levels = c("one", "two", "three"))
 by_Session.table$CQ1 = factor(by_Session.table$CQ1, levels = c("a lot less than half", "around half", "a lot more than half"))
@@ -114,3 +126,78 @@ est.ATE_from_simoutcomes = function(simulated_outcomes) {
   
   list(E_Y01_Y00, E_Y11_Y00)
 }
+
+
+mod.design2.by_HIT = lm(overall_accuracy ~ group, data = by_HIT.table)
+(se.design2.by_HIT = lmtest::coeftest(mod.design2.by_HIT, 
+                                      vcov=vcovHC(mod.design2.by_HIT))[ , "Std. Error"])
+# With covariates
+# Any effect on Accuracy?
+mod.design2.by_HIT.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table)
+(se.design2.by_HIT.cov = lmtest::coeftest(mod.design2.by_HIT.cov, 
+                                          vcov=vcovHC(mod.design2.by_HIT.cov, type = "HC1"))[,"Std. Error"])
+
+#---------------------------------------------------------------------------------------------------------------------
+# between group comparisons
+
+# Without covariates
+# Any effect on Accuracy?
+glm.mod.design2.by_HIT = suppressWarnings(glm(overall_accuracy ~ group, data = by_HIT.table, family = binomial(link = logit)))
+(se.glm.design2.by_HIT = lmtest::coeftest(glm.mod.design2.by_HIT, 
+                                          vcov=vcovHC(glm.mod.design2.by_HIT))[ , "Std. Error"])
+# With covariates
+# Any effect on Accuracy?
+glm.mod.design2.by_HIT.cov = suppressWarnings(glm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table,family = binomial(link = logit)))
+(se.glm.design2.by_HIT.cov = lmtest::coeftest(glm.mod.design2.by_HIT.cov, 
+                                              vcov=vcovHC(glm.mod.design2.by_HIT.cov, type = "HC1"))[,"Std. Error"])
+
+
+# Without covariates
+# Any effect on Timespent?
+mod.design2.by_HIT.total_timespent = lm(total_timespent ~ group, data = by_HIT.table)
+(se.design2.by_HIT.total_timespent = lmtest::coeftest(mod.design2.by_HIT.total_timespent, 
+                                                      vcov=vcovHC(mod.design2.by_HIT.total_timespent))[ , "Std. Error"])
+# With covariates
+# Any effect on Timespent?
+mod.design2.by_HIT.cov.total_timespent = lm(total_timespent ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table)
+(se.design2.by_HIT.cov.total_timespent = lmtest::coeftest(mod.design2.by_HIT.cov.total_timespent, 
+                                                          vcov=vcovHC(mod.design2.by_HIT.cov.total_timespent, type = "HC1"))[ , "Std. Error"])
+
+#-----------------------------------------------------------------------#
+# get Robust CI for Logistic Regression in Design 2 Overall 
+
+get_ate_se_robustci_LR_d2 = function (my_model, coef_idx) {
+  ate = my_model$coefficients[coef_idx]
+  robust.se = lmtest::coeftest(my_model, vcov = vcovHC(my_model))[coef_idx,2]
+  robust.p = lmtest::coeftest(my_model, vcov = vcovHC(my_model))[coef_idx,4]
+  df = summary(my_model)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
+  
+  cat("\npoint estimate (linear combination) = ", ate,
+      "\npoint estimate (average causal effect as odds ratio) = ", exp(ate),
+      
+      "\nrobust standard error (linear combination) = ", robust.se,
+      
+      "\n95% confidence interval (linear combination) = ", exp(robust.ci),
+      "\n95% confidence interval (average causal effect as odds ratio) = ", exp(robust.ci),
+      
+      "\np-value = ",robust.p)
+}
+
+
+
+get_ate_se_robustci_d2_timespent = function (my_model, coef_idx) {
+  ate = my_model$coefficients[coef_idx]
+  robust.se = lmtest::coeftest(my_model, vcov = vcovHC(my_model, type="HC1"))[coef_idx,2]
+  robust.p = lmtest::coeftest(my_model, vcov = vcovHC(my_model, type="HC1"))[coef_idx,4]
+  df = summary(my_model)$df[2]
+  t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
+  robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
+  
+  cat("\nestimated average causal effect = ", ate,
+      "\nrobust standard error = ", robust.se,
+      "\n95% confidence interval = ", robust.ci,
+      "\np-value = ",robust.p)
+}
+

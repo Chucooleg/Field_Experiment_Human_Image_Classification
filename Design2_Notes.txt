@@ -12,44 +12,48 @@ Assumptions:
 Attrition:
 Write about or resolve any differential attrition
 --------------------------------------------------------------------
-Design 1 : Clustered SE 
-For the main design as well
 
-Design 2 : Check attrition, or fill-in missing data for extreme case (p.241 worst case scenario)
-Design 2 : sub group analysis check heterogeneity with interaction effects FE P.392 -->F-test to see if they are all the same. Individual t-test with multiple comparison correction to check if individually significant?
+To provide an overview for the design 1 results, the estimated effect of pay rate on HIT accuracy is insignificant when all data is pooled together. When publishing order is accounted for, we observe significant heterogeneous treatment effect and baseline difference. The same significance pattern is observed for both linear and logistic regression models. Randomization inference, by simulating the sampling distribution under the sharp-null, reinforces the linear regression result that the estimated ATE is insignificant with a more conservative p-value. Lastly, time spent per HIT is considered as a secondary outcome. The corresponding ATE is estimated to be negative but both statistically and practically insignificant. When publishing order is accounted for, we again observe statistically significant but practically insignificant heterogeneous treatment effect and baseline difference.
+
+Therefore, with our best estimate, we fail to reject the null hypothesis that average treatment effect of pay rate on accuracy or time spent per HIT is zero. Rather, there are strong evidence of unaccounted effects which differentiated outcomes of the two publishing orders. For instance, the kind of turkers who sign up for low paying HITs on Saturday mornings may invest less effort on HITs than the kind who sign for the same HITs on Sunday afternoon, but our available time frame and budget prevented us from running experiments on enough weekends to determine such effect. Perhaps, the November 11th (Veteran's day) weekend is different from the November 18th weekend for American turkers, which is again unlikely because turkers came from multiple countries and we published our HITs on UTC. Finally, we investigated if publish order 1 has exhausted the pool of turkers or affected the baseline of turkers who participated in publish order 2. On its AMT platform, Amazon highlighted its service for providing access to over 500,000 turkers from over 190 countries. Even if all of them work part-time, and only 5% of them are active, 25,000 turkers are still accessible to us. It is unlikely that recruiting 749 turkers (405 who completed the HIT and 344 who viewed but left the HIT), that is less than 3% of 25,000 turkers or 0.1% of proclaimed 500,000 turkers, would have shifted the baseline for turkers recruited in publish order 2. Being wary of this result, we proceed to the analysis of design 2 in which subjects are defined as turkers rather than as HITs, and randomization occurs only after turkers signed up for an HIT. The experiment was also launched in a single posting on a single weekend. As such, selection bias, publish orders or weekend effects will not be of concern. 
+
+---------------------------------------------------------------------
+
+To provide an overview for the design 2 results, the estimated effect of bonuses on a turker performance is statistically and practically insignificant in all three of our estimation approaches. We looked at the overall bonus effects by comparing different treatment groups using linear and logistic regression, investigated more granular bonus effects both by group and by session by taking full advantage of a stepped-wedge design, and we estimated both immediate, lagged and their combined effect by invoking the no-anticipation assumption and assuming no within-subject spill-over effect from more than one session. All inference approaches failed to reject the null hypothesis that bonus has zero effect on a turker's performance. On the other hand, bonuses' negative effect on the average time spent on an HIT is significant, but counter-intuitive. Our linear model suggested that being assigned to receive bonus only in the third session or all sessions tend to shorten turkers' time spent by two to three minutes.
+
+Finally, we observed differential attrition based on covariates related to turkers' prior exposure or life experience with dogs. This remains a threat to the unbiasedness of our estimated treatment effect. We will discuss potential solutions for a future experiment in the next section.
+---------------------------------------------------------------------
+
+
+
 
 ---------------------------------------------------------------------
 
-Design 2
-
-1583 pilot
----------------------------------------------------------------------
-???
-
-Define compliance, non-compliance
-
-Analysis: (P.157 GG)
-
-Find ITT by Regr
-(Use robust se with coftest)
-Apply randomization inference to find p.val
-Examine distribution from randomization inference
-
-Find ITT_D by Regr
-(Use robust se with coftest)
+To conclude the project as a whole, the two experimental designs we attempted both estimated insignificant treatment effect related to payment. Design 1 looks at whether higher pay rate as published on the AMT platform increases quality of returned HIT for employers, and design 2 looks at whether assigning bonuses within each HIT provides more incentives for turkers to perform better. The two design2 tackle our research question -- whether higher rewards have an effect on labor productivity,  from similar but different perspectives. We discussed ways to improve the short-coming of each of our experimental designs, they mostly involve extending the experiment schedule to create more clusters of observations for our traditional between-subject design, and collect more responses from prior attriters to mitigate the threat of attrition for our stepped-wedge design. We also expressed doubts on the generalizability of our project, because the mechanism of the AMT platform and nature of our designed task are very specific. Results may not generalize well.
 
 
-Find CACE by Regr
-(Use robust se with coftest)
-Apply randomization inference to find p.val
-Examine distribution from randomization inference
+Finally, we find our results in-line with prior research projects mentioned in section 2, which suggested that higher financial incentives increases the quantity, but not quality of the work done by workers. In executing both of our experimental designs, we observed that for HIT postings attached with similar quantity of available HITs, those that are posted at a higher reward rate on the AMT platform tend to take much shorted time to finish. In addition, we didn't estimate any significant monetary effect on labor performance or returned task quality.
 
-Find CACE by 2SLS (GG P.159) Regr (?)
-(Use robust se with coftest)
 
-Find 
+
 
 ---------------------------------------------------------------------
+
+Export the pdf and fix images
+Design 2 Pilot ATE Estimation ~1861
+Design 2 Main experiment ATE Estimation ~2198
+
+Slides
+Redo Stan's part
+Add in my slide
+Add in Frederic's part
+
+
+(Write abstract, add footnotes)
+---------------------------------------------------------------------
+
+
+
 
 
 

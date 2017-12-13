@@ -258,7 +258,7 @@ head(assigned_treatment_condition_table,20)
 head(observed_outcomes_table, 20)
 
 # ATE estimate
-# Note that we cannot naively compare average outcomes of treated sessions to the average outcomes of the untreated sessions. This approach is biased because it ignores the fact that the probability of assignment to treatment varies from session to session because individuals are much more likely to be assignedf to bonuses in the final week than in the first week. It is also prone to biase because it ignores lagged effects, treating Y_11 and Y_01 as though they were identical.
+# Note that we cannot naively compare average outcomes of treated sessions to the average outcomes of the untreated sessions. This approach is biased because it ignores the fact that the probability of assignment to treatment varies from session to session because individuals are much more likely to be assigned to bonuses in the final week than in the first week. It is also prone to biase because it ignores lagged effects, treating Y_11 and Y_01 as though they were identical.
 # Instead we begin by calculating the probability of begin assigned to each treatment during each session. These probabilities are displayed below.
 
 design2.prob.table = data.table(Treatment_Condition = c("Pr(00)","Pr(01)","Pr(11)"),

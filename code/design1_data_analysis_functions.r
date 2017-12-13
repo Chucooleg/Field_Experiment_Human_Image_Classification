@@ -65,8 +65,8 @@ est.ri.ate.control = function(treatment_n){
 
 get_ate_se_robustci = function (mod, coef_idx) {
   ate = mod$coefficients[coef_idx]
-  robust.se = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,2]
-  robust.p = lmtest::coeftest(mod, vcov = vcovHC(mod))[coef_idx,4]
+  robust.se = lmtest::coeftest(mod, vcov = vcovHC(mod, type = "HC1"))[coef_idx,2]
+  robust.p = lmtest::coeftest(mod, vcov = vcovHC(mod, type = "HC1"))[coef_idx,4]
   df = summary(mod)$df[2]
   t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
   robust.ci = c(ate-t.stat*robust.se, ate+t.stat*robust.se )
@@ -142,8 +142,8 @@ get_ate_se_clusteredci_LR = function(mod, mod_name,coef_idx) {
   t.stat = qt(p = 0.975, df = df, lower.tail = TRUE)
   clustered.ci = c(ate-t.stat*clustered.se, ate+t.stat*clustered.se)
   cat("\n",mod_name,
-      "\nestimated average causal effect = ", ate,
-      "\nClustered standard errors =", clustered.se,
-      "\n.95 CI with clustered SE = [", clustered.ci, "]",
-      "\np-value = ",clustered.p,"\n")
+      "estimated average causal effect = ", ate,
+      "Clustered standard errors =", clustered.se,
+      ".95 CI with clustered SE = [", clustered.ci, "]",
+      "p-value = ",clustered.p,"\n")
 }
