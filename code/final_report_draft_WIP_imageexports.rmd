@@ -11,8 +11,8 @@ rm(list = ls())
 
 ```{r, include=FALSE}
 #setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
-#setwd("C:/Users/chuco/Documents/Repo_Field_Experiment_Human_Image_Classification/code")
+#setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
+setwd("C:/Users/chuco/Documents/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
 source(file = "design2_data_transformation_functions.r")
@@ -2211,99 +2211,7 @@ mod.design2.by_Session = lm(round_accuracy ~ group * round,data=by_Session.table
 coeftest(mod.design2.by_Session, vcov=vcovHC(mod.design2.by_Session))
 ```
 
-> Rboust Standard Errors are applied
 
-From the regression output, we see that none of the coefficients we estimated are significant. Nevertheless, we proceed with the intended approach to demonstrate the exercise. Using the coefficients in the estimated form and our design graph, we can make between group, between session, difference-in-differences and overall comparisons. Figure 6 best explains this concept.
-
-![](../Images/Design_2_Graph.jpg)
-
-To arriving at the specific comparisons with estimated coefficients from the regression model, we derive each comparison as a combination of the estimated coefficients. The relationships are listed below.
-
-
-Notation | Meaning | Linear Combination
----------|---------------------------------|------------------------------------
-CCC S2-S1 | effect of being in round two rather than round one in group CCC | b_5
-CCC S3-S1 | effect of being in round three rather than round one in group CCC | b_6
-CCC S3-S2 | effect of being in round three rather than round two in group CCC | b_6 - b_5
-CCT S2-S1 | effect of being in round two rather than round one in group CCT | b_5 + b_7 
-CCT S3-S1 | effect of being in round three rather than round one in group CCT | b_6 + b_10
-CCT S3-S2 | effect of being in round three rather than round two in group CCT | b_6 - b_5 + b_10 - b_7
-CTT S2-S1 | effect of being in round two rather than round one in group CTT | b_5 + b_8
-CTT S3-S1 | effect of being in round three rather than round one in group CTT | b_6 + b_11
-CTT S3-S2 | effect of being in round three rather than round two in group CTT | b_6 - b_5 + b_11 - b_8
-TTT S2-S1 | effect of being in round two rather than round one in group TTT | b_5 + b_9
-TTT S3-S1 | effect of being in round three rather than round one in group TTT | b_6 + b_12
-TTT S3-S2 | effect of being in round three rather than round two in group TTT | b_6 - b_5 + b_12 - b_9
-T-C S1 | effect of receiving treatment in Round one | b_4 - (b_3 + b_2)/3
-T-C S2 | effect of receiving treatment in Round two (regardless of round one status) | (-b_2 + b_3 + b_4 - b_7 + b_8 + b_9)/2
-T-C S3 | effect of receiving treatment in Round three (regardless of round one or two status) | (b_4 + b_12) - (b_2 + b_3 + b_10 + b_11)/3
-TTT-CCC | effect of being in a group TTT that receive all three rounds of treatment rather than all control group CCC | b_4 + (b_9 + b_12)/3
-(T)-CCC | effect of being in any treatment groups rather than all control group CCC |(b_2 + b_3 + b_4)/3 + (b_7 + b_8 + b_9 + b_10 + b_11 + b_12)/9
-D_in_D S3 | effect on Round 3, of Receiving Treatment in Round 3 but not earlier | b_10 - b_7
-D_in_D S2 | effect on Round 2, of Receiving Treatment in Round 2 but not earlier | - (1/2)*b_7 + b_8
-
-
-Using general linear hypothesis, we estimate the point estimate, standard error and p-values for the above listed comparisons. As we have expected, none of the between-group, between-session, difference-in-differences, or overall comparisons are significant. Robust standard errors are applied.
-
-```{r, echo=F}
-summary(glht(mod.design2.by_Session , vcov=vcovHC(mod.design2.by_Session),
-             linfct=rbind(
-               "CCC S2-S1"=c(0,0,0,0,1,0,0,0,0,0, 0, 0),
-               "CCC S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 0, 0),
-               "CCC S3-S2"=c(0,0,0,0,-1,1,0,0,0,0, 0, 0),
-               "CCT S2-S1"=c(0,0,0,0,1,0,1,0,0,0, 0, 0),
-               "CCT S3-S1"=c(0,0,0,0,0,1,0,0,0,1, 0, 0),
-               "CCT S3-S2"=c(0,0,0,0,-1,1,-1,0,0,1, 0, 0),
-               "CTT S2-S1"=c(0,0,0,0,1,0,0,1,0,0, 0, 0),
-               "CTT S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 1, 0),
-               "CTT S3-S2"=c(0,0,0,0,-1,1,0,-1,0,0, 1, 0),
-               "TTT S2-S1"=c(0,0,0,0,1,0,0,0,1,0, 0, 0),
-               "TTT S3-S1"=c(0,0,0,0,0,1,0,0,0,0, 0, 1),
-               "TTT S3-S2"=c(0,0,0,0,-1,1,0,0,-1,0, 0, 1),
-               "T-C S1"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,0, 0, 0),
-               "T-C S2"=c(0,(-1/2),(1/2),(1/2),0,0,(-1/2),(1/2),(1/2),0, 0, 0),
-               "T-C S3"=c(0,(-1/3),(-1/3),1,0,0,0,0,0,(-1/3), (-1/3), 1),
-               "TTT-CCC"=c(0,0,0,1,0,0,0,0,1/3,0, 0, 1/3),
-               "(T)-CCC"=c(0,1/3,1/3,1/3,0,0,1/9,1/9,1/9,1/9, 1/9, 1/9),
-               "D_in_D S3"=c(0,0,0,0,0,0,-1,0,0,1, 0, 0),
-               "D_in_D S2"=c(0,0,0,0,0,0,-1/2,1,0,0, 0, 0)
-             )))
-```
-
-> Rboust Standard Errors are applied
-
-#### Intermediate and Lagged Effects (Design 2 Main)
-
-Finally, in this last approach, we want to derive a more summarizing effect of receiving bonus on accuracy for any one session. This exact mechanism is referenced from *Chapter 8.5 Field Experiment by Gerber and Green).To that end, we first state two substantive assumptions. Invoking the no anticipation assumption allow us to ignore treatments that are allocated after the current period. We also ignore treatments that were allocated two sessions prior, which is equivalent to assuming that bonuses' effects wask out entirely after two sessions. We redefine the potential outcomes as follow:
-
-+ **Y_00** (untreated during preceding and current session)
-+ **Y_01** (untreated during preceding session but treated during current session)
-+ **Y_11** (treated during preceding and current session)
-
-The truncated tables below shows the randomly assigned treatment condition and observed outcomes for 5 of the 243 subjects under the new outcome definition.
-
-```{r,echo=F}
-head("Treatment Condition Table:")
-knitr::kable(head(assigned_treatment_condition_table,5), "markdown")
-head("Observed Outcomes Table:")
-knitr::kable(head(observed_outcomes_table, 5), "markdown")
-
-```
-
-Note that we cannot naively compare average outcomes of treated sessions to the average outcomes of the untreated sessions. This approach is biased because it ignores the fact that the probability of assignment to treatment varies from session to session because individuals are much more likely to be assigned to bonuses in the final week than in the first week. It is also prone to biase because it ignores lagged effects, treating Y_11 and Y_01 as though they were identical.Instead we begin by calculating the probability of begin assigned to each treatment during each session. These probabilities are displayed below.
-
-```{r, echo=F}
-design2.prob.table = data.table(Treatment_Condition = c("Pr(00)","Pr(01)","Pr(11)"),
-                                Week_1 = c(0.75, 0.25, 0),
-                                Week_2 = c(0.50, 0.25, 0.25),
-                                Week_3 = c(0.25, 0.25, 0.50))
-
-knitr::kable(design2.prob.table, "markdown")
-```
-
-Then, in order to obtain unbiased treatment effects, we apply inverse weights. Treated units are weighted by the inverse of the probability of being treated; control units are weighted by the inverse of the probability of being in control. According to the above probability table, calculation of the immediate effect is as follows: (programming code in .rmd file)
-
-$$\hat{E}[Y_{01} - Y_{00}] = \frac{ \frac{\sum_{S1} Y_{01}}{0.25} + \frac{\sum_{S2} Y_{01}}{0.25} + \frac{\sum_{S3} Y_{01}}{0.25} }{\frac{64}{0.25}+\frac{60}{0.25} +\frac{60}{0.25}} - \frac{ \frac{\sum_{S1} Y_{00}}{0.75} + \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} }{\frac{179}{0.75}+\frac{119}{0.50} +\frac{61}{0.25}}$$
 
 ```{r,echo=F}
 # sum S1 Y_01 
@@ -2331,9 +2239,6 @@ E_Y01_Y00 = E_Y01 - E_Y00.1
 cat("\nEstimated Combined Immediate Effect:", E_Y01_Y00)
 ```
 
-In order to estimate effects for combined immediate and lag effect, we restrict our attention to the second and third sessions, because this type of treatment cannot occur in the first week. (programming code in .rmd file)
-
-$$\hat{E}[Y_{11} - Y_{00}] = \frac{ \frac{\sum_{S2} Y_{11}}{0.25} + \frac{\sum_{S3} Y_{11}}{0.50} }{\frac{64}{0.25}+\frac{124}{0.50}} - \frac{ \frac{\sum_{S2} Y_{00}}{0.50} + \frac{\sum_{S3} Y_{00}}{0.25} + }{\frac{119}{0.50}+\frac{61}{0.25}}$$
 
 ```{r, echo=F}
 # sum S1 Y_11
@@ -2354,7 +2259,6 @@ E_Y11_Y00 = E_Y11 - E_Y00.2
 cat("\nEstimated Combined Immediate and Lagged Effect:", E_Y11_Y00)
 ```
 
-Our point estimates are mildly negative, this result works against our research hypothesis and suggest that the session accuracy drops by a little below 3 percentage points if the turker was given a bonus for that session. These estimates are also very small in magnitude and may not be significant at all. To estimate the standard errors, we first look at the observed schedule of outcomes for this experiment. The tables below shows the schedule for the same five turkers.
 
 ```{r, echo=F}
 # outcome table as is

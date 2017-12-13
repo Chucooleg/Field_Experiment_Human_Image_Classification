@@ -11,8 +11,8 @@ rm(list = ls())
 
 ```{r, include=FALSE}
 #setwd("D:/MIDS/W241_1_Experiments_Causality/project/Field_Experiment_Human_Image_Classification/code")
-setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
-#setwd("C:/Users/chuco/Documents/Repo_Field_Experiment_Human_Image_Classification/code")
+#setwd("F:/001_Learn_UCB/241_Experiments_and_Causality/Field_Experiment_Human_Image_Classification/code")
+setwd("C:/Users/chuco/Documents/Field_Experiment_Human_Image_Classification/code")
 source(file = "design1_data_transformation_functions.r")
 source(file = "design1_data_analysis_functions.r")
 source(file = "design2_data_transformation_functions.r")
@@ -2212,9 +2212,9 @@ get_ate_se_robustci_d2_timespent(mod.design2.by_HIT.cov.total_timespent,4)
 
 In this second approach, we take advantage of the group and session specific data the we have. This provides us more granularity for analysis. For example we can look at how outcomes changes from one session to another with or without treatment, how turkers' performance may build-up or deplete from one session to another, or effect of receiving treatment in a specific session. This is our specified model in the form we specify and the form which R outputs. Mathematically they are exactly he same model. We separately estimated a version with covariates control, because the estimates remained the same, and the corresponding standard errors and p-values only changed marginally, we do not include it in this report in order to more clearly explain the mechanism of this estimation approach. The corresponding model and code reside on our repo. 
 
-(7 ) $logit(accuracy) = \beta_{intercept} + \beta_{GS}group*session$ (Compressed Form)
+(7 ) $accuracy = \beta_{intercept} + \beta_{GS}group*session$ (Compressed Form)
 
-(7.1 ) $logit(accuracy) = \beta_{1} + \beta_{2}*groupCCT + \beta_{3}*groupCTT + \beta_{4}*groupTTT + \beta_{5}*session2 + \\ \beta_{6}*session3 + \beta_{7}groupCCT:session2 + \beta_{8}groupCTT:session2+ \beta_{9}groupTTT:session2 + \\ \beta_{10}groupCCT*session3 + \beta_{11}groupCTT*session3 + \beta_{12}groupTTT*session3$ (Expanded Form)
+(7.1 ) $accuracy = \beta_{1} + \beta_{2}*groupCCT + \beta_{3}*groupCTT + \beta_{4}*groupTTT + \beta_{5}*session2 + \\ \beta_{6}*session3 + \beta_{7}groupCCT:session2 + \beta_{8}groupCTT:session2+ \beta_{9}groupTTT:session2 + \\ \beta_{10}groupCCT*session3 + \beta_{11}groupCTT*session3 + \beta_{12}groupTTT*session3$ (Expanded Form)
 
 
 ```{r, echo = F}
