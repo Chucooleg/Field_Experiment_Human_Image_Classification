@@ -8,7 +8,7 @@ library(ggplot2)
 library(cowplot)
 library(multcomp)
 
-library(kableExtra)
+#library(kableExtra)
 
 
 #-------------------------------------------------------------------------------------------------

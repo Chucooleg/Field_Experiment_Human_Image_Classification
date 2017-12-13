@@ -138,6 +138,37 @@ mod.design2.by_HIT.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + C
                                           vcov=vcovHC(mod.design2.by_HIT.cov, type = "HC1"))[,"Std. Error"])
 
 #---------------------------------------------------------------------------------------------------------------------
+# Design 2 Pilot
+# between group comparisons
+
+# Without covariates
+# Any effect on Accuracy?
+mod.design2.by_HIT_pilot = lm(overall_accuracy ~ group, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot = lmtest::coeftest(mod.design2.by_HIT_pilot, vcov=vcovHC(mod.design2.by_HIT_pilot, type = "HC1"))[ , "Std. Error"])
+# Any effect on Timespent?
+mod.design2.by_HIT_pilot.total_timespent = lm(total_timespent ~ group, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.total_timespent, type = "HC1"))[ , "Std. Error"])
+# Any effect on Whether screeners are passed?
+mod.design2.by_HIT_pilot.all_screeners_passed = lm(all_screeners_passed ~ group, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
+
+
+# With covariates
+# Any effect on Accuracy?
+mod.design2.by_HIT_pilot.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot.cov = lmtest::coeftest(mod.design2.by_HIT_pilot.cov, 
+                                                vcov=vcovHC(mod.design2.by_HIT_pilot.cov, type = "HC1"))[,"Std. Error"])
+# Any effect on Timespent?
+mod.design2.by_HIT_pilot.cov.total_timespent = lm(total_timespent ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot.cov.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.total_timespent, type = "HC1"))[ , "Std. Error"])
+
+# Any effect on Whether screeners are passed?
+mod.design2.by_HIT_pilot.cov.all_screeners_passed = lm(all_screeners_passed ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
+(se.design2.by_HIT_pilot.cov.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
+
+
+#---------------------------------------------------------------------------------------------------------------------
+# Design 2 Main
 # between group comparisons
 
 # Without covariates

@@ -29,11 +29,9 @@ Finally, we observed differential attrition based on covariates related to turke
 
 ---------------------------------------------------------------------
 
-To conclude the project as a whole, the two experimental designs we attempted both estimated insignificant treatment effect related to payment. Design 1 looks at whether higher pay rate as published on the AMT platform increases quality of returned HIT for employers, and design 2 looks at whether assigning bonuses within each HIT provides more incentives for turkers to perform better. The two design2 tackle our research question -- whether higher rewards have an effect on labor productivity,  from similar but different perspectives. We discussed ways to improve the short-coming of each of our experimental designs, they mostly involve extending the experiment schedule to create more clusters of observations for our traditional between-subject design, and collect more responses from prior attriters to mitigate the threat of attrition for our stepped-wedge design. We also expressed doubts on the generalizability of our project, because the mechanism of the AMT platform and nature of our designed task are very specific. Results may not generalize well.
+In this project, we look at the relationship between reward and work quality through the different perspective of employers and economists. We use two experimental designs, one being a traditional between-subject experiment and the other being a stepped-wedge design, to analysis effects of higher pay rate on returned work quality and effects of bonuses on worker performance. We utilize the functionalities of the Amazon Mechanical Turk platform and Qualtrics survey tools to randomly assign a human intelligence task to different pay rate in the first experimental design, and a turker to different bonus conditions in the second experimental design. Both experimental setups require turkers to correctly identify a set of 48 dog breed classification questions. Independent two-sample t-tests, linear and logistic regression models, and randomization inference are used to perform inference on data collected from the running the first experimental design. Linear and logistic regression models, general linear hypothesis, weighted difference-in-means and simulation of potential outcome schedules are used to perform inference on data collected from the running the second experimental design. Results from both experiments fails to reject the null hypothesis that higher reward has zero effect on work quality nor worker performance. Through out the experiment, we observe that tasks attached with higher rewards tend to be claimed much sooner but no effect is observed on the returned task accuracies.
 
-
-Finally, we find our results in-line with prior research projects mentioned in section 2, which suggested that higher financial incentives increases the quantity, but not quality of the work done by workers. In executing both of our experimental designs, we observed that for HIT postings attached with similar quantity of available HITs, those that are posted at a higher reward rate on the AMT platform tend to take much shorted time to finish. In addition, we didn't estimate any significant monetary effect on labor performance or returned task quality.
-
+  
 
 
 
@@ -49,11 +47,36 @@ Add in my slide
 Add in Frederic's part
 
 
-(Write abstract, add footnotes)
+
 ---------------------------------------------------------------------
 
 
+![](../Images/D2_pilot_regr.png)
 
 
 
+> library(multcomp)
+Error in library(multcomp) : there is no package called ‘multcomp’
+> library(sandwich)
+Error in library(sandwich) : there is no package called ‘sandwich’
+> library(lmtest)
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+> library(stargazer)
+Error in library(stargazer) : there is no package called ‘stargazer’
+> library(multiwayvcov)
+Error in library(multiwayvcov) : 
+  there is no package called ‘multiwayvcov’
+> library(reshape)
+Error in library(reshape) : there is no package called ‘reshape’
+
+
+install.packages(‘sandwich’)
+install.packages(‘stargazer’)
 

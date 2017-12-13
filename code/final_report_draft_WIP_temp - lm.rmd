@@ -23,14 +23,15 @@ source(file = "design2_data_analysis_functions.r")
 \bigskip
 \centerline{\Large University of California, Berkeley}
 \bigskip
-\centerline{\Large December 17, 2017}
+\centerline{\Large December 13, 2017}
 \bigskip
 \bigskip
 \bigskip
 \bigskip
 \centerline{\bfseries Abstract}
 
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a sem vitae mi lobortis condimentum. Maecenas rutrum vitae libero in tempor. Fusce tempor mauris nec vulputate luctus. Phasellus et semper nisi, sed luctus erat. Duis eu congue lectus, ac mattis diam. Fusce tristique efficitur lacus, vel vehicula leo mollis id. Proin vel venenatis velit. Sed et semper ante. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed id mi urna. Integer urna nunc, feugiat sed felis vitae, imperdiet tristique ipsum. Sed pretium eros massa, a sollicitudin diam finibus aliquet.
+> In this project, we look at the relationship between reward and work quality through the different perspective of employers and economists. We use two experimental designs, one being a traditional between-subject experiment and the other being a stepped-wedge design, to analysis effects of higher pay rate on returned work quality and effects of bonuses on worker performance. We utilize the functionalities of the Amazon Mechanical Turk platform and Qualtrics survey tools to randomly assign a human intelligence task to different pay rate in the first experimental design, and a turker to different bonus conditions in the second experimental design. Both experimental setups require turkers to correctly identify a set of 48 dog breed classification questions. Independent two-sample t-tests, linear and logistic regression models, and randomization inference are used to perform inference on data collected from the running the first experimental design. Linear and logistic regression models, general linear hypothesis, weighted difference-in-means and simulation of potential outcome schedules are used to perform inference on data collected from the running the second experimental design. Results from both experiments fails to reject the null hypothesis that higher reward has zero effect on work quality nor worker performance. Through out the experiment, we observe that tasks attached with higher rewards tend to be claimed much sooner but no effect is observed on the returned task accuracies.
+
 
 # Introduction
 
@@ -54,7 +55,7 @@ The use of online labor markets as an effective and efficient platform for socia
 
 # Research Hypothesis, Identification Strategy
 
-We hypothesis that higher payment per human intelligence task (HIT) on average would lead to higher turker performance or task quality. To operationalize this construct, we define the treatment variable as rewards in US dollars, and outcome variable as proportion of image classification questions scored correctly in each returned HIT. In each of the two experimental designs, four different rewards are randomly assigned to each HIT. In each of the two experimental designs, a total of 50 image classifications questions on dog breeds are prompted in each HIT. The four levels of rewards are chosen between \$0.10 and \$0.55, which correspond to the lower and upper bound we commonly see for similar image classification tasks on the AMT platform. We chose image classification, instead of other common HIT categories such as audio transcription, key point identification, or text responses because the correct answers tend to be unequivocal. To identify the treatment effect, our main approach is to regress task level performance on the assigned reward, controlling for other pre-treatment covariates for better precision. The resultant coefficient of assigned reward should be an estimate of the average treatment effect on turker performance or task quality. We will walk through the motivations, designs, protocols and models for the two designs in the following sections.
+We hypothesis that higher payment per human intelligence task (HIT) on average would lead to higher turker performance or task quality. To operationalize this construct, we define the treatment variable as rewards in US dollars, and outcome variable as proportion of image classification questions scored correctly in each returned HIT. In each of the two experimental designs, four different rewards are randomly assigned to each HIT. In each of the two experimental designs, a total of 48 image classifications questions on dog breeds are prompted in each HIT. The four levels of rewards are chosen between \$0.10 and \$0.55, which correspond to the lower and upper bound we commonly see for similar image classification tasks on the AMT platform. We chose image classification, instead of other common HIT categories such as audio transcription, key point identification, or text responses because the correct answers tend to be unequivocal. To identify the treatment effect, our main approach is to regress task level performance on the assigned reward, controlling for other pre-treatment covariates for better precision. The resultant coefficient of assigned reward should be an estimate of the average treatment effect on turker performance or task quality. We will walk through the motivations, designs, protocols and models for the two designs in the following sections.
 
 
 
@@ -69,7 +70,7 @@ Our experiment connect the AMT platform HIT work flow with the Qualtrics platfor
 >*Reward per assignment: 0.1*
 >*Time allotted: 20min* (If this is too long, turkers may think this is a very hard task)
 
->*We need help with this multiple-choice task, which will provide us examples to train a computation model. The survey consist of several demographic questions, followed by 50 multiple choice questions. You don't need any prior experience or knowledge to complete this task. Select the link below to complete the survey. At the end of the survey, you will receive a code to paste into the box below to receive credit for taking our survey.*
+>*We need help with this multiple-choice task, which will provide us examples to train a computation model. The survey consist of several demographic questions, followed by 48 multiple choice questions. You don't need any prior experience or knowledge to complete this task. Select the link below to complete the survey. At the end of the survey, you will receive a code to paste into the box below to receive credit for taking our survey.*
 
 >*Make sure to leave this window open as you complete the survey. When you are finished, you will return to this page to paste the code into the box.*
 
@@ -89,7 +90,13 @@ Number|Question | Answer Choices | Intended purpose
 5| Do you use Linkedin? (no need to provide any links) | Yes, No, Never heard of Linkedin | Does the turker has college or higher education? Does the turker take career development seriously?
 
 
-Then, an external web link for dog breed references is provided, followed by 48 classification questions in multiple-choice format on the Qualtrics form. For the design of these classification questions, we chose eight dog breeds with a balance in size and hairy density (footnote).  Even numbered questions are harder and odd numbered questions are easier. A pilot was used to identify and filter out questions which all turkers scored correctly or incorrectly. The sequence of questions is randomized and show a balance of even and odd numbered questions even when we split the question set into three batches. Screener questions of cat images are mixed-in to help us identify those turkers who were not paying much attention to the task. All images come from the Stanford Dogs Dataset (footnote). Below is a print screen of the dog classication task page. For each question, eight different dog breed choices in additional to one "Not A Dog" choice as screener.
+Then, an external web link for dog breed references is provided, followed by 48 classification questions in multiple-choice format on the Qualtrics form. For the design of these classification questions, we chose eight dog breeds with a balance in size and hairy density [^1].  Even numbered questions are harder and odd numbered questions are easier. A pilot was used to identify and filter out questions which all turkers scored correctly or incorrectly. The sequence of questions is randomized and show a balance of even and odd numbered questions even when we split the question set into three batches. Screener questions of cat images are mixed-in to help us identify those turkers who were not paying much attention to the task. All images come from the Stanford Dogs Dataset [^2]. Below is a print screen of the dog classication task page. For each question, eight different dog breed choices in additional to one "Not A Dog" choice as screener.
+
+
+[^1]: Shih-Tzu: small and hairy. Yorkshire Terrier: small and hairy. Boston Bull: small and short hair. Cocker Spaniel: medium and hairy. Golden Retriever: medium and hairy. Bloodhound: big and short hair. Saluki: big and short hair. Iris Wolfhound: big and hairy. 
+
+
+[^2]: http://vision.stanford.edu/aditya86/ImageNetDogs/
 
 ![](../Images/qualtric_task.jpg)
 
@@ -1086,6 +1093,8 @@ We construct seven linear regression models on the dataset, their specifications
 
 (7) $time\ spent = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1$
 
+Figure 2 shows the corresponding regression table. Because HITs were assigned with different pay rates in groups (per posting published on AMT platform), we use clustered standard errors for inferences. 
+
 ```{r, include=F, echo=F}
 # Also, a regression table should be added. 
 regr_table_d1$cluster = as.factor(regr_table_d1$treatment + regr_table_d1$order1)
@@ -1139,9 +1148,6 @@ design1.tab = stargazer::stargazer(design1.regr_mod1,
 
 ![](../Images/D1_Reger_LM.jpg)
 
-> Clustered Standard Errors are applied
-
-> Because HITs were assigned with different pay rates in groups (per posting published on AMT platform), we use clustered standard errors for inferences.   
 
 Model 1, 2, 3 and 6 estimated no significant treatment effects. Model 3 is our most precise guess for the ATE using pooled data without further assumption of heterogeneous treatment effects, nor non-linearity. It estimates that for the pooled publish order 1 and publish order 2 data combined, for every additional dollar spent on an HIT, model 3 estimates an increment in accuracy of 0.286. But because of our wide .95 uncertainty range between -0.296 and 0.869, we cannot be sure if this increment is significantly different than zero. In fact, paying more may even have a= negative impact on accuracy.
 
@@ -1288,7 +1294,7 @@ In model 7, as we swtich out the outcome variable from accuracy to time spent pe
 get_ate_se_clusteredci(design1.regr_mod7, "Model 7: time_spent: ATE",2)
 ```
 
-In model 8, we detect any heterogeneous treatment effect on time for the different publish orders. Results suggest that ATE for publish order 1 is negative while that for publish order 2 is positive. For very additional dollar spent on an HIT in publish order 1 or the first weekend, on average turkers spent 30.55 seconds shorter on the HIT, equivalent to 3.055 seconds shorter per \$0.10 spent. For every additional dollar spent in publish order 2 or the second weekend, on average turkers spent 14.574 seconds longer on the HIT, equivalent to 1.4574 seconds longer per \$0.10 spent. These estimates even though they are statistically significant, are not pratically significant.
+In model 8, we detect any heterogeneous treatment effect on time spent for the different publish orders. Results suggest that ATE for publish order 1 is negative while that for publish order 2 is positive. For very additional dollar spent on an HIT in publish order 1 or the first weekend, on average turkers spent 30.55 seconds shorter on the HIT, equivalent to 3.055 seconds shorter per \$0.10 spent. For every additional dollar spent in publish order 2 or the second weekend, on average turkers spent 14.574 seconds longer on the HIT, equivalent to 1.4574 seconds longer per \$0.10 spent. These estimates even though they are statistically significant, are not pratically significant.
 
 ```{r, eval=F, echo=F}
 # model 8 time spent order 1
@@ -1388,6 +1394,8 @@ As an extension, although logistic regression is outside the context of w241, we
 
 (6.1) $logit(accuracy) = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*order1+ \theta_{6}*treatment*order1 +\theta_{8}*treatment^2*cq1 + +\theta_{9}*treatment^2*cq1 + +\theta_{10}*treatment^2*cq1$
 
+Figure 3 shows the corresponding regression table. Clustered Standard Errors are applied
+
 ```{r, include=F, echo=F}
 # Also, a regression table should be added. 
 regr_table_d1$cluster = as.factor(regr_table_d1$treatment + regr_table_d1$order1)
@@ -1424,7 +1432,7 @@ design1.LR_mod6 = suppressWarnings(glm(accuracy ~ treatment + CQ1 + CQ2_3 + CQ3 
                                        vcov = multiwayvcov::cluster.vcov(design1.LR_mod6, ~cluster))[ , "Std. Error"])
 ```
 
-```{r, echo=F, warning=F, include=F}
+```{r, echo=F, warning=F, include=F, eval=F}
 design1.tab.LR = stargazer::stargazer(design1.LR_mod1, 
                      design1.LR_mod2,
                      design1.LR_mod3,
@@ -1447,8 +1455,6 @@ design1.tab.LR = stargazer::stargazer(design1.LR_mod1,
 ```
 
 ![](../Images/D1_Logistic.png)
-
-> Clustered Standard Errors are applied
 
 Similar to our linear regression models, although a logit function is now applied to our outcome variable, the coefficients that are not significant in the linear regression models are still not significant in the logistic regression models, while those that are significant in the linear regression models remain significant in the logistic regression models. Here, we focus on interpretating model 3.1 and model 4.1 only. Because the model 3.1 specification would more appropriately answer our question of ATE on pooled data (more general), without far-fetched assumption of non-linearity nor heterogeneous treatment effects that are based on our prior research hypothesis, the model 4.1 specification let us investiagte the conspicuous abnormality observed in the differential outcome distribution in publish order 1 versus publish order 2, again without further assumption of non-linearity nor other heterogeneous treatment effects. Also, recall the interpretation with the linear models, the ATE estimated by linear model 3 was largely insignificant, while the ATE estimated by linear model 4 on publish order 1 data was the only significant effect after Bonferroni adjusted cut-off was applied. 
 
@@ -1825,39 +1831,9 @@ For the ATE estimation in this pilot, we keep our analysis simple. That is, we o
 
 (full) $all\ screeners\ passed = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
 
-The regression table below shows that most estimated coefficients are not significant. For many treatment group related coefficients, the size of standard error is very similar to that of the point estimate itself. Judging by the overall results of design 2 pilot, we decided to raise our HIT base rate from \$0.10 to \$0.22, and our bonus rate from \$0.05 to \$0.10 for the main experiment.
+The regression table in Figure 4 shows that most estimated coefficients are not significant (Robust Standard Errors are applied). For many treatment group related coefficients, the size of standard error is very similar to that of the point estimate itself. Judging by the overall results of design 2 pilot, we decided to raise our HIT base rate from \$0.10 to \$0.22, and our bonus rate from \$0.05 to \$0.10 for the main experiment.
 
-```{r, iunclude=F, echo=F, warning=F}
-# Model Overall -- Comparing only by group 
-# (looking at the entire HIT of 48 questions as a whole)
-
-# Without covariates
-# Any effect on Accuracy?
-mod.design2.by_HIT_pilot = lm(overall_accuracy ~ group, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot = lmtest::coeftest(mod.design2.by_HIT_pilot, vcov=vcovHC(mod.design2.by_HIT_pilot, type = "HC1"))[ , "Std. Error"])
-# Any effect on Timespent?
-mod.design2.by_HIT_pilot.total_timespent = lm(total_timespent ~ group, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.total_timespent, type = "HC1"))[ , "Std. Error"])
-# Any effect on Whether screeners are passed?
-mod.design2.by_HIT_pilot.all_screeners_passed = lm(all_screeners_passed ~ group, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
-
-
-# With covariates
-# Any effect on Accuracy?
-mod.design2.by_HIT_pilot.cov = lm(overall_accuracy ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot.cov = lmtest::coeftest(mod.design2.by_HIT_pilot.cov, 
-                                                vcov=vcovHC(mod.design2.by_HIT_pilot.cov, type = "HC1"))[,"Std. Error"])
-# Any effect on Timespent?
-mod.design2.by_HIT_pilot.cov.total_timespent = lm(total_timespent ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot.cov.total_timespent = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.total_timespent, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.total_timespent, type = "HC1"))[ , "Std. Error"])
-
-# Any effect on Whether screeners are passed?
-mod.design2.by_HIT_pilot.cov.all_screeners_passed = lm(all_screeners_passed ~ group + CQ1 + CQ2 + CQ3 + CQ4 + CQ5, data = by_HIT.table_pilot)
-(se.design2.by_HIT_pilot.cov.all_screeners_passed = lmtest::coeftest(mod.design2.by_HIT_pilot.cov.all_screeners_passed, vcov=vcovHC(mod.design2.by_HIT_pilot.cov.all_screeners_passed, type = "HC1"))[ , "Std. Error"])
-```
-
-```{r, echo = F}
+```{r, echo = F, eval = F}
 stargazer::stargazer(mod.design2.by_HIT_pilot, mod.design2.by_HIT_pilot.cov,
                      mod.design2.by_HIT_pilot.total_timespent, mod.design2.by_HIT_pilot.cov.total_timespent,
                      mod.design2.by_HIT_pilot.all_screeners_passed, mod.design2.by_HIT_pilot.cov.all_screeners_passed, 
@@ -1871,7 +1847,7 @@ stargazer::stargazer(mod.design2.by_HIT_pilot, mod.design2.by_HIT_pilot.cov,
                      )
 ```
 
-> Rboust Standard Errors are applied
+![](../Images/D2_pilot_regr.png)
 
 
 ```{r, echo=F}
@@ -2153,9 +2129,10 @@ In the first approach, we pool data from all the sessions together and simply ob
 (6) $total\ time\ spent = \theta_{0} + \theta_{1}*treatment + \theta_{2}*cq1 + \theta_{3}*cq2 + \theta_{4}*cq3 + \theta_{5}*cq4 + \theta_{6}*cq5$
 
 
+Figure 5 shows the corresponding regression table. Robust Standard Errors are applied.
 
 
-```{r, echo = F}
+```{r, echo = F, eval=F}
 stargazer::stargazer(mod.design2.by_HIT, mod.design2.by_HIT.cov,
                      glm.mod.design2.by_HIT, glm.mod.design2.by_HIT.cov,
                      mod.design2.by_HIT.total_timespent, mod.design2.by_HIT.cov.total_timespent,
@@ -2169,7 +2146,8 @@ stargazer::stargazer(mod.design2.by_HIT, mod.design2.by_HIT.cov,
                      )
 ```
 
-> Rboust Standard Errors are applied
+![](../Images/D2_main_regr.png)
+
 
 Looing at results from linear models 1 to 4, being assigned to any of the treatment groups rather than group CCC does not make any statistical differences in the overall accuracy. For the linear models 1 and 2, the magnitude of estimated effects are in the order of less than five percentage points, suggesting no practical significance either. In fact, most estimated effects are mildly negative. All the corresponding robust confidence levels cover zero.
 
@@ -2468,7 +2446,7 @@ quantile(ATEs_1100.hat, c(0.025, 0.975))
 
 ## Design 2 conclusion
 
-To provide an overview for the design 2 results, the estimated effect of bonuses on a turker performance is statistically and practically insignificant in all three of our estimation approaches. We looked at the overall bonus effects by comparing different treatment groups using linear and logistic regression, investigated more granular bonus effects both by group and by session by taking full advantage of a stepped-wedge design, and we estimated both immediate, lagged and their combined effect by invoking the no-anticipation assumption and assuming no within-subject spill-over effect from more than one session. All inference approaches failed to reject the null hypothesis that bonus has zero effect on a turker's performance. On the other hand, bonuses' negative effect on the average time spent on an HIT is significant, but counter-intuitive. Our linear model suggested that being assigned to receive bonus only in the third session or all sessions tend to shorten turkers' time spent by two to three minutes. Finally, we observed differential attrition based on covariates related to turkers' prior exposure or life experience with dogs. This remains a threat to the unbiasedness of our estimated treatment effect. We will discuss potential solutions for a future experiment in section 7.
+To provide an overview for the design 2 results, the estimated effect of bonuses on a turker performance is statistically and practically insignificant in all three of our estimation approaches. We looked at the overall bonus effects by comparing different treatment groups using linear and logistic regression, investigated more granular bonus effects both by group and by session by taking full advantage of a stepped-wedge design, and we estimated both immediate, lagged and their combined effect by invoking the no-anticipation assumption and assuming no within-subject spill-over effect from more than one session. All inference approaches failed to reject the null hypothesis that bonus has zero effect on a turker's performance. No significant effects were estimated when time spent or screeners are studied as outcomes. Finally, we observed differential attrition based on covariates related to turkers' prior exposure or life experience with dogs. This remains a threat to the unbiasedness of our estimated treatment effect. We will discuss potential solutions for a future experiment in section 7.
 
 
 # Limitations and Future Lines of Investigation 
