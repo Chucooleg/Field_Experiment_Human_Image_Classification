@@ -5,7 +5,7 @@ W241 Final Project
 ## Experiment Schedule
 
 Date | Time | Description | Payrate | No. tasks 
----- | ---- | ---- | ---- | ---- | ---- 
+---- | ---- | ---- ------ | ------- | ---------
 10/28/2017 | PT 04:17 | Pilot | 0.10 | 50 
 10/29/2017 | PT 05:23 | Pilot | 0.25 | 50 
 11/11/2017 | PT 02:44 | Design 1 Order 1 | 0.10 | 100
@@ -21,7 +21,7 @@ Date | Time | Description | Payrate | No. tasks
 ## Important CSV files
 
 Title | Location | Description
----- | ---- | ---- | ----
+---- | ---- | ---- 
 MTurk Data | MTurk_data/... | csv downloaded from Mturk platform after every posting
 Qualtric Data | qualtric_data/... | csv downloaded from Qualtrics platform after every posting
 Worker_status| MTurk_ID_status/worker_status | everything associated with a particular worker ID
@@ -30,7 +30,7 @@ Worker_status| MTurk_ID_status/worker_status | everything associated with a part
 ## Important R codes
 
 Title | Location | Description
----- | ---- | ---- | ----
+---- | ---- | ---- 
 Design 1, Order 1 Analysis| code/order1_results_WIP.r | Stat. Analysis
 Design 1, Order 1 Data Transformation Functions| code/design1_data_transformation_functions.r | All Supporting R Functions
 Design 1, Order 1 Analysis| code/design1_worker_payment.r| Figure out who to pay
