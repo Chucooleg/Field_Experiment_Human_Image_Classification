@@ -16,7 +16,8 @@ Date | Time | Description | Payrate | AvailableHITs
 11/18/2017 | PT (14:49) | Design 1 Order 2 | 0.25 | 100
 11/19/2017 | PT (02:32) | Design 1 Order 2 | 0.55 | 100
 11/19/2017 | PT (08:18) | Design 1 Order 2 | 0.10 | 100
-
+11/23/2017 | PT (all day) | Design 2 pilot | 0.10 | 60
+11/26/2017 | PT (all day) | Design 2 Main  | 0.22 | 240
 
 ## Important CSV files
 
@@ -24,17 +25,8 @@ Title | Location | Description
 ---- | ---- | ---- 
 MTurk Data | MTurk_data/... | csv downloaded from Mturk platform after every posting
 Qualtric Data | qualtric_data/... | csv downloaded from Qualtrics platform after every posting
+Modeling Data | modeling_data/... | tables transformed for design 2 modeling
 Worker_status| MTurk_ID_status/worker_status | everything associated with a particular worker ID
-
-
-## Important R codes
-
-Title | Location | Description
----- | ---- | ---- 
-Design 1, Order 1 Analysis| code/order1_results_WIP.r | Stat. Analysis
-Design 1, Order 1 Data Transformation Functions| code/design1_data_transformation_functions.r | All Supporting R Functions
-Design 1, Order 1 Analysis| code/design1_worker_payment.r| Figure out who to pay
-Pilot Analysis| code/pilot_results_WIP.r | Stat. Analysis
 
 
 ## General Links
